@@ -1,0 +1,35 @@
+- generate WZA DONE
+
+- train WAA ... rotat input image
+implemented randomly rotating the image by 0-360 every 10ms
+changed WAA to [1000x999]
+
+- label/prettify plots... DONE
+
+
+- train WAB
+
+-validate WYZ ... working on right now... not sure if bugfree yet... visualization done... however there are many white spots, eventough i showed 
+the image for 1 second!!! debug this, on whenever no z seems to have spiked!
+seems to work fine now :)
+
+- train alot of wyz with different parameters and analyze
+04.03.
+netzwerk stirbt mit der zeit aus bei c = 1, 10... vermute, da die gewichte zu wenig hoch sind um die Z zu aktivieren (durchs lernen sinkt die 
+durchschnittliche aktivierung)
+bei c = 20 sieht es nicht aus als als würde es abstergen... daher:
+ 
+	train mit  c = 20,  eta = 10^-2, 10^-2.5,  10^-3
+		   c = 30,  eta = 10^-2, 10^-2.5,  10^-3
+
+			für 500s und dann evaluieren. eventuell mehr trainieren? 
+			und die initial weights höher initialisieren wie legi wollte? proviren wirs mal mit 2 :shrug:
+		and train c = 10 eta = 10^-3 to check difference due to higher initial weights
+
+	did analysis of c = 20 eta = 10^-3:
+		*see plots 
+		* yellow area seems smaller than other areas... i try with smaller learning rates up to 10^-4.5
+		* the Z distinct 1 - 3 are due to the fringe areas. in those there are always 2 neurons firing
+
+
+- bei plots of z spikes... verticale linien die imageduration zeigen
