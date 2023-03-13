@@ -103,8 +103,7 @@ def generateImage(angle, imageSize = (29, 29), noiseLevel = 0.1, lineThickness =
   return image, angle
 
 #  imageSize(height, width)
-def generateRandomVerticalLineImage(imageSize = (29, 29), noiseLevel = 0.1, lineThickness = 7):
-  
+def generateRandomVerticalLineImage(imageSize = (29, 29), noiseLevel = 0.1, lineThickness = 7, priorFlipChance = 0.1):
   white = 255
   black = 0
   
@@ -130,11 +129,15 @@ def generateRandomVerticalLineImage(imageSize = (29, 29), noiseLevel = 0.1, line
         else:
           image[row,column] = white
   
-  return image, xPosition
+  # Vertical Lines are represented by prior = 0
+  prior = 0
+  if random.random < priorFlipChance:
+    prior = 1
+  
+  return image, xPosition, prior
   
 #  imageSize(height, width)
-def generateRandomHorizontalLineImage(imageSize = (29, 29), noiseLevel = 0.1, lineThickness = 7):
-  
+def generateRandomHorizontalLineImage(imageSize = (29, 29), noiseLevel = 0.1, lineThickness = 7, priorFlipChance = 0.1):
   white = 255
   black = 0
   
@@ -159,5 +162,10 @@ def generateRandomHorizontalLineImage(imageSize = (29, 29), noiseLevel = 0.1, li
           image[row,column] = black
         else:
           image[row,column] = white
+          
+  # Vertical Lines are represented by prior = 1
+  prior = 1
+  if random.random < priorFlipChance:
+    prior = 0
   
-  return image, yPosition
+  return image, yPosition, prior
