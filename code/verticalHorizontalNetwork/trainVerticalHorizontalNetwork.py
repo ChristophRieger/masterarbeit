@@ -4,6 +4,9 @@ Created on Mon Dec 26 09:55:32 2022
 
 @author: chris
 """
+import sys
+sys.path.insert(0, '../helpers')
+
 import dataEncoder
 import dataGenerator
 import poissonGenerator
@@ -73,9 +76,13 @@ averageZFiredHistory = []
 for t in np.arange(0, simulationTime, dt):
   # generate training data every 50ms
   if abs(t - round(t / imagePresentationDuration) * imagePresentationDuration) < 1e-10:
-    image, angle = dataGenerator.generateRandomlyOrientedLineImage(imageSize)
+    # !!! TODO  genereta vert and horz line images randomly
+    if random.random() > 0.5:
+      image, position, prior = dataGenerator.generateRandomVerticalLineImage(imageSize)
+    else:
+      image, position, prior = dataGenerator.generateRandomHorizontalLineImage(imageSize)
     images[0].append(image)
-    images[1].append(angle)
+    images[1].append(position)
     encodedImage = dataEncoder.encodeImage(image)
     distinctZFiredHistory.append(len(distinctZFired))
     distinctZFired = []
