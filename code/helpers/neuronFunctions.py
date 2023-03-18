@@ -7,17 +7,11 @@ Created on Fri Dec 30 13:10:15 2022
 import numpy as np
 
 # =============================================================================
-# Updates the Weights between all Y Neurons and the one Z Neuron that fired
+# Updates the Weights between all Tilde Neurons and the one Neuron that fired
 # =============================================================================
-def updateWeights(YTilde, weights, ZNeuronID, c, learningRate):
-  # !!! YTilde is max 0.8 in this current implementation. if c is set to 1 (altough at
-  # other points the say its e**-5 which makes it even worse), as said in paper
-  # this means, that deltaWeights can only be positive, if the weight is negative.
-  # this seems very wrong to me, as weights should never get negative
-  deltaWeights = learningRate * (YTilde * c * np.exp(-weights[:, ZNeuronID]) - 1)
-  weights[:, ZNeuronID] += deltaWeights
-  # !!! disabled clip, as with c = 10 weights should stay within 0 and 1 !!!
-  # weights = np.clip(weights, 0.001, 5)
+def updateWeights(tilde, weights, neuronFiredID, c, learningRate):
+  deltaWeights = learningRate * (tilde * c * np.exp(-weights[:, neuronFiredID]) - 1)
+  weights[:, neuronFiredID] += deltaWeights
   return weights
 
 def updateIntrinsicWeights(intrinsicWeights, ZNeuronID, c, learningRate):
@@ -26,17 +20,6 @@ def updateIntrinsicWeights(intrinsicWeights, ZNeuronID, c, learningRate):
   intrinsicWeights += learningRate * (c* np.exp(-intrinsicWeights) * Z - 1)
   # intrinsicWeights = np.clip(intrinsicWeights, 0.001, 5)
   return intrinsicWeights
-
-def activateInhibition():
-  
-  return True
-
-
-
-
-
-
-
 
 
 
