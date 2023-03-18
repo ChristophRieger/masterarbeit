@@ -108,7 +108,7 @@ for t in np.arange(0, simulationTime, dt):
     if YSpikes[0][i] < t - sigma:
       expiredYSpikeIDs.append(i)
     else:
-      YTilde[YSpikes[1][i]] = kernel.YTilde(t, dt, YSpikes[0][i], tauRise, tauDecay)
+      YTilde[YSpikes[1][i]] = kernel.tilde(t, dt, YSpikes[0][i], tauRise, tauDecay)
       for k in range(numberZNeurons):
         U[k] += weights[YNeuron, k] * YTilde[YSpikes[1][i]]
   # delete all spikes that are longer ago than sigma (10ms?) from YSpikes
