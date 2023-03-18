@@ -22,7 +22,6 @@ import os
 
 # Command Center
 loadWeights = False
-disableIntrinsicWeights = True
 
 plt.close("all")
 # # generate training data
@@ -33,13 +32,15 @@ plt.close("all")
 
 # took 29, so there is an actual center, which makes everything symmetric (the mask primarily)
 imageSize = (29, 29)
-simulationTime = 800 # seconds
+simulationTime = 50 # seconds
 # legi suggested to increase this from 0.05 to 0.2, works better
 imagePresentationDuration = 0.2
 dt = 0.001 # seconds
 firingRate = 20 # Hz; Input neurons yn should spike with 20Hz => firingRate (Lambda) = 20/second
+AfiringRate = 50
 numberYNeurons = imageSize[0] * imageSize[1] * 2 # 2 neurons per pixel (one for black, one for white)
 numberZNeurons = 10
+numberANeurons = 2
 #  inhibitory signal
 Iinh = 0
 IinhStartTime = 0
@@ -52,18 +53,19 @@ learningRate = 10**-3
 
 YSpikes = [[],[]]
 ZSpikes = [[],[]]
+ASpikes = [[],[]]
 
 # initialize weights (for now between 0 and 1, not sure)
 if loadWeights:
   weights = np.load("")
-  intrinsicWeights = np.zeros(numberZNeurons)
+  priorWeights = np.load("")
 else:
   weights = np.full((numberYNeurons, numberZNeurons), 2, "float64")
-  intrinsicWeights = np.zeros(numberZNeurons)
+  priorWeights = np.full((numberANeurons, numberZNeurons), 2, "float64")
 
 indexOfLastYSpike = [0] * numberYNeurons
 ZNeuronsRecievedYSpikes = [[],[]]
-images = [[],[]]
+images = [[],[],[]]
 
 # Metric to measure training progress
 # check how many different Z neurons fired during one image
@@ -83,6 +85,7 @@ for t in np.arange(0, simulationTime, dt):
       image, position, prior = dataGenerator.generateRandomHorizontalLineImage(imageSize)
     images[0].append(image)
     images[1].append(position)
+    images[2].append(prior)
     encodedImage = dataEncoder.encodeImage(image)
     distinctZFiredHistory.append(len(distinctZFired))
     distinctZFired = []
@@ -102,12 +105,20 @@ for t in np.arange(0, simulationTime, dt):
        YSpikes[0].append(t)
        # which Y spiked
        YSpikes[1].append(i)
-
-
-  # I have to add wk0 only once, thats why its here
-  U = np.zeros(numberZNeurons) + intrinsicWeights
+       
+  # generate A Spikes for this step
+  if prior == 0:
+    if poissonGenerator.doesNeuronFire(AfiringRate, dt):
+      ASpikes[0].append(t)
+      ASpikes[1].append(0)
+  elif prior == 1:
+    if poissonGenerator.doesNeuronFire(AfiringRate, dt):
+      ASpikes[0].append(t)
+      ASpikes[1].append(1)
   
   # Next we have to calculate Uk
+  U = np.zeros(numberZNeurons)
+  # Add contribution of Y
   expiredYSpikeIDs = []
   YTilde = np.zeros(numberYNeurons)
   for i, YNeuron in enumerate(YSpikes[1]):
@@ -115,13 +126,29 @@ for t in np.arange(0, simulationTime, dt):
     if YSpikes[0][i] < t - sigma:
       expiredYSpikeIDs.append(i)
     else:
-      YTilde[YSpikes[1][i]] = kernel.YTilde(t, dt, YSpikes[0][i], tauRise, tauDecay)
+      YTilde[YSpikes[1][i]] = kernel.tilde(t, dt, YSpikes[0][i], tauRise, tauDecay)
       for k in range(numberZNeurons):
         U[k] += weights[YNeuron, k] * YTilde[YSpikes[1][i]]
   # delete all spikes that are longer ago than sigma (10ms?) from YSpikes
   for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
     del YSpikes[0][toDeleteID]
     del YSpikes[1][toDeleteID]
+    
+  # Add contribution of A
+  ATilde = np.zeros(numberANeurons)
+  expiredASpikeIDs = []
+  for i, ANeuron in enumerate(ASpikes[1]):
+    # First mark all ASpikes older than sigma and do not use for calculation of Uk
+    if ASpikes[0][i] < t - sigma:
+      expiredASpikeIDs.append(i)
+    else:
+      ATilde[ASpikes[1][i]] = kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
+      for k in range(numberZNeurons):
+        U[k] += priorWeights[ANeuron, k] * ATilde[ASpikes[1][i]]
+  # delete all spikes that are longer ago than sigma (10ms?) from ASpikes
+  for toDeleteID in sorted(expiredASpikeIDs, reverse=True):
+    del ASpikes[0][toDeleteID]
+    del ASpikes[1][toDeleteID]
 
   # calc instantaneous fire rate for each Z Neuron for this time step
   r = np.zeros(numberZNeurons)
@@ -156,8 +183,7 @@ for t in np.arange(0, simulationTime, dt):
       distinctZFired.append(ZNeuronWinner)
     # update weights of all Y to ZThatFired
     weights = neuronFunctions.updateWeights(YTilde, weights, ZNeuronWinner, c, learningRate)
-    if not disableIntrinsicWeights:
-      intrinsicWeights = neuronFunctions.updateIntrinsicWeights(intrinsicWeights, ZNeuronWinner, c, learningRate)
+    priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronWinner, c, learningRate)
     # calculate inhibition signal and store time of last Z spike
     inhTMP = 0
     for i in range(numberZNeurons):
@@ -174,6 +200,7 @@ for t in np.arange(0, simulationTime, dt):
 if not os.path.exists("c20_3"):
   os.mkdir("c20_3")
 np.save("c20_3/c20_3_YZWeights.npy", weights)
+np.save("c20_3/c20_3_AZWeights.npy", priorWeights)
   
 colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink', 'brown' ,'black']
 # plot the last 100 Z spikes
