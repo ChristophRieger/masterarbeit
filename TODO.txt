@@ -1,17 +1,9 @@
-- generate WZA DONE
-
-- train WAA ... rotat input image
-implemented randomly rotating the image by 0-360 every 10ms
-changed WAA to [1000x999]
-
-- label/prettify plots... DONE
+- check if wAZ learns right... i might
+- check how much wAZ is influenced by an image with the wrong prior (shouldnt be too much due to small learning rate)
+- create analysis plots for horvert
+- create validation script for horvert
 
 
-- train WAB
-
--validate WYZ ... working on right now... not sure if bugfree yet... visualization done... however there are many white spots, eventough i showed 
-the image for 1 second!!! debug this, on whenever no z seems to have spiked!
-seems to work fine now :)
 
 - train alot of wyz with different parameters and analyze
 04.03.

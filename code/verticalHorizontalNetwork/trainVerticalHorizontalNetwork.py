@@ -65,7 +65,7 @@ else:
 
 indexOfLastYSpike = [0] * numberYNeurons
 ZNeuronsRecievedYSpikes = [[],[]]
-images = [[],[],[]]
+images = [[],[],[],[]]
 
 # Metric to measure training progress
 # check how many different Z neurons fired during one image
@@ -80,12 +80,13 @@ for t in np.arange(0, simulationTime, dt):
   if abs(t - round(t / imagePresentationDuration) * imagePresentationDuration) < 1e-10:
     # !!! TODO  genereta vert and horz line images randomly
     if random.random() > 0.5:
-      image, position, prior = dataGenerator.generateRandomVerticalLineImage(imageSize)
+      image, position, prior, orientation = dataGenerator.generateRandomVerticalLineImage(imageSize)
     else:
-      image, position, prior = dataGenerator.generateRandomHorizontalLineImage(imageSize)
+      image, position, prior, orientation = dataGenerator.generateRandomHorizontalLineImage(imageSize)
     images[0].append(image)
     images[1].append(position)
     images[2].append(prior)
+    images[3].append(orientation)
     encodedImage = dataEncoder.encodeImage(image)
     distinctZFiredHistory.append(len(distinctZFired))
     distinctZFired = []
@@ -217,6 +218,9 @@ plt.savefig("c20_3/1000LastZSpikes.png")
 #   plt.figure()
 #   plt.imshow(imageToPlot, cmap='gray')
 
+# calc which Zs fired for each coordinate of each orientation
+
+
 # calc which Z fired the most for an angle
 angleAndWhichZFired = np.zeros([360, numberZNeurons])
 for i in range(len(images[0])):
@@ -277,7 +281,7 @@ plt.savefig("c20_3/distinctZ.png")
 # show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
 plt.figure()
 plt.plot(averageZFiredHistory)
-plt.title("Training accuracy")
-plt.ylabel("Accuracy of Z spikes")
+plt.title("Certainty of network")
+plt.ylabel("Homogeneity of Z spikes")
 plt.xlabel("Image shown")
 plt.savefig("c20_3/averageZ.png")
