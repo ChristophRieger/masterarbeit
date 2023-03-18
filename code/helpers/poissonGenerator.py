@@ -64,6 +64,7 @@ def doesNeuronFire(firingRate, dt):
   else:
     return False
   
+# 2nd parameter is to determine Z winner
 def doesZNeuronFire(firingRate, dt):
   randomNumber = random.random()
   if firingRate * dt > randomNumber: 
