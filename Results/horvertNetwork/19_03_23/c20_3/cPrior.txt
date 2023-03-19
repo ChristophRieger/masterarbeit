@@ -1,0 +1,1 @@
+cPrior was set to 500, however this was not the solution, as the prior weights are now between 2 and 5, which doesnt really change anything.
