@@ -21,7 +21,7 @@ import sys
 plt.close("all")
 
 # Command Center
-plotWeights = True
+plotWeights = False
 
 imageSize = (29, 29)
 imagePresentationDuration = 0.2
@@ -38,7 +38,8 @@ tauRise = 0.001
 tauDecay = 0.015
 
 colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink', 'brown' ,'black']
-pieColors = []
+verticalLineColors = []
+horizontalLineColors = []
 
 weights = np.load("c20_3_YZWeights.npy")
 priorWeights = np.load("c20_3_AZWeights.npy")
@@ -57,6 +58,7 @@ if plotWeights:
     plt.imshow(wAZ, cmap='gray')
   sys.exit()
     
+# validate for vertical images 
 
 # for each degree generate a line image and see which Z neuron spikes most and 
 # how many distinct Z spike
@@ -66,14 +68,16 @@ averageZFired = []
 averageZFiredHistory = []
 ZSpikeHistory = [[],[]]
 
-for angleIterator in range(0,180):
+for positionIterator in range(0, imageSize[0]):
   YSpikes = [[],[]]
   ZSpikes = [[],[]]
   ASpikes = [[],[]]
-  images = [[],[]]
-  image, angle = dataGenerator.generateImage(angleIterator)
+  images = [[],[],[],[]]
+  image, position, prior, orientation = dataGenerator.generateVerticalLineImage(positionIterator, imageSize)  
   images[0].append(image)
-  images[1].append(angle)
+  images[1].append(position)
+  images[2].append(prior)
+  images[3].append(orientation)
   encodedImage = dataEncoder.encodeImage(image)
   distinctZFiredHistory.append(len(distinctZFired))
   distinctZFired = []
@@ -96,9 +100,21 @@ for angleIterator in range(0,180):
          YSpikes[0].append(t)
          # which Y spiked
          YSpikes[1].append(i)
-    U = np.zeros(numberZNeurons) + priorWeights
-  
+         
+    # generate A Spikes for this step
+    if prior == 0:
+      if poissonGenerator.doesNeuronFire(AfiringRate, dt):
+        ASpikes[0].append(t)
+        ASpikes[1].append(0)
+    elif prior == 1:
+      if poissonGenerator.doesNeuronFire(AfiringRate, dt):
+        ASpikes[0].append(t)
+        ASpikes[1].append(1)         
+        
     # Next we have to calculate Uk
+    U = np.zeros(numberZNeurons)
+
+    # Add contribution of Y  
     expiredYSpikeIDs = []
     YTilde = np.zeros(numberYNeurons)
     for i, YNeuron in enumerate(YSpikes[1]):
@@ -113,6 +129,22 @@ for angleIterator in range(0,180):
     for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
       del YSpikes[0][toDeleteID]
       del YSpikes[1][toDeleteID]
+      
+    # Add contribution of A
+    ATilde = np.zeros(numberANeurons)
+    expiredASpikeIDs = []
+    for i, ANeuron in enumerate(ASpikes[1]):
+      # First mark all ASpikes older than sigma and do not use for calculation of Uk
+      if ASpikes[0][i] < t - sigma:
+        expiredASpikeIDs.append(i)
+      else:
+        ATilde[ASpikes[1][i]] = kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
+        for k in range(numberZNeurons):
+          U[k] += priorWeights[ANeuron, k] * ATilde[ASpikes[1][i]]
+    # delete all spikes that are longer ago than sigma (10ms?) from ASpikes
+    for toDeleteID in sorted(expiredASpikeIDs, reverse=True):
+      del ASpikes[0][toDeleteID]
+      del ASpikes[1][toDeleteID]   
   
     # calc instantaneous fire rate for each Z Neuron for this time step
     r = np.zeros(numberZNeurons)
@@ -143,7 +175,7 @@ for angleIterator in range(0,180):
       ZSpikeHistory[0].append(ZNeuronWinner)
       ZSpikes[1].append(t)
       averageZFired.append(ZNeuronWinner)
-      ZSpikeHistory[1].append(t + angleIterator * imagePresentationDuration)
+      ZSpikeHistory[1].append(t + positionIterator * imagePresentationDuration)
       # append ID of Z if this Z has not fired yet in this imagePresentationDuration
       if not distinctZFired.count(ZNeuronWinner):
         distinctZFired.append(ZNeuronWinner)
@@ -158,11 +190,9 @@ for angleIterator in range(0,180):
       IinhStartTime = math.inf
   # determine distinctZ
   
-  # calc which Z fired the most for this angle
+  # calc which Z fired the most for this position
   whichZFired = np.zeros(numberZNeurons)
   for i in range(len(images[0])):
-    # check which degree the image was
-    currentAngle = angleIterator
     # iterate over all zSpikes and increment the Z that fired
     for j in range(len(ZSpikes[0])):
       whichZFired[ZSpikes[0][j]] += 1
@@ -174,21 +204,19 @@ for angleIterator in range(0,180):
       maxSpikes = whichZFired[j]
   # code winnerID of Z neuron to its color
   if winnerID == math.inf:
-    pieColors.append('white')
+    verticalLineColors.append('white')
   else:
-    pieColors.append(colors[winnerID])
+    verticalLineColors.append(colors[winnerID])
   
-  print("Finished simulation of angle " + str(angleIterator) + "°")
+  print("Finished simulation of position " + str(positionIterator))
   
-# plot piechart of most fired Z per degree
-threesixtyAngles = np.ones(360)
-for i in range(180, 360):
-  pieColors.append('white')
-  
+# plot vertical lines 
+xPosition = np.arange(imageSize[0])
 fig_object = plt.figure()
-# startangle 90 is at top
-plt.pie(threesixtyAngles, colors=pieColors, startangle = 90, counterclock=False,)
-plt.title("Most active Z neuron depending on angle")
+plt.bar(xPosition, imageSize[0], align='edge', width=1.0, color=verticalLineColors)
+plt.title("Most active Z neuron depending on position and orientation ")
+plt.xlabel("width [px]")
+plt.ylabel("height [px]")
 pieLegend1 = patches.Patch(color=colors[0], label='Z1')
 pieLegend2 = patches.Patch(color=colors[1], label='Z2')
 pieLegend3 = patches.Patch(color=colors[2], label='Z3')
@@ -200,7 +228,8 @@ pieLegend8 = patches.Patch(color=colors[7], label='Z8')
 pieLegend9 = patches.Patch(color=colors[8], label='Z9')
 pieLegend10 = patches.Patch(color=colors[9], label='Z10')
 plt.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
-pickle.dump(fig_object, open('pie.pickle','wb'))
+plt.tight_layout()
+pickle.dump(fig_object, open('verticalLines.pickle','wb'))
 
 # show training progress (how many distinct Z fired during each image presentation duration)
 # remove first empty entry
