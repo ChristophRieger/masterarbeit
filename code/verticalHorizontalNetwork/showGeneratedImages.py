@@ -13,19 +13,23 @@ import matplotlib.pyplot as plt
 plt.close("all")
 
 # generate vertical images
-image, xPosition, prior = dataGenerator.generateRandomVerticalLineImage()
+image, xPosition, prior, orientation = dataGenerator.generateRandomVerticalLineImage()
 plt.figure()
 plt.imshow(image, cmap='gray')
 
-image, xPosition, prior = dataGenerator.generateVerticalLineImage(29)
-plt.figure()
-plt.imshow(image, cmap='gray')
+# image, xPosition, prior, orientation = dataGenerator.generateVerticalLineImage(29)
+# plt.figure()
+# plt.imshow(image, cmap='gray')
 
 # generate horizontal images
-image, yPosition, prior = dataGenerator.generateRandomHorizontalLineImage()
+image, yPosition, prior, orientation = dataGenerator.generateRandomHorizontalLineImage()
 plt.figure()
 plt.imshow(image, cmap='gray')
 
-image, yPosition, prior = dataGenerator.generateHorizontalLineImage(0)
+# image, yPosition, prior, orientation = dataGenerator.generateHorizontalLineImage(0)
+# plt.figure()
+# plt.imshow(image, cmap='gray')
+
+image, xPosition, yPosition, orientation = dataGenerator.generateRandomCrossLineImage()
 plt.figure()
 plt.imshow(image, cmap='gray')
