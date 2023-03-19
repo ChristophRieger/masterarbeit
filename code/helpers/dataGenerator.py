@@ -230,3 +230,47 @@ def generateHorizontalLineImage(yPosition, imageSize = (29, 29), noiseLevel = 0.
     prior = 0
   
   return image, yPosition, prior, 1
+
+#  imageSize(height, width)
+# generates a cross and randomly chooses which orientation its supposed to represent
+def generateRandomCrossLineImage(imageSize = (29, 29), noiseLevel = 0.1, lineThickness = 7, orientationFlipChance = 0.5):
+  white = 255
+  black = 0
+  
+  # Create an empty image with all pixels set to white (255)
+  image = np.full(imageSize, white, dtype=np.uint8)
+  
+  # random position of the vertical line
+  xPosition = int(np.random.uniform(lineThickness / 2, imageSize[1] - (lineThickness / 2)))
+  # random position of the horizontal line
+  yPosition = int(np.random.uniform(lineThickness / 2, imageSize[0] - (lineThickness / 2)))
+  
+  # Calculate the start and end points of the vertical line
+  startRow = 0
+  endRow = imageSize[0]
+  startColumn = xPosition
+  endColumn = xPosition
+  image = cv2.line(image, (startColumn, startRow), (endColumn, endRow), black, thickness=lineThickness)
+  
+  # Calculate the start and end points of the horizontal line
+  startColumn = 0
+  endColumn = imageSize[1]
+  startRow = yPosition
+  endRow = yPosition
+  image = cv2.line(image, (startColumn, startRow), (endColumn, endRow), black, thickness=lineThickness)
+  
+  # Flip pixelvalues randomly
+  for row in range(imageSize[0]):
+    for column in range(imageSize[1]):
+      if random.random() < noiseLevel:
+        if image[row,column] == white:
+          image[row,column] = black
+        else:
+          image[row,column] = white
+  
+  # Vertical Lines are represented by prior = 1
+  orientation = 1
+  if random.random() < orientationFlipChance:
+    orientation = 0
+  
+  return image, xPosition, yPosition, orientation
