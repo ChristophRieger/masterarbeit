@@ -4,6 +4,9 @@ Created on Wed Jan 25 14:04:22 2023
 
 @author: chris
 """
+import sys
+sys.path.insert(0, '../helpers')
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -18,14 +21,17 @@ import sys
 plt.close("all")
 
 # Command Center
-plotWeights = False
+plotWeights = True
 
 imageSize = (29, 29)
 imagePresentationDuration = 0.2
 dt = 0.001 # seconds
 firingRate = 20 # Hz
+AfiringRate = 50
+
 numberYNeurons = imageSize[0] * imageSize[1] * 2
 numberZNeurons = 10
+numberANeurons = 2
 tauInh = 0.005
 sigma = 0.01 
 tauRise = 0.001
@@ -35,14 +41,20 @@ colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink'
 pieColors = []
 
 weights = np.load("c20_3_YZWeights.npy")
-intrinsicWeights = np.zeros(numberZNeurons)
+priorWeights = np.load("c20_3_AZWeights.npy")
 # plot all weights
 if plotWeights:
   for z in range(np.shape(weights)[1]):
     plt.figure()
-    w = weights[0::2, z]
-    w = w.reshape((29, 29))
-    plt.imshow(w, cmap='gray')
+    plt.title("Weights of Z" + str(z+1) + " to all Y")
+    wYZ = weights[0::2, z]
+    wYZ = wYZ.reshape((29, 29))
+    plt.imshow(wYZ, cmap='gray')
+  for a in range(np.shape(priorWeights)[0]):
+    plt.figure()
+    plt.title("Weights of A" + str(a+1) + " to all Z")
+    wAZ = priorWeights[a].reshape((10, 1))
+    plt.imshow(wAZ, cmap='gray')
   sys.exit()
     
 
@@ -57,6 +69,7 @@ ZSpikeHistory = [[],[]]
 for angleIterator in range(0,180):
   YSpikes = [[],[]]
   ZSpikes = [[],[]]
+  ASpikes = [[],[]]
   images = [[],[]]
   image, angle = dataGenerator.generateImage(angleIterator)
   images[0].append(image)
@@ -83,7 +96,7 @@ for angleIterator in range(0,180):
          YSpikes[0].append(t)
          # which Y spiked
          YSpikes[1].append(i)
-    U = np.zeros(numberZNeurons) + intrinsicWeights
+    U = np.zeros(numberZNeurons) + priorWeights
   
     # Next we have to calculate Uk
     expiredYSpikeIDs = []
