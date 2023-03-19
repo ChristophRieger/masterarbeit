@@ -134,7 +134,7 @@ def generateRandomVerticalLineImage(imageSize = (29, 29), noiseLevel = 0.1, line
   if random.random() < priorFlipChance:
     prior = 1
   
-  return image, xPosition, prior
+  return image, xPosition, prior, 0
 
 def generateVerticalLineImage(xPosition, imageSize = (29, 29), noiseLevel = 0.1, lineThickness = 7, priorFlipChance = 0.1):
   white = 255
@@ -164,7 +164,7 @@ def generateVerticalLineImage(xPosition, imageSize = (29, 29), noiseLevel = 0.1,
   if random.random() < priorFlipChance:
     prior = 1
   
-  return image, xPosition, prior
+  return image, xPosition, prior, 0
   
 #  imageSize(height, width)
 def generateRandomHorizontalLineImage(imageSize = (29, 29), noiseLevel = 0.1, lineThickness = 7, priorFlipChance = 0.1):
@@ -198,7 +198,7 @@ def generateRandomHorizontalLineImage(imageSize = (29, 29), noiseLevel = 0.1, li
   if random.random() < priorFlipChance:
     prior = 0
   
-  return image, yPosition, prior
+  return image, yPosition, prior, 1
 
 #  imageSize(height, width)
 def generateHorizontalLineImage(yPosition, imageSize = (29, 29), noiseLevel = 0.1, lineThickness = 7, priorFlipChance = 0.1):
@@ -229,4 +229,4 @@ def generateHorizontalLineImage(yPosition, imageSize = (29, 29), noiseLevel = 0.
   if random.random() < priorFlipChance:
     prior = 0
   
-  return image, yPosition, prior
+  return image, yPosition, prior, 1
