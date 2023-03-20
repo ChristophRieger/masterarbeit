@@ -47,7 +47,7 @@ IinhStartTime = 0
 tauInh = 0.005
 sigma = 0.01 # time frame in which spikes count as before output spike
 c = 20 # 10 seems good, scales weights to 0 ... 1
-cPrior = 500
+cPrior = 20
 tauRise = 0.001
 tauDecay = 0.015
 learningRateFactor = 3
@@ -144,7 +144,7 @@ for t in np.arange(0, simulationTime, dt):
     if ASpikes[0][i] < t - sigma:
       expiredASpikeIDs.append(i)
     else:
-      ATilde[ASpikes[1][i]] = kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
+      ATilde[ASpikes[1][i]] = 20 * kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
       for k in range(numberZNeurons):
         U[k] += priorWeights[ANeuron, k] * ATilde[ASpikes[1][i]]
   # delete all spikes that are longer ago than sigma (10ms?) from ASpikes
@@ -202,7 +202,7 @@ for t in np.arange(0, simulationTime, dt):
 if not os.path.exists("c" + str(c) + "_" + str(learningRateFactor)):
   os.mkdir("c" + str(c) + "_" + str(learningRateFactor))
 np.save("c" + str(c) + "_" + str(learningRateFactor) + "/c" + str(c) + "_" + str(learningRateFactor) + "_YZWeights.npy", weights)
-np.save("c" + str(c) + "_" + str(learningRateFactor) + "/c" + str(c) + "_" + str(learningRateFactor) + "_AZWeights.npy", priorWeights)
+np.save("c" + str(c) + "_" + str(learningRateFactor) + "/c" + str(cPrior) + "_" + str(learningRateFactor) + "_AZWeights.npy", priorWeights)
   
 colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink', 'brown' ,'black']
 # plot the last 100 Z spikes
