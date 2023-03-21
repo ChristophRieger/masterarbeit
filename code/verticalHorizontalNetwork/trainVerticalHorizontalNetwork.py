@@ -52,6 +52,7 @@ tauRise = 0.001
 tauDecay = 0.015
 learningRateFactor = 3
 learningRate = 10**-learningRateFactor
+ATildeFactor = 5
 
 YSpikes = [[],[]]
 ZSpikes = [[],[]]
@@ -59,8 +60,8 @@ ASpikes = [[],[]]
 
 # initialize weights (for now between 0 and 1, not sure)
 if loadWeights:
-  weights = np.load("")
-  priorWeights = np.load("")
+  weights = np.load("c20_3_" + ATildeFactor + "ATilde_YZWeights.npy")
+  priorWeights = np.load("c20_3_" + ATildeFactor + "ATilde_AZWeights.npy")
 else:
   weights = np.full((numberYNeurons, numberZNeurons), 2, "float64")
   priorWeights = np.full((numberANeurons, numberZNeurons), 2, "float64")
@@ -144,7 +145,7 @@ for t in np.arange(0, simulationTime, dt):
     if ASpikes[0][i] < t - sigma:
       expiredASpikeIDs.append(i)
     else:
-      ATilde[ASpikes[1][i]] = 20 * kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
+      ATilde[ASpikes[1][i]] = ATildeFactor * kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
       for k in range(numberZNeurons):
         U[k] += priorWeights[ANeuron, k] * ATilde[ASpikes[1][i]]
   # delete all spikes that are longer ago than sigma (10ms?) from ASpikes
@@ -198,11 +199,12 @@ for t in np.arange(0, simulationTime, dt):
     
   if (t) % 1 == 0:
     print("Finished simulation of t= " + str(t))
-  
-if not os.path.exists("c" + str(c) + "_" + str(learningRateFactor)):
-  os.mkdir("c" + str(c) + "_" + str(learningRateFactor))
-np.save("c" + str(c) + "_" + str(learningRateFactor) + "/c" + str(c) + "_" + str(learningRateFactor) + "_YZWeights.npy", weights)
-np.save("c" + str(c) + "_" + str(learningRateFactor) + "/c" + str(cPrior) + "_" + str(learningRateFactor) + "_AZWeights.npy", priorWeights)
+
+directoryPath =  "c" + str(c) + "_eta" + str(learningRateFactor) + "_ATildeFactor" + str(ATildeFactor)
+if not os.path.exists(directoryPath):
+  os.mkdir(directoryPath)
+np.save(directoryPath + "/c" + str(c) + "_eta" + str(learningRateFactor) + "_ATildeFactor" + str(ATildeFactor) + "_YZWeights.npy", weights)
+np.save(directoryPath + "/c" + str(cPrior) + "_eta" + str(learningRateFactor) + "_ATildeFactor" + str(ATildeFactor) + "_AZWeights.npy", priorWeights)
   
 colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink', 'brown' ,'black']
 # plot the last 100 Z spikes
@@ -212,7 +214,7 @@ for i in range(len(ZSpikes[0]) - len(ZSpikes[0][-1000:]), len(ZSpikes[0])):
 plt.title("Z Spikes")
 plt.ylabel("Z Neuron")
 plt.xlabel("t [s]")
-plt.savefig("c" + str(c) + "_" + str(learningRateFactor) + "/1000LastZSpikes.png")
+plt.savefig(directoryPath + "/1000LastZSpikes.png")
 
 # plot all images... 
 # for imageToPlot in images[0]:
@@ -266,7 +268,7 @@ pieLegend9 = patches.Patch(color=colors[8], label='Z9')
 pieLegend10 = patches.Patch(color=colors[9], label='Z10')
 plt.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
 plt.tight_layout()
-plt.savefig("c" + str(c) + "_" + str(learningRateFactor) + "/horizontalLines.png")        
+plt.savefig(directoryPath + "/horizontalLines.png")        
     
 # calc which Z fired the most for vertical position
 positionAndWhichZFiredVertically = np.zeros([imageSize[1], numberZNeurons])
@@ -315,7 +317,7 @@ pieLegend9 = patches.Patch(color=colors[8], label='Z9')
 pieLegend10 = patches.Patch(color=colors[9], label='Z10')
 plt.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
 plt.tight_layout()
-plt.savefig("c" + str(c) + "_" + str(learningRateFactor) + "/verticalLines.png")      
+plt.savefig(directoryPath + "/verticalLines.png")      
 
 # show training progress (how many distinct Z fired during each image presentation duration)
 # remove first empty entry
@@ -325,7 +327,7 @@ plt.plot(distinctZFiredHistory)
 plt.title("Training progress")
 plt.ylabel("Number of distinct Z neurons spiking")
 plt.xlabel("Image shown")
-plt.savefig("c" + str(c) + "_" + str(learningRateFactor) + "/distinctZ.png")
+plt.savefig(directoryPath + "/distinctZ.png")
 
 # show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
 plt.figure()
@@ -333,4 +335,4 @@ plt.plot(averageZFiredHistory)
 plt.title("Certainty of network")
 plt.ylabel("Homogeneity of Z spikes")
 plt.xlabel("Image shown")
-plt.savefig("c" + str(c) + "_" + str(learningRateFactor) + "/averageZ.png")
+plt.savefig(directoryPath + "/averageZ.png")

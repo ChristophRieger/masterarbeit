@@ -21,10 +21,11 @@ import sys
 plt.close("all")
 
 # Command Center
-plotWeights = False
+plotWeights = True
 validateVertical = False
 validateHorizontal = False
 validateCross = True
+ATildeFactor = 10
 
 imageSize = (29, 29)
 imagePresentationDuration = 0.2
@@ -44,8 +45,8 @@ colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink'
 verticalLineColors = []
 horizontalLineColors = []
 
-weights = np.load("c20_3_YZWeights.npy")
-priorWeights = np.load("c20_3_AZWeights.npy")
+weights = np.load("c20_3_" + ATildeFactor + "ATilde_YZWeights.npy")
+priorWeights = np.load("c20_3_" + ATildeFactor + "ATilde_AZWeights.npy")
 # plot all weights
 if plotWeights:
   for z in range(np.shape(weights)[1]):
@@ -142,7 +143,7 @@ if validateVertical:
         if ASpikes[0][i] < t - sigma:
           expiredASpikeIDs.append(i)
         else:
-          ATilde[ASpikes[1][i]] = kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
+          ATilde[ASpikes[1][i]] = ATildeFactor * kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
           for k in range(numberZNeurons):
             U[k] += priorWeights[ANeuron, k] * ATilde[ASpikes[1][i]]
       # delete all spikes that are longer ago than sigma (10ms?) from ASpikes
@@ -347,7 +348,7 @@ if validateHorizontal:
         if ASpikes[0][i] < t - sigma:
           expiredASpikeIDs.append(i)
         else:
-          ATilde[ASpikes[1][i]] = kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
+          ATilde[ASpikes[1][i]] = ATildeFactor * kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
           for k in range(numberZNeurons):
             U[k] += priorWeights[ANeuron, k] * ATilde[ASpikes[1][i]]
       # delete all spikes that are longer ago than sigma (10ms?) from ASpikes
@@ -553,9 +554,9 @@ if validateCross:
       if ASpikes[0][i] < t - sigma:
         expiredASpikeIDs.append(i)
       else:
-        ATilde[ASpikes[1][i]] = kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
+        ATilde[ASpikes[1][i]] = ATildeFactor * kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
         for k in range(numberZNeurons):
-          U[k] += priorWeights[ANeuron, k] * 20*ATilde[ASpikes[1][i]]
+          U[k] += priorWeights[ANeuron, k] * ATilde[ASpikes[1][i]]
     # delete all spikes that are longer ago than sigma (10ms?) from ASpikes
     for toDeleteID in sorted(expiredASpikeIDs, reverse=True):
       del ASpikes[0][toDeleteID]
