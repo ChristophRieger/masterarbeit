@@ -17,15 +17,21 @@ import kernel
 import math
 import pickle
 import sys
+import os
 
 plt.close("all")
 
 # Command Center
 plotWeights = True
-validateVertical = False
-validateHorizontal = False
+validateVertical = True
+validateHorizontal = True
 validateCross = True
-ATildeFactor = 10
+ATildeFactor = 5
+
+directoryPath =  "ATildeFactor" + str(ATildeFactor)
+if not os.path.exists(directoryPath):
+  os.mkdir(directoryPath)
+
 
 imageSize = (29, 29)
 imagePresentationDuration = 0.2
@@ -45,8 +51,8 @@ colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink'
 verticalLineColors = []
 horizontalLineColors = []
 
-weights = np.load("c20_3_" + ATildeFactor + "ATilde_YZWeights.npy")
-priorWeights = np.load("c20_3_" + ATildeFactor + "ATilde_AZWeights.npy")
+weights = np.load("c20_eta3_" + "ATildeFactor" + str(ATildeFactor) + "_YZWeights.npy")
+priorWeights = np.load("c20_eta3_" + "ATildeFactor" + str(ATildeFactor) + "_AZWeights.npy")
 # plot all weights
 if plotWeights:
   for z in range(np.shape(weights)[1]):
@@ -54,12 +60,15 @@ if plotWeights:
     plt.title("Weights of Z" + str(z+1) + " to all Y")
     wYZ = weights[0::2, z]
     wYZ = wYZ.reshape((29, 29))
-    plt.imshow(wYZ, cmap='gray')
+    plt.imshow(wYZ, origin='lower', cmap='gray')
+    plt.savefig(directoryPath + '/weight' + str(z+1) + '.png')
   for a in range(np.shape(priorWeights)[0]):
     plt.figure()
     plt.title("Weights of A" + str(a+1) + " to all Z")
     wAZ = priorWeights[a].reshape((10, 1))
-    plt.imshow(wAZ, cmap='gray')
+    plt.imshow(wAZ, origin='lower', cmap='gray')
+    plt.savefig(directoryPath + '/priorWeight' + str(a+1) + '.png')
+
     
   
 if validateVertical:
@@ -234,8 +243,8 @@ if validateVertical:
   pieLegend10 = patches.Patch(color=colors[9], label='Z10')
   plt.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
   plt.tight_layout()
-  pickle.dump(fig_object, open('verticalLines.pickle','wb'))
-  plt.savefig('verticalLines.png')
+  pickle.dump(fig_object, open(directoryPath + '/verticalLines.pickle','wb'))
+  plt.savefig(directoryPath + '/verticalLines.png')
   
   # show training progress (how many distinct Z fired during each image presentation duration)
   # remove first empty entry
@@ -245,8 +254,8 @@ if validateVertical:
   plt.title("Number of distinct Z neurons spiking for vertical lines")
   plt.ylabel("Number of distinct Z neurons spiking")
   plt.xlabel("Image shown")
-  pickle.dump(fig_object, open('verticalDistinctZ.pickle','wb'))
-  plt.savefig('verticalDistinctZ.png')
+  pickle.dump(fig_object, open(directoryPath + '/verticalDistinctZ.pickle','wb'))
+  plt.savefig(directoryPath + '/verticalDistinctZ.png')
   
   
   fig_object = plt.figure()
@@ -255,8 +264,8 @@ if validateVertical:
   plt.title("Z Spikes for vertical lines")
   plt.ylabel("Z Neuron")
   plt.xlabel("t [s]")
-  pickle.dump(fig_object, open('verticalZSpikes.pickle','wb'))
-  plt.savefig('verticalZSpikes.png')
+  pickle.dump(fig_object, open(directoryPath + '/verticalZSpikes.pickle','wb'))
+  plt.savefig(directoryPath + '/verticalZSpikes.png')
     
   # show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
   plt.figure()
@@ -264,8 +273,8 @@ if validateVertical:
   plt.title("Certainty of network for vertical lines")
   plt.ylabel("Homogeneity of Z spikes")
   plt.xlabel("Image shown")
-  pickle.dump(fig_object, open('verticalAverageZ.pickle','wb'))  
-  plt.savefig('verticalAverageZ.png')
+  pickle.dump(fig_object, open(directoryPath + '/verticalAverageZ.pickle','wb'))  
+  plt.savefig(directoryPath + '/verticalAverageZ.png')
 
 if validateHorizontal:
   # validate for horizontal images 
@@ -439,8 +448,8 @@ if validateHorizontal:
   pieLegend10 = patches.Patch(color=colors[9], label='Z10')
   plt.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
   plt.tight_layout()
-  pickle.dump(fig_object, open('horizontalLines.pickle','wb'))
-  plt.savefig('horizontalLines.png')
+  pickle.dump(fig_object, open(directoryPath + '/horizontalLines.pickle','wb'))
+  plt.savefig(directoryPath + '/horizontalLines.png')
   
   # show training progress (how many distinct Z fired during each image presentation duration)
   # remove first empty entry
@@ -450,8 +459,8 @@ if validateHorizontal:
   plt.title("Number of distinct Z neurons spiking for horizontal lines")
   plt.ylabel("Number of distinct Z neurons spiking")
   plt.xlabel("Image shown")
-  pickle.dump(fig_object, open('horizontalDistinctZ.pickle','wb'))
-  plt.savefig('horizontalDistinctZ.png')
+  pickle.dump(fig_object, open(directoryPath + '/horizontalDistinctZ.pickle','wb'))
+  plt.savefig(directoryPath + '/horizontalDistinctZ.png')
   
   fig_object = plt.figure()
   for i in range(0, len(ZSpikeHistory[0])):
@@ -459,8 +468,8 @@ if validateHorizontal:
   plt.title("Z Spikes for horizontal lines")
   plt.ylabel("Z Neuron")
   plt.xlabel("t [s]")
-  pickle.dump(fig_object, open('horizontalZSpikes.pickle','wb'))
-  plt.savefig('horizontalZSpikes.png')
+  pickle.dump(fig_object, open(directoryPath + '/horizontalZSpikes.pickle','wb'))
+  plt.savefig(directoryPath + '/horizontalZSpikes.png')
   
   # show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
   plt.figure()
@@ -468,8 +477,8 @@ if validateHorizontal:
   plt.title("Certainty of network for horizontal lines")
   plt.ylabel("Homogeneity of Z spikes")
   plt.xlabel("Image shown")
-  pickle.dump(fig_object, open('horizontalAverageZ.pickle','wb'))
-  plt.savefig('horizontalAverageZ.png')
+  pickle.dump(fig_object, open(directoryPath + '/horizontalAverageZ.pickle','wb'))
+  plt.savefig(directoryPath + '/horizontalAverageZ.png')
 
 if validateCross:
   # validate for cross images 
@@ -490,7 +499,8 @@ if validateCross:
   images = [[],[],[],[]]
   image, position, prior = dataGenerator.generateRandomCrossLineImage() 
   plt.figure()
-  plt.imshow(image, cmap='gray')
+  plt.imshow(image, origin='lower', cmap='gray')
+  plt.savefig(directoryPath + '/crossImage.png')
   images[0].append(image)
   images[1].append(position)
   images[2].append(prior)
@@ -606,75 +616,13 @@ if validateCross:
     elif t - IinhStartTime > tauInh:
       Iinh = 0
       IinhStartTime = math.inf
-  # determine distinctZ
   
-  # calc which Z fired the most for this position
-  whichZFired = np.zeros(numberZNeurons)
-  for i in range(len(images[0])):
-    # iterate over all zSpikes and increment the Z that fired
-    for j in range(len(ZSpikes[0])):
-      whichZFired[ZSpikes[0][j]] += 1
-  winnerID = math.inf
-  maxSpikes = 0
-  for j in range(numberZNeurons):
-    if whichZFired[j] > maxSpikes:
-      winnerID = j
-      maxSpikes = whichZFired[j]
-  # code winnerID of Z neuron to its color
-  if winnerID == math.inf:
-    verticalLineColors.append('white')
-  else:
-    verticalLineColors.append(colors[winnerID])
-    
-# plot vertical lines 
-xPosition = np.arange(imageSize[prior])
-fig_object = plt.figure()
-plt.bar(xPosition, imageSize[prior], align='edge', width=1.0, color=verticalLineColors)
-plt.title("Most active Z neuron depending on position and orientation ")
-plt.xlabel("width [px]")
-plt.ylabel("height [px]")
-pieLegend1 = patches.Patch(color=colors[0], label='Z1')
-pieLegend2 = patches.Patch(color=colors[1], label='Z2')
-pieLegend3 = patches.Patch(color=colors[2], label='Z3')
-pieLegend4 = patches.Patch(color=colors[3], label='Z4')
-pieLegend5 = patches.Patch(color=colors[4], label='Z5')
-pieLegend6 = patches.Patch(color=colors[5], label='Z6')
-pieLegend7 = patches.Patch(color=colors[6], label='Z7')
-pieLegend8 = patches.Patch(color=colors[7], label='Z8')
-pieLegend9 = patches.Patch(color=colors[8], label='Z9')
-pieLegend10 = patches.Patch(color=colors[9], label='Z10')
-plt.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
-plt.tight_layout()
-pickle.dump(fig_object, open('crossLines.pickle','wb'))
-plt.savefig('crossLines.png')
-
-# show training progress (how many distinct Z fired during each image presentation duration)
-# remove first empty entry
-distinctZFiredHistory.pop(0)
-fig_object = plt.figure()
-plt.plot(distinctZFiredHistory)
-plt.title("Number of distinct Z neurons spiking for a cross")
-plt.ylabel("Number of distinct Z neurons spiking")
-plt.xlabel("Image shown")
-pickle.dump(fig_object, open('crossDistinctZ.pickle','wb'))
-plt.savefig('crossDistinctZ.png')
-
-
 fig_object = plt.figure()
 for i in range(0, len(ZSpikeHistory[0])):
   plt.vlines(ZSpikeHistory[1][i], ymin=ZSpikeHistory[0][i] + 1 - 0.5, ymax=ZSpikeHistory[0][i] + 1 + 0.5, color=colors[ZSpikeHistory[0][i]])
-plt.title("Z Spikes for a cross image")
+plt.title("Z Spikes for a cross image with prior = " + str(prior))
 plt.ylabel("Z Neuron")
 plt.xlabel("t [s]")
-pickle.dump(fig_object, open('crossZSpikes.pickle','wb'))
-plt.savefig('crossZSpikes.png')
-  
-# show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
-plt.figure()
-plt.plot(averageZFiredHistory)
-plt.title("Certainty of network for a cross image")
-plt.ylabel("Homogeneity of Z spikes")
-plt.xlabel("Image shown")
-pickle.dump(fig_object, open('crossAverageZ.pickle','wb'))  
-plt.savefig('cross.png')
+pickle.dump(fig_object, open(directoryPath + '/crossZSpikes.pickle','wb'))
+plt.savefig(directoryPath + '/crossZSpikes.png')
 
