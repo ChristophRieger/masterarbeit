@@ -22,10 +22,11 @@ import os
 plt.close("all")
 
 # Command Center
-plotWeights = True
-validateVertical = True
-validateHorizontal = True
-validateCross = True
+plotWeights = False
+validateVertical = False
+validateHorizontal = False
+validateCross = False
+showImpactOfVariablePriorOnCross = True
 ATildeFactor = 5
 
 directoryPath =  "ATildeFactor" + str(ATildeFactor)
@@ -53,8 +54,9 @@ horizontalLineColors = []
 
 weights = np.load("c20_eta3_" + "ATildeFactor" + str(ATildeFactor) + "_YZWeights.npy")
 priorWeights = np.load("c20_eta3_" + "ATildeFactor" + str(ATildeFactor) + "_AZWeights.npy")
-# plot all weights
+
 if plotWeights:
+# plot all weights
   for z in range(np.shape(weights)[1]):
     plt.figure()
     plt.title("Weights of Z" + str(z+1) + " to all Y")
@@ -69,8 +71,6 @@ if plotWeights:
     plt.imshow(wAZ, origin='lower', cmap='gray')
     plt.savefig(directoryPath + '/priorWeight' + str(a+1) + '.png')
 
-    
-  
 if validateVertical:
   # validate for vertical images 
   
@@ -617,12 +617,160 @@ if validateCross:
       Iinh = 0
       IinhStartTime = math.inf
   
-fig_object = plt.figure()
-for i in range(0, len(ZSpikeHistory[0])):
-  plt.vlines(ZSpikeHistory[1][i], ymin=ZSpikeHistory[0][i] + 1 - 0.5, ymax=ZSpikeHistory[0][i] + 1 + 0.5, color=colors[ZSpikeHistory[0][i]])
-plt.title("Z Spikes for a cross image with prior = " + str(prior))
-plt.ylabel("Z Neuron")
-plt.xlabel("t [s]")
-pickle.dump(fig_object, open(directoryPath + '/crossZSpikes.pickle','wb'))
-plt.savefig(directoryPath + '/crossZSpikes.png')
+  fig_object = plt.figure()
+  for i in range(0, len(ZSpikeHistory[0])):
+    plt.vlines(ZSpikeHistory[1][i], ymin=ZSpikeHistory[0][i] + 1 - 0.5, ymax=ZSpikeHistory[0][i] + 1 + 0.5, color=colors[ZSpikeHistory[0][i]])
+  plt.title("Z Spikes for a cross image with prior = " + str(prior))
+  plt.ylabel("Z Neuron")
+  plt.xlabel("t [s]")
+  pickle.dump(fig_object, open(directoryPath + '/crossZSpikes.pickle','wb'))
+  plt.savefig(directoryPath + '/crossZSpikes.png')
+
+if showImpactOfVariablePriorOnCross:
+  # validate for cross images with variable prior 
+  
+  
+  
+  # VERTICAL 
+  # for each position generate a line image and see which Z neuron spikes most and 
+  # how many distinct Z spike
+  distinctZFiredHistory = []
+  distinctZFired = []
+  averageZFired = []
+  averageZFiredHistory = []
+  ZSpikeHistory = [[],[]]
+  
+
+  YSpikes = [[],[]]
+  ZSpikes = [[],[]]
+  ASpikes = [[],[]]
+  images = [[],[],[],[]]
+  image, position, prior = dataGenerator.generateRandomCrossLineImage() 
+  plt.figure()
+  plt.imshow(image, origin='lower', cmap='gray')
+  plt.savefig(directoryPath + '/crossImage.png')
+  images[0].append(image)
+  images[1].append(position)
+  images[2].append(prior)
+  encodedImage = dataEncoder.encodeImage(image)
+  distinctZFiredHistory.append(len(distinctZFired))
+  distinctZFired = []
+  Iinh = 0
+  IinhStartTime = 0
+  if averageZFired:
+    mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
+    amountMostSpikingZ = averageZFired.count(mostSpikingZ)
+    averageZFiredHistory.append(amountMostSpikingZ / len(averageZFired))
+    averageZFired = []
+  
+  for t in np.arange(0, imagePresentationDuration, dt):
+    # generate Y Spikes for this step
+    for i in range(len(encodedImage)):
+      # check if the Yi is active
+      if encodedImage[i] == 1:
+       # check if Yi spiked in this timestep
+       if poissonGenerator.doesNeuronFire(firingRate, dt):
+         # when did it spike
+         YSpikes[0].append(t)
+         # which Y spiked
+         YSpikes[1].append(i)
+         
+    # generate A Spikes for this step
+    if prior == 0:
+      if poissonGenerator.doesNeuronFire(AfiringRate, dt):
+        ASpikes[0].append(t)
+        ASpikes[1].append(0)
+    elif prior == 1:
+      if poissonGenerator.doesNeuronFire(AfiringRate, dt):
+        ASpikes[0].append(t)
+        ASpikes[1].append(1)         
+        
+    # Next we have to calculate Uk
+    U = np.zeros(numberZNeurons)
+
+    # Add contribution of Y  
+    expiredYSpikeIDs = []
+    YTilde = np.zeros(numberYNeurons)
+    for i, YNeuron in enumerate(YSpikes[1]):
+      # First mark all YSpikes older than sigma and do not use for calculation of Uk
+      if YSpikes[0][i] < t - sigma:
+        expiredYSpikeIDs.append(i)
+      else:
+        YTilde[YSpikes[1][i]] = kernel.tilde(t, dt, YSpikes[0][i], tauRise, tauDecay)
+        for k in range(numberZNeurons):
+          U[k] += weights[YNeuron, k] * YTilde[YSpikes[1][i]]
+    # delete all spikes that are longer ago than sigma (10ms?) from YSpikes
+    for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
+      del YSpikes[0][toDeleteID]
+      del YSpikes[1][toDeleteID]
+      
+    # Add contribution of A
+    ATilde = np.zeros(numberANeurons)
+    expiredASpikeIDs = []
+    for i, ANeuron in enumerate(ASpikes[1]):
+      # First mark all ASpikes older than sigma and do not use for calculation of Uk
+      if ASpikes[0][i] < t - sigma:
+        expiredASpikeIDs.append(i)
+      else:
+        ATilde[ASpikes[1][i]] = ATildeFactor * kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
+        for k in range(numberZNeurons):
+          U[k] += priorWeights[ANeuron, k] * ATilde[ASpikes[1][i]]
+    # delete all spikes that are longer ago than sigma (10ms?) from ASpikes
+    for toDeleteID in sorted(expiredASpikeIDs, reverse=True):
+      del ASpikes[0][toDeleteID]
+      del ASpikes[1][toDeleteID]   
+  
+    # calc instantaneous fire rate for each Z Neuron for this time step
+    r = np.zeros(numberZNeurons)
+    ZNeuronsThatWantToFire = []
+    ZNeuronWantsToFireAtTime = []
+    # ZNeuronFireFactors is used to choose between multiple Z firing in this timestep
+    ZNeuronFireFactors = []
+    for k in range(numberZNeurons):
+      r[k] = np.exp(U[k] - Iinh)
+      # as far as i understand rk (titled "instantaneous fire rate" in nessler) just says
+      # how many events occur per second on average
+      ZkFires, ZNeuronFireFactor = poissonGenerator.doesZNeuronFire(r[k], dt) 
+      if ZkFires:
+        # mark that Zk wants to fire and also save the time it wants to fire at
+        ZNeuronsThatWantToFire.append(k)
+        ZNeuronWantsToFireAtTime.append(t)
+        ZNeuronFireFactors.append(ZNeuronFireFactor)
+      
+    # check if any Z Neurons want to fire and determine winner Z
+    if len(ZNeuronsThatWantToFire) > 0:
+      ZFireFactorMax = -math.inf
+      ZNeuronWinner = math.inf
+      for i in range(len(ZNeuronsThatWantToFire)):
+        if ZNeuronFireFactors[i] > ZFireFactorMax:  
+          ZNeuronWinner = ZNeuronsThatWantToFire[i]
+          ZFireFactorMax = ZNeuronFireFactors[i]      
+      ZSpikes[0].append(ZNeuronWinner)
+      ZSpikeHistory[0].append(ZNeuronWinner)
+      ZSpikes[1].append(t)
+      averageZFired.append(ZNeuronWinner)
+      # ZSpikeHistory[1].append(t + positionIterator * imagePresentationDuration)
+      # !!! Swapped changed the above and below line, bc only one iteration right now
+      ZSpikeHistory[1].append(t)
+      # append ID of Z if this Z has not fired yet in this imagePresentationDuration
+      if not distinctZFired.count(ZNeuronWinner):
+        distinctZFired.append(ZNeuronWinner)
+      # calculate inhibition signal and store time of last Z spike
+      inhTMP = 0
+      for i in range(numberZNeurons):
+        inhTMP += np.exp(U[i])
+      Iinh = np.log(inhTMP)
+      IinhStartTime = t
+    elif t - IinhStartTime > tauInh:
+      Iinh = 0
+      IinhStartTime = math.inf
+  
+  fig_object = plt.figure()
+  for i in range(0, len(ZSpikeHistory[0])):
+    plt.vlines(ZSpikeHistory[1][i], ymin=ZSpikeHistory[0][i] + 1 - 0.5, ymax=ZSpikeHistory[0][i] + 1 + 0.5, color=colors[ZSpikeHistory[0][i]])
+  plt.title("Z Spikes for a cross image with prior = " + str(prior))
+  plt.ylabel("Z Neuron")
+  plt.xlabel("t [s]")
+  pickle.dump(fig_object, open(directoryPath + '/crossZSpikes.pickle','wb'))
+  plt.savefig(directoryPath + '/crossZSpikes.png')
 
