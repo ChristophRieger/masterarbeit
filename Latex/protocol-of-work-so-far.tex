@@ -1,0 +1,23 @@
+\chapter{Protocol of work so far}
+
+\section{Rotated Lines}
+
+The goal of this task was to recreate experiment 2 from \citet{nessler}. 
+
+Excitatory input:
+\begin{equation}
+\label{eqn:uk}
+U_k(t) = w_{k0} + \sum_{i=1}^n w_{ki} \cdot x_i(t)
+\end{equation}
+
+Firing rate:
+\begin{equation}
+\label{eqn:rk}
+r_k(t) = e^{u_k(t) - I(t)}
+\end{equation}
+
+Weight updates:
+\begin{equation}
+\Delta w_{ki} = \begin{dcases*} ce^{-w_{ki}} - 1 & if $x_{i}(t^f) = 1$, i.e.$x_{i}$ fired in $ [t^f - \sigma, t^f] $ \\
+-1 & \text{if $ y_i(t^f) = 0 $, i.e. $ y_i $ did not fire in $ [t^f - \sigma, t^f] $ } \end{dcases*}
+\end{equation}
