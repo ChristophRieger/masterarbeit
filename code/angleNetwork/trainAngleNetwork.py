@@ -4,6 +4,9 @@ Created on Mon Dec 26 09:55:32 2022
 
 @author: chris
 """
+import sys
+sys.path.insert(0, '../helpers')
+
 import dataEncoder
 import dataGenerator
 import poissonGenerator
@@ -22,11 +25,30 @@ loadWeights = False
 disableIntrinsicWeights = True
 
 plt.close("all")
-# # generate training data
-# imageSize = (28, 28)
-# image = dataGenerator.generateRandomlyOrientedLineImage()
-# # plt.imshow(image, cmap='gray')
-# encodedImage = dataEncoder.encodeImage(image)
+# visualize 2 training images
+
+fig, (ax1, ax2) = plt.subplots(1,2)
+
+fig.suptitle('Examples of training images', fontsize=14)
+
+image1 = dataGenerator.generateImage(15)
+image2 = dataGenerator.generateImage(130)
+# Line plots
+ax1.set_title('Image 1')
+ax1.imshow(image1[0], cmap='gray')
+ax2.set_title('Image 2')
+ax2.imshow(image2[0], cmap='gray')
+
+# !!! i abandoned this ideas, as the active and nonactive neurons alternate, thus making it very hard to see anything
+# !!! maybe i could only plot all black neurons...
+# encodedImage = dataEncoder.encodeImage(image1[0])
+# encodedImageArray = np.array(encodedImage)
+# encodedImageArray = np.transpose(encodedImageArray)
+# widenedEncodedImageArray = np.zeros((encodedImageArray.size, 1000))
+# for i in range(0, 1000):
+#   widenedEncodedImageArray[:,i] = encodedImageArray
+# plt.figure()
+# plt.imshow(widenedEncodedImageArray[:10,:1000], cmap='gray')
 
 # took 29, so there is an actual center, which makes everything symmetric (the mask primarily)
 imageSize = (29, 29)
