@@ -29,13 +29,13 @@ validateCross = False
 showImpactOfVariablePriorOnCross = True
 ATildeFactor = 5
 
-directoryPath =  "ATildeFactor" + str(ATildeFactor)
+directoryPath =  "TEST" + str(ATildeFactor)
 if not os.path.exists(directoryPath):
   os.mkdir(directoryPath)
 
 
 imageSize = (29, 29)
-imagePresentationDuration = 0.2
+imagePresentationDuration = 1
 dt = 0.001 # seconds
 firingRate = 20 # Hz
 AfiringRate = 50
@@ -629,148 +629,229 @@ if validateCross:
 if showImpactOfVariablePriorOnCross:
   # validate for cross images with variable prior 
   
-  
-  
-  # VERTICAL 
-  # for each position generate a line image and see which Z neuron spikes most and 
-  # how many distinct Z spike
-  distinctZFiredHistory = []
-  distinctZFired = []
-  averageZFired = []
-  averageZFiredHistory = []
-  ZSpikeHistory = [[],[]]
-  
-
-  YSpikes = [[],[]]
-  ZSpikes = [[],[]]
-  ASpikes = [[],[]]
   images = [[],[],[],[]]
-  image, position, prior = dataGenerator.generateRandomCrossLineImage() 
+  image, xPosition, yPosition, prior = dataGenerator.generateCrossLineImage(0) 
   plt.figure()
   plt.imshow(image, origin='lower', cmap='gray')
-  plt.savefig(directoryPath + '/crossImage.png')
+  plt.savefig(directoryPath + '/crossImageForVariablePrior.png')
   images[0].append(image)
-  images[1].append(position)
+  images[1].append(xPosition)
   images[2].append(prior)
   encodedImage = dataEncoder.encodeImage(image)
-  distinctZFiredHistory.append(len(distinctZFired))
-  distinctZFired = []
-  Iinh = 0
-  IinhStartTime = 0
-  if averageZFired:
-    mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
-    amountMostSpikingZ = averageZFired.count(mostSpikingZ)
-    averageZFiredHistory.append(amountMostSpikingZ / len(averageZFired))
-    averageZFired = []
   
-  for t in np.arange(0, imagePresentationDuration, dt):
-    # generate Y Spikes for this step
-    for i in range(len(encodedImage)):
-      # check if the Yi is active
-      if encodedImage[i] == 1:
-       # check if Yi spiked in this timestep
-       if poissonGenerator.doesNeuronFire(firingRate, dt):
-         # when did it spike
-         YSpikes[0].append(t)
-         # which Y spiked
-         YSpikes[1].append(i)
-         
-    # generate A Spikes for this step
-    if prior == 0:
-      if poissonGenerator.doesNeuronFire(AfiringRate, dt):
+  winnerID = np.full((AfiringRate, 1), math.inf)
+  secondWinnerID = np.full((AfiringRate, 1), math.inf)
+  maxSpikesOfWinner = np.full((AfiringRate, 1), 0)
+  maxSpikesOfSecondWinner = np.full((AfiringRate, 1), 0)
+  
+  for currentPrior in range(0, AfiringRate):
+    # for each Prior calc 2 most active Y Neurons and plot their firing frequency vs current prior
+    distinctZFiredHistory = []
+    distinctZFired = []
+    averageZFired = []
+    averageZFiredHistory = []
+    ZSpikeHistory = [[],[]]
+    
+    YSpikes = [[],[]]
+    ZSpikes = [[],[]]
+    ASpikes = [[],[]]
+  
+    distinctZFiredHistory.append(len(distinctZFired))
+    distinctZFired = []
+    Iinh = 0
+    IinhStartTime = 0
+    if averageZFired:
+      mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
+      amountMostSpikingZ = averageZFired.count(mostSpikingZ)
+      averageZFiredHistory.append(amountMostSpikingZ / len(averageZFired))
+      averageZFired = []
+    
+    ASpikeHistory = []
+    for t in np.arange(0, imagePresentationDuration, dt):
+      # generate Y Spikes for this step
+      for i in range(len(encodedImage)):
+        # check if the Yi is active
+        if encodedImage[i] == 1:
+         # check if Yi spiked in this timestep
+         if poissonGenerator.doesNeuronFire(firingRate, dt):
+           # when did it spike
+           YSpikes[0].append(t)
+           # which Y spiked
+           YSpikes[1].append(i)
+           
+      # generate A Spikes for this step
+      # generate for priorNeuron0 Z0
+      if poissonGenerator.doesNeuronFire(currentPrior, dt):
         ASpikes[0].append(t)
         ASpikes[1].append(0)
-    elif prior == 1:
-      if poissonGenerator.doesNeuronFire(AfiringRate, dt):
+        ASpikeHistory.append(0)
+      # generate for priorNeuron1 Z1
+      if poissonGenerator.doesNeuronFire(AfiringRate - currentPrior, dt):
         ASpikes[0].append(t)
         ASpikes[1].append(1)         
+        ASpikeHistory.append(1)
+      
+      # Next we have to calculate Uk
+      U = np.zeros(numberZNeurons)
+  
+      # Add contribution of Y  
+      expiredYSpikeIDs = []
+      YTilde = np.zeros(numberYNeurons)
+      for i, YNeuron in enumerate(YSpikes[1]):
+        # First mark all YSpikes older than sigma and do not use for calculation of Uk
+        if YSpikes[0][i] < t - sigma:
+          expiredYSpikeIDs.append(i)
+        else:
+          YTilde[YSpikes[1][i]] = kernel.tilde(t, dt, YSpikes[0][i], tauRise, tauDecay)
+          for k in range(numberZNeurons):
+            U[k] += weights[YNeuron, k] * YTilde[YSpikes[1][i]]
+      # delete all spikes that are longer ago than sigma (10ms?) from YSpikes
+      for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
+        del YSpikes[0][toDeleteID]
+        del YSpikes[1][toDeleteID]
         
-    # Next we have to calculate Uk
-    U = np.zeros(numberZNeurons)
+      # Add contribution of A
+      ATilde = np.zeros(numberANeurons)
+      expiredASpikeIDs = []
+      for i, ANeuron in enumerate(ASpikes[1]):
+        # First mark all ASpikes older than sigma and do not use for calculation of Uk
+        if ASpikes[0][i] < t - sigma:
+          expiredASpikeIDs.append(i)
+        else:
+          ATilde[ASpikes[1][i]] = ATildeFactor * kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
+          for k in range(numberZNeurons):
+            U[k] += priorWeights[ANeuron, k] * ATilde[ASpikes[1][i]]
+      # delete all spikes that are longer ago than sigma (10ms?) from ASpikes
+      for toDeleteID in sorted(expiredASpikeIDs, reverse=True):
+        del ASpikes[0][toDeleteID]
+        del ASpikes[1][toDeleteID]   
+    
+      # calc instantaneous fire rate for each Z Neuron for this time step
+      r = np.zeros(numberZNeurons)
+      ZNeuronsThatWantToFire = []
+      ZNeuronWantsToFireAtTime = []
+      # ZNeuronFireFactors is used to choose between multiple Z firing in this timestep
+      ZNeuronFireFactors = []
+      for k in range(numberZNeurons):
+        r[k] = np.exp(U[k] - Iinh)
+        # as far as i understand rk (titled "instantaneous fire rate" in nessler) just says
+        # how many events occur per second on average
+        ZkFires, ZNeuronFireFactor = poissonGenerator.doesZNeuronFire(r[k], dt) 
+        if ZkFires:
+          # mark that Zk wants to fire and also save the time it wants to fire at
+          ZNeuronsThatWantToFire.append(k)
+          ZNeuronWantsToFireAtTime.append(t)
+          ZNeuronFireFactors.append(ZNeuronFireFactor)
+        
+      # check if any Z Neurons want to fire and determine winner Z
+      if len(ZNeuronsThatWantToFire) > 0:
+        ZFireFactorMax = -math.inf
+        ZNeuronWinner = math.inf
+        for i in range(len(ZNeuronsThatWantToFire)):
+          if ZNeuronFireFactors[i] > ZFireFactorMax:  
+            ZNeuronWinner = ZNeuronsThatWantToFire[i]
+            ZFireFactorMax = ZNeuronFireFactors[i]      
+        ZSpikes[0].append(ZNeuronWinner)
+        ZSpikeHistory[0].append(ZNeuronWinner)
+        ZSpikes[1].append(t)
+        averageZFired.append(ZNeuronWinner)
+        # ZSpikeHistory[1].append(t + positionIterator * imagePresentationDuration)
+        # !!! Swapped changed the above and below line, bc only one iteration right now
+        ZSpikeHistory[1].append(t)
+        # append ID of Z if this Z has not fired yet in this imagePresentationDuration
+        if not distinctZFired.count(ZNeuronWinner):
+          distinctZFired.append(ZNeuronWinner)
+        # calculate inhibition signal and store time of last Z spike
+        inhTMP = 0
+        for i in range(numberZNeurons):
+          inhTMP += np.exp(U[i])
+        Iinh = np.log(inhTMP)
+        IinhStartTime = t
+      elif t - IinhStartTime > tauInh:
+        Iinh = 0
+        IinhStartTime = math.inf
+    
+    fig_object = plt.figure()
+    for i in range(0, len(ZSpikeHistory[0])):
+      plt.vlines(ZSpikeHistory[1][i], ymin=ZSpikeHistory[0][i] + 1 - 0.5, ymax=ZSpikeHistory[0][i] + 1 + 0.5, color=colors[ZSpikeHistory[0][i]])
+    plt.title("Z Spikes for a cross image with current prior = " + str(currentPrior))
+    plt.ylabel("Z Neuron")
+    plt.xlabel("t [s]")
+    pickle.dump(fig_object, open(directoryPath + '/crossZSpikes_prior' + str(currentPrior) + '.pickle','wb'))
+    plt.savefig(directoryPath + '/crossZSpikes' + str(currentPrior) + '.png')
+    
+    # calc which Z fired the most and second most for this prior
+    whichZFired = np.zeros(numberZNeurons)
+    for i in range(len(images[0])):
+      # iterate over all zSpikes and increment the Z that fired
+      for j in range(len(ZSpikes[0])):
+        whichZFired[ZSpikes[0][j]] += 1
+    for j in range(numberZNeurons):
+      if whichZFired[j] > maxSpikesOfWinner[currentPrior,0]:
+        secondWinnerID[currentPrior,0] = winnerID[currentPrior,0]
+        maxSpikesOfSecondWinner[currentPrior,0] = maxSpikesOfWinner[currentPrior,0]
+        winnerID[currentPrior,0] = j
+        maxSpikesOfWinner[currentPrior,0] = whichZFired[j]
+      elif whichZFired[j] > maxSpikesOfSecondWinner[currentPrior,0]:
+        secondWinnerID[currentPrior,0] = j
+        maxSpikesOfSecondWinner[currentPrior,0] = whichZFired[j]
+            
 
-    # Add contribution of Y  
-    expiredYSpikeIDs = []
-    YTilde = np.zeros(numberYNeurons)
-    for i, YNeuron in enumerate(YSpikes[1]):
-      # First mark all YSpikes older than sigma and do not use for calculation of Uk
-      if YSpikes[0][i] < t - sigma:
-        expiredYSpikeIDs.append(i)
-      else:
-        YTilde[YSpikes[1][i]] = kernel.tilde(t, dt, YSpikes[0][i], tauRise, tauDecay)
-        for k in range(numberZNeurons):
-          U[k] += weights[YNeuron, k] * YTilde[YSpikes[1][i]]
-    # delete all spikes that are longer ago than sigma (10ms?) from YSpikes
-    for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
-      del YSpikes[0][toDeleteID]
-      del YSpikes[1][toDeleteID]
-      
-    # Add contribution of A
-    ATilde = np.zeros(numberANeurons)
-    expiredASpikeIDs = []
-    for i, ANeuron in enumerate(ASpikes[1]):
-      # First mark all ASpikes older than sigma and do not use for calculation of Uk
-      if ASpikes[0][i] < t - sigma:
-        expiredASpikeIDs.append(i)
-      else:
-        ATilde[ASpikes[1][i]] = ATildeFactor * kernel.tilde(t, dt, ASpikes[0][i], tauRise, tauDecay)
-        for k in range(numberZNeurons):
-          U[k] += priorWeights[ANeuron, k] * ATilde[ASpikes[1][i]]
-    # delete all spikes that are longer ago than sigma (10ms?) from ASpikes
-    for toDeleteID in sorted(expiredASpikeIDs, reverse=True):
-      del ASpikes[0][toDeleteID]
-      del ASpikes[1][toDeleteID]   
+    # !!! Check the firing frequencies of the ASpikes
+    print(ASpikeHistory.count(0)/imagePresentationDuration)
+    print(ASpikeHistory.count(1)/imagePresentationDuration)
+    print("Finished simulation of prior " + str(currentPrior))
   
-    # calc instantaneous fire rate for each Z Neuron for this time step
-    r = np.zeros(numberZNeurons)
-    ZNeuronsThatWantToFire = []
-    ZNeuronWantsToFireAtTime = []
-    # ZNeuronFireFactors is used to choose between multiple Z firing in this timestep
-    ZNeuronFireFactors = []
-    for k in range(numberZNeurons):
-      r[k] = np.exp(U[k] - Iinh)
-      # as far as i understand rk (titled "instantaneous fire rate" in nessler) just says
-      # how many events occur per second on average
-      ZkFires, ZNeuronFireFactor = poissonGenerator.doesZNeuronFire(r[k], dt) 
-      if ZkFires:
-        # mark that Zk wants to fire and also save the time it wants to fire at
-        ZNeuronsThatWantToFire.append(k)
-        ZNeuronWantsToFireAtTime.append(t)
-        ZNeuronFireFactors.append(ZNeuronFireFactor)
-      
-    # check if any Z Neurons want to fire and determine winner Z
-    if len(ZNeuronsThatWantToFire) > 0:
-      ZFireFactorMax = -math.inf
-      ZNeuronWinner = math.inf
-      for i in range(len(ZNeuronsThatWantToFire)):
-        if ZNeuronFireFactors[i] > ZFireFactorMax:  
-          ZNeuronWinner = ZNeuronsThatWantToFire[i]
-          ZFireFactorMax = ZNeuronFireFactors[i]      
-      ZSpikes[0].append(ZNeuronWinner)
-      ZSpikeHistory[0].append(ZNeuronWinner)
-      ZSpikes[1].append(t)
-      averageZFired.append(ZNeuronWinner)
-      # ZSpikeHistory[1].append(t + positionIterator * imagePresentationDuration)
-      # !!! Swapped changed the above and below line, bc only one iteration right now
-      ZSpikeHistory[1].append(t)
-      # append ID of Z if this Z has not fired yet in this imagePresentationDuration
-      if not distinctZFired.count(ZNeuronWinner):
-        distinctZFired.append(ZNeuronWinner)
-      # calculate inhibition signal and store time of last Z spike
-      inhTMP = 0
-      for i in range(numberZNeurons):
-        inhTMP += np.exp(U[i])
-      Iinh = np.log(inhTMP)
-      IinhStartTime = t
-    elif t - IinhStartTime > tauInh:
-      Iinh = 0
-      IinhStartTime = math.inf
+  # plot frequencies of 2 most spiking neurons over prior neuron firing frequency
   
-  fig_object = plt.figure()
-  for i in range(0, len(ZSpikeHistory[0])):
-    plt.vlines(ZSpikeHistory[1][i], ymin=ZSpikeHistory[0][i] + 1 - 0.5, ymax=ZSpikeHistory[0][i] + 1 + 0.5, color=colors[ZSpikeHistory[0][i]])
-  plt.title("Z Spikes for a cross image with prior = " + str(prior))
-  plt.ylabel("Z Neuron")
-  plt.xlabel("t [s]")
-  pickle.dump(fig_object, open(directoryPath + '/crossZSpikes.pickle','wb'))
-  plt.savefig(directoryPath + '/crossZSpikes.png')
+  # determine the IDs of the 2 Y neurons that spiked most
+  Y0ID = math.inf
+  Y1ID = math.inf
+  maxWinner0 = 0
+  maxWinner1 = 0
+  for i in range(0,10):  
+    if np.count_nonzero(winnerID == i) > maxWinner0:
+      Y1ID = Y0ID
+      Y0ID = i
+    elif np.count_nonzero(winnerID == i) > maxWinner1:
+      Y1ID = i
+  
+  firingRateY0 = []
+  firingRateY1 = []
+  # calc firing rates
+  for i in range(0, AfiringRate):
+    winnerIDNotPresent = False
+    secondWinnerIDNotPresent = False
+    # check which neuron is first and second winner
+    if winnerID[i, 0] == Y0ID:
+      firingRateY0.append(maxSpikesOfWinner[i, 0] / imagePresentationDuration)
+    elif winnerID[i, 0] == Y1ID:
+      firingRateY1.append(maxSpikesOfWinner[i, 0] / imagePresentationDuration)
+    else:
+      winnerIDNotPresent = True
+    if secondWinnerID[i, 0] == Y0ID:
+      firingRateY0.append(maxSpikesOfSecondWinner[i, 0] / imagePresentationDuration)
+    elif secondWinnerID[i, 0] == Y1ID:
+      firingRateY1.append(maxSpikesOfSecondWinner[i, 0] / imagePresentationDuration)
+    else:
+      secondWinnerIDNotPresent = True
+    if winnerIDNotPresent and secondWinnerIDNotPresent:
+      firingRateY0.append(0)
+      firingRateY1.append(0)
+    elif winnerIDNotPresent or secondWinnerIDNotPresent:
+      if len(firingRateY0) > len(firingRateY1):
+        firingRateY1.append(0)
+      else:
+        firingRateY0.append(0)
 
+
+  fig_object = plt.figure() 
+  xPosition = np.arange(AfiringRate)
+  plt.plot(xPosition, firingRateY0, color=colors[Y0ID])
+  plt.plot(xPosition, firingRateY1, color=colors[Y1ID])
+  plt.title("Firing frequencies of the 2 most active Y neurons over changing Z neuron firing rate")
+  plt.ylabel("Y firing frequency [Hz]")
+  plt.xlabel("Z0 firing frequency [Hz]")
+  # plt.legend()
+  pickle.dump(fig_object, open(directoryPath + '/YFrequency_prior' + str(currentPrior) + '.pickle','wb'))
+  plt.savefig(directoryPath + '/YFrequency_prior' + str(currentPrior) + '.png')        
