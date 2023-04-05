@@ -30,7 +30,7 @@ plt.close("all")
 fig, (ax1, ax2) = plt.subplots(1,2)
 
 fig.suptitle('Examples of training images', fontsize=14)
-
+fig.subplots_adjust(top=1.1)
 image1 = dataGenerator.generateImage(15)
 image2 = dataGenerator.generateImage(130)
 # Line plots
