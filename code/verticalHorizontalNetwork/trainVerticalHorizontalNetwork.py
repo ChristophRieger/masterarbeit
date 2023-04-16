@@ -43,7 +43,9 @@ numberZNeurons = 10
 numberANeurons = 2
 #  inhibitory signal
 Iinh = 0
-IinhStartTime = 0
+IinhStartTime = math.inf
+inhActive = False
+
 tauInh = 0.005
 sigma = 0.01 # time frame in which spikes count as before output spike
 c = 20 # 10 seems good, scales weights to 0 ... 1
@@ -153,6 +155,14 @@ for t in np.arange(0, simulationTime, dt):
     del ASpikes[0][toDeleteID]
     del ASpikes[1][toDeleteID]
 
+
+  # calculate current Inhibition signal
+  if inhActive:
+    inhTMP = 0
+    for i in range(numberZNeurons):
+      inhTMP += np.exp(U[i])
+    Iinh = np.log(inhTMP)
+    
   # calc instantaneous fire rate for each Z Neuron for this time step
   r = np.zeros(numberZNeurons)
   ZNeuronsThatWantToFire = []
@@ -187,15 +197,13 @@ for t in np.arange(0, simulationTime, dt):
     # update weights of all Y to ZThatFired
     weights = neuronFunctions.updateWeights(YTilde, weights, ZNeuronWinner, c, learningRate)
     priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronWinner, cPrior, learningRate)
-    # calculate inhibition signal and store time of last Z spike
-    inhTMP = 0
-    for i in range(numberZNeurons):
-      inhTMP += np.exp(U[i])
-    Iinh = np.log(inhTMP)
+    # store time of last Z spike
     IinhStartTime = t
+    inhActive = True
   elif t - IinhStartTime > tauInh:
     Iinh = 0
     IinhStartTime = math.inf
+    inhActive = False
     
   if (t) % 1 == 0:
     print("Finished simulation of t= " + str(t))

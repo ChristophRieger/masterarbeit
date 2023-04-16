@@ -96,7 +96,9 @@ if validateVertical:
     distinctZFiredHistory.append(len(distinctZFired))
     distinctZFired = []
     Iinh = 0
-    IinhStartTime = 0
+    IinhStartTime = math.inf
+    inhActive = False
+
     if averageZFired:
       mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
       amountMostSpikingZ = averageZFired.count(mostSpikingZ)
@@ -158,7 +160,14 @@ if validateVertical:
       # delete all spikes that are longer ago than sigma (10ms?) from ASpikes
       for toDeleteID in sorted(expiredASpikeIDs, reverse=True):
         del ASpikes[0][toDeleteID]
-        del ASpikes[1][toDeleteID]   
+        del ASpikes[1][toDeleteID]
+        
+      # calculate current Inhibition signal
+      if inhActive:
+        inhTMP = 0
+        for i in range(numberZNeurons):
+          inhTMP += np.exp(U[i])
+        Iinh = np.log(inhTMP)
     
       # calc instantaneous fire rate for each Z Neuron for this time step
       r = np.zeros(numberZNeurons)
@@ -193,15 +202,13 @@ if validateVertical:
         # append ID of Z if this Z has not fired yet in this imagePresentationDuration
         if not distinctZFired.count(ZNeuronWinner):
           distinctZFired.append(ZNeuronWinner)
-        # calculate inhibition signal and store time of last Z spike
-        inhTMP = 0
-        for i in range(numberZNeurons):
-          inhTMP += np.exp(U[i])
-        Iinh = np.log(inhTMP)
+        # store time of last Z spike
         IinhStartTime = t
+        inhActive = True
       elif t - IinhStartTime > tauInh:
         Iinh = 0
         IinhStartTime = math.inf
+        inhActive = False
     # determine distinctZ
     
     # calc which Z fired the most for this position
@@ -301,7 +308,9 @@ if validateHorizontal:
     distinctZFiredHistory.append(len(distinctZFired))
     distinctZFired = []
     Iinh = 0
-    IinhStartTime = 0
+    IinhStartTime = math.inf
+    inhActive = False
+    
     if averageZFired:
       mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
       amountMostSpikingZ = averageZFired.count(mostSpikingZ)
@@ -365,6 +374,13 @@ if validateHorizontal:
         del ASpikes[0][toDeleteID]
         del ASpikes[1][toDeleteID]   
     
+      # calculate current Inhibition signal
+      if inhActive:
+        inhTMP = 0
+        for i in range(numberZNeurons):
+          inhTMP += np.exp(U[i])
+        Iinh = np.log(inhTMP)
+    
       # calc instantaneous fire rate for each Z Neuron for this time step
       r = np.zeros(numberZNeurons)
       ZNeuronsThatWantToFire = []
@@ -398,15 +414,13 @@ if validateHorizontal:
         # append ID of Z if this Z has not fired yet in this imagePresentationDuration
         if not distinctZFired.count(ZNeuronWinner):
           distinctZFired.append(ZNeuronWinner)
-        # calculate inhibition signal and store time of last Z spike
-        inhTMP = 0
-        for i in range(numberZNeurons):
-          inhTMP += np.exp(U[i])
-        Iinh = np.log(inhTMP)
+        # store time of last Z spike
         IinhStartTime = t
+        inhActive = True
       elif t - IinhStartTime > tauInh:
         Iinh = 0
         IinhStartTime = math.inf
+        inhActive = False
     # determine distinctZ
     
     # calc which Z fired the most for this position
@@ -508,7 +522,9 @@ if validateCross:
   distinctZFiredHistory.append(len(distinctZFired))
   distinctZFired = []
   Iinh = 0
-  IinhStartTime = 0
+  IinhStartTime = math.inf
+  inhActive = False
+  
   if averageZFired:
     mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
     amountMostSpikingZ = averageZFired.count(mostSpikingZ)
@@ -572,6 +588,14 @@ if validateCross:
       del ASpikes[0][toDeleteID]
       del ASpikes[1][toDeleteID]   
   
+        
+    # calculate current Inhibition signal
+    if inhActive:
+      inhTMP = 0
+      for i in range(numberZNeurons):
+        inhTMP += np.exp(U[i])
+      Iinh = np.log(inhTMP)
+      
     # calc instantaneous fire rate for each Z Neuron for this time step
     r = np.zeros(numberZNeurons)
     ZNeuronsThatWantToFire = []
@@ -607,15 +631,13 @@ if validateCross:
       # append ID of Z if this Z has not fired yet in this imagePresentationDuration
       if not distinctZFired.count(ZNeuronWinner):
         distinctZFired.append(ZNeuronWinner)
-      # calculate inhibition signal and store time of last Z spike
-      inhTMP = 0
-      for i in range(numberZNeurons):
-        inhTMP += np.exp(U[i])
-      Iinh = np.log(inhTMP)
+      # store time of last Z spike
       IinhStartTime = t
+      inhActive = True
     elif t - IinhStartTime > tauInh:
       Iinh = 0
       IinhStartTime = math.inf
+      inhActive = False
   
   fig_object = plt.figure()
   for i in range(0, len(ZSpikeHistory[0])):
@@ -659,7 +681,9 @@ if showImpactOfVariablePriorOnCross:
     distinctZFiredHistory.append(len(distinctZFired))
     distinctZFired = []
     Iinh = 0
-    IinhStartTime = 0
+    IinhStartTime = math.inf
+    inhActive = False
+    
     if averageZFired:
       mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
       amountMostSpikingZ = averageZFired.count(mostSpikingZ)
@@ -724,7 +748,14 @@ if showImpactOfVariablePriorOnCross:
       # delete all spikes that are longer ago than sigma (10ms?) from ASpikes
       for toDeleteID in sorted(expiredASpikeIDs, reverse=True):
         del ASpikes[0][toDeleteID]
-        del ASpikes[1][toDeleteID]   
+        del ASpikes[1][toDeleteID]
+        
+      # calculate current Inhibition signal
+      if inhActive:
+        inhTMP = 0
+        for i in range(numberZNeurons):
+          inhTMP += np.exp(U[i])
+        Iinh = np.log(inhTMP)
     
       # calc instantaneous fire rate for each Z Neuron for this time step
       r = np.zeros(numberZNeurons)
@@ -761,15 +792,13 @@ if showImpactOfVariablePriorOnCross:
         # append ID of Z if this Z has not fired yet in this imagePresentationDuration
         if not distinctZFired.count(ZNeuronWinner):
           distinctZFired.append(ZNeuronWinner)
-        # calculate inhibition signal and store time of last Z spike
-        inhTMP = 0
-        for i in range(numberZNeurons):
-          inhTMP += np.exp(U[i])
-        Iinh = np.log(inhTMP)
+        # store time of last Z spike
         IinhStartTime = t
+        inhActive = True
       elif t - IinhStartTime > tauInh:
         Iinh = 0
         IinhStartTime = math.inf
+        inhActive = False
     
     fig_object = plt.figure()
     for i in range(0, len(ZSpikeHistory[0])):

@@ -65,7 +65,9 @@ for angleIterator in range(0,180):
   distinctZFiredHistory.append(len(distinctZFired))
   distinctZFired = []
   Iinh = 0
-  IinhStartTime = 0
+  IinhStartTime = math.inf
+  inhActive = False
+
   if averageZFired:
     mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
     amountMostSpikingZ = averageZFired.count(mostSpikingZ)
@@ -100,6 +102,13 @@ for angleIterator in range(0,180):
     for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
       del YSpikes[0][toDeleteID]
       del YSpikes[1][toDeleteID]
+      
+    # calculate current Inhibition signal
+    if inhActive:
+      inhTMP = 0
+      for i in range(numberZNeurons):
+        inhTMP += np.exp(U[i])
+      Iinh = np.log(inhTMP)
   
     # calc instantaneous fire rate for each Z Neuron for this time step
     r = np.zeros(numberZNeurons)
@@ -134,15 +143,13 @@ for angleIterator in range(0,180):
       # append ID of Z if this Z has not fired yet in this imagePresentationDuration
       if not distinctZFired.count(ZNeuronWinner):
         distinctZFired.append(ZNeuronWinner)
-      # calculate inhibition signal and store time of last Z spike
-      inhTMP = 0
-      for i in range(numberZNeurons):
-        inhTMP += np.exp(U[i])
-      Iinh = np.log(inhTMP)
+      # store time of last Z spike
       IinhStartTime = t
+      inhActive = True
     elif t - IinhStartTime > tauInh:
       Iinh = 0
       IinhStartTime = math.inf
+      inhActive = False
   # determine distinctZ
   
   # calc which Z fired the most for this angle
