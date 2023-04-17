@@ -312,3 +312,39 @@ def generateCrossLineImage(orientation, imageSize = (29, 29), noiseLevel = 0.1, 
           image[row,column] = white
   
   return image, xPosition, yPosition, orientation
+
+#  imageSize(height, width)
+# generates a cross and user sets the prior class
+# orientation = 0 = vertical
+# orientation = 1 = horizontal
+def generateCrossLineImageAtPosition(orientation, xPosition, yPosition, imageSize = (29, 29), noiseLevel = 0.1, lineThickness = 7):
+  white = 255
+  black = 0
+  
+  # Create an empty image with all pixels set to white (255)
+  image = np.full(imageSize, white, dtype=np.uint8)
+  
+  # Calculate the start and end points of the vertical line
+  startRow = 0
+  endRow = imageSize[0]
+  startColumn = xPosition
+  endColumn = xPosition
+  image = cv2.line(image, (startColumn, startRow), (endColumn, endRow), black, thickness=lineThickness)
+  
+  # Calculate the start and end points of the horizontal line
+  startColumn = 0
+  endColumn = imageSize[1]
+  startRow = yPosition
+  endRow = yPosition
+  image = cv2.line(image, (startColumn, startRow), (endColumn, endRow), black, thickness=lineThickness)
+  
+  # Flip pixelvalues randomly
+  for row in range(imageSize[0]):
+    for column in range(imageSize[1]):
+      if random.random() < noiseLevel:
+        if image[row,column] == white:
+          image[row,column] = black
+        else:
+          image[row,column] = white
+  
+  return image, xPosition, yPosition, orientation
