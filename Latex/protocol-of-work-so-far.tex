@@ -1,12 +1,12 @@
 \chapter{Protocol of work so far}
-\section{Experiment 1: Rotated lines experiment}
+\section{Experiment 1: Rotated lines}
 
 \subsection{Introduction}
 The goal of this task was to recreate example 2 from \citet{nessler}. In this example they fed a winner-take-all spiking neural network images with lines in different orientations on them. The network then clustered the images into ten groups depending on their orientation.
 
 \subsection{Methods}
 \paragraph{Input data}
-The images used in this task were generated with a size of 29 x 29 pixels. Black lines with a width of 7 pixels going through the center of the image were drawn onto a white background. To simulate noise each pixel had a chance of ten percent to have its color flipped. To ensure that all lines in the images have the same length regardless of their orientation a circular mask with a radius of 15 pixels was applied to the images. This recolored all pixels outside of the mask to white. During the training of the network these images were generated in uniformly distributed orientations for each training step and each image was shown for 200 ms. The random chosen orientation could lie between 0 and 359 degrees.  Two examples of such images can be seen in figure \ref{fig:angleImages}.
+The images used in this task were generated with a size of 29 x 29 pixels. Black lines with a width of 7 pixels going through the center of the image were drawn onto a white background. To simulate noise each pixel had a chance of ten percent to have its color flipped. To ensure that all lines in the images have the same length regardless of their orientation a circular mask with a radius of 15 pixels was applied to the images. This recolored all pixels outside of the mask to white. During the training of the network one image per iteration was generated in a uniformly distributed orientation and each image was shown for 200 ms. For the training of the network 4000 of these images were shown. The randomly chosen orientation could lie between 0 and 359 degrees.  Two examples of such images can be seen in figure \ref{fig:angleImages}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/angleNetwork/trainingImages.png}
@@ -29,7 +29,7 @@ x_i(t) = e^{-(t + \delta t - t_f) / \tau_{decay}} - e^{-(t + \delta t - t_f) / \
   \label{fig:XSpike}
 \end{figure}
 
-The firing rate of an output neuron $y_k$ depends exponentially on its membrane potential $U_k$ and the inhibitory signal $I_{inh}$ it receives. This can be seen in equation \ref{eqn:rk}. The chance of an individual Y neuron to fire within a time step $\delta t$ is given in equation \ref{eqn:rkdt}.
+The firing rate of an output neuron $y_k$ depends exponentially on its membrane potential $U_k$ and the inhibitory signal I(t) it receives. This can be seen in equation \ref{eqn:rk}. The chance of an individual Y neuron to fire within a time step $\delta t$ is given in equation \ref{eqn:rkdt}.
 
 \begin{equation}
 \label{eqn:rk}
@@ -99,7 +99,7 @@ c\> ... shifts weights values \\
 $t^f$\> ... time when $y_k$ spiked \\
 $\sigma$ ... time window in which X spikes are considered as "before" Y spike
 \end{tabbing}
-As the membrane potentials U of the Y neurons result from the addition of the EPSPs of the 1682 X neurons times the corresponding weight, a way to control the average size of U is needed. If U is to small the output neurons will fire too sparsely and if U is too big it will impair the learning process. Thus to limit U the size of the weights is set via the parameter c. The learning rate $\lambda$ is needed to control the size of each weight update. If it is too big few Y neurons will take over more than the expected 18° areas and other Y will only respond for smaller areas or not at all. On the other hand if $\lambda$ is too small the network will learn very slowly and may never converge. Due to these two parameters being unwieldy to determine analytically they were chosen via grid search. 
+As the membrane potentials U of the Y neurons result from the addition of the EPSPs of the 1682 X neurons times the corresponding weight, a way to control the average size of U is needed. If U is to small the output neurons will fire too sparsely and if U is too big it will impair the learning process. So to limit U, the size of the weights is controlled via the parameter c. The learning rate $\lambda$ is needed to control the size of each weight update. If it is too big few Y neurons will take over more than the expected 18° areas and other Y will only respond for smaller areas or not at all. On the other hand if $\lambda$ is too small the network will learn very slowly and may never converge. Due to these two parameters being unwieldy to determine analytically they were chosen via grid search. 
 
 
 \subsection{Results}
@@ -177,7 +177,7 @@ As this network did not die out after some time the trained network was analysed
   \label{fig:c20_3Pie}
 \end{figure}
 
-Also the number of distinct Y neurons firing during each image presentation was recorded and is shown in \ref{fig:c20_3validationDistinctZSpikes}. In this figure it is seems that the points in which there are three distinct Y neurons active are periodic in nature. This can be explained by figure \ref{fig:c20_3validationZSpikes}. There it can be seen that whenever the image orientation nears the border between two competing Y neurons both start to be active. This explains why for large parts of figure \ref{fig:c20_3validationDistinctZSpikes} 2 neurons are active. The the third distinct Y neuron the is occasionally active seems to be of stochastic nature as much of the lines in the images overlaps areas of all other Y neurons, thus generating a non zero membrane potential for each Y neuron. However the occurrence of 3 distinct active Y neurons seems to mostly occur at or close to the border between two competing Y neurons, as there are already 2 distinct neurons firing by design.
+Also the number of distinct Y neurons firing during each image presentation was recorded and is shown in \ref{fig:c20_3validationDistinctZSpikes}. In this figure it seems that the points in which there are three distinct Y neurons active are periodic in nature. This can be explained by figure \ref{fig:c20_3validationZSpikes}. There it can be seen that whenever the image orientation nears the border between two competing Y neurons both start to be active. This explains why for large parts of figure \ref{fig:c20_3validationDistinctZSpikes} 2 neurons are active, as large portions of the line in the image is overlapping the areas of the two nearest Y neurons, thus producing high membrane potentials for both. The third distinct Y neuron that is occasionally active seems to be of stochastic nature as much of the lines in the images overlaps areas of all other Y neurons, thus generating a non zero membrane potential for each Y neuron. However the occurrence of 3 distinct active Y neurons seems to mostly occur at or close to the border between two competing Y neurons, as there are already 2 distinct neurons firing by design.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/angleNetwork/c20_3validationDistinctZSpikes.png}
@@ -191,24 +191,24 @@ Also the number of distinct Y neurons firing during each image presentation was 
   \label{fig:c20_3validationZSpikes}
 \end{figure}
 
-Also it was possible to project the learned weights $w_{ki}$ into the 2-D space to observe what they represent. This projection can be seen in figure \ref{fig:c20_3weights2.png} for the weights of $y_10$.
+Also it was possible to project the learned weights $w_{ki}$ into the 2-D space to observe what they represent. This projection can be seen in figure \ref{fig:c20_3weights2.png} for the weights of $y_{10}$.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/angleNetwork/c20_3weights2.png}
-  \caption{Visualization of the learned weights of $y_10$.}
+  \caption{Visualization of the learned weights of $y_{10}$.}
   \label{fig:c20_3weights2.png}
 \end{figure}
 
-The results for smaller $lambda$ were also valid, but as they did not seem to be superior to the parameters $c = 20$ and $\lambda = 10^{-3}$. As with smaller learning rates the training simply took longer and the performance of the network did not improve they were discarded and  the learning rate $\lambda = 10^{-3}$ was declared winner for $c = 20$. To save space the figures of smaller learning rates will not be shown here.
+The results for smaller $\lambda$ were also valid, but they did not seem to yield superior results to the parameters $c = 20$ and $\lambda = 10^{-3}$. As with smaller learning rates the training simply took longer and the performance of the network did not improve they were discarded and  the learning rate $\lambda = 10^{-3}$ was declared winner for $c = 20$. To save space the figures of smaller learning rates will not be shown here.
 
 \paragraph{$c = 30$}
-$c = 30$ also yielded a functioning network, but it did perform analogous to $c = 20$. It did perform in the same way, as with $c = 20$ the Y neurons already fire every 5 ms, slowed down by the inhibition. By increasing c further the Y neuron did not increase their activity.
+also yielded a functioning network, but it did perform analogous to $c = 20$. It did perform in the same way, as with $c = 20$ the Y neurons already fire every 5 ms, slowed down by the inhibition. By increasing c further the Y neurons did not increase their activity.
 
 \subsection{Conclusion}
 
 The parameters $c = 20$ and $\lambda = 10^{-3}$ were finally chosen as the network performed the best and trained the quickest with these parameters, without raising the membrane potential needlessly.
 
-\section{Experiment 2: Horizontal and vertical lines experiment}
+\section{Experiment 2: Horizontal and vertical lines}
 
 \subsection{Introduction}
 
@@ -217,7 +217,7 @@ For this experiment the impact of a neuron layer that encodes a-priori informati
 \subsection{Methods}
 
 \paragraph{Input data}
-29 x 29 black and white images with either horizontal or vertical oriented lines on them were used, as it was more straightforward to express a-priori information. The orientation of the training images was chosen randomly via a uniform distribution. Also the positions of the lines in the images were uniformly distributed. Examples of the input data can be seen in figure \ref{fig:horvertImages}. To show the value of the a-priori information validation images with two lines forming a cross were also generated, seen in figure \ref{fig:horvertTrainingCrossImage}. When shown to the network in the validation process the prior neurons were given the information that a cross is either in horizontal or vertical orientation.
+29 x 29 black and white images with either horizontal or vertical oriented lines on them were used, as it was more straightforward to express a-priori information. The orientation of the training images was chosen randomly via a uniform distribution. Also the positions of the lines in the images were uniformly distributed. The rest of the image generation process is analogous to experiment 1, except no circular mask was used. Examples of the input data can be seen in figure \ref{fig:horvertImages}. To show the value of the a-priori information validation images with two lines forming a cross were also generated, seen in figure \ref{fig:horvertTrainingCrossImage}. When shown to the network in the validation process the prior neurons were given the information that a cross is either in horizontal or vertical orientation.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvert/horvertTrainingImages.png}
@@ -234,17 +234,17 @@ For this experiment the impact of a neuron layer that encodes a-priori informati
 
 \paragraph{Network architecture}
 
-This experiment used a expanded version of the network used in the previous section. An additional layer Z of neurons $z_1,z_2$ was added. Whenever an image was oriented vertically $z_1$ was active and $z_2$ was inactive. For horizontal orientations $z_2$ was active and $z_1$ was inactive. Z neurons in an active state had a firing frequency of 50 Hz and fired with 0 Hz when inactive.
+This experiment used a expanded version of the network used in experiment 1. An additional layer Z of neurons $z_1,z_2$ was added. Whenever an image was oriented vertically $z_1$ was active and $z_2$ was inactive. For horizontal orientations $z_2$ was active and $z_1$ was inactive. Z neurons in an active state had a firing frequency of 50 Hz and fired with 0 Hz when inactive.
 
 \paragraph{Neuron model}
-The X and Y neurons functioned the same way as in the previous experiment. Z neurons fire according to a poisson process with their firing rate. Each $Z_l$ is connected to every output neuron $Y_k$ and thus has weights $w_{kl}$ that were trained. 
+The X and Y neurons functioned the same way as in the previous experiment. Z neurons fire according to a poisson process with their firing rate. Each $Z_l$ is connected to every output neuron $Y_k$ and thus has weights $w_{kl}$ that were learned by the network. 
 
 \paragraph{Parameters}
-As the amount of input neurons and the average number of black pixels in an input image stayed the same in this experiment, the same parameters $c=  20$ and $\lambda = 10^{-3}$ could be used. However as there are only two Z neurons, a way to amplify their produced signals was needed, otherwise their impact would not be distinctive enough. So the EPSPs $z_l(t)$ were multiplied by the factor $Z_{factor}$. This factor was determined via grid search. The additional Z layer resulted in an expanded version of the membrane potential $U_k(t)$
+As the amount of input neurons and the average number of black pixels in an input image stayed roughly the same in this experiment, the same parameters $c=  20$ and $\lambda = 10^{-3}$ could be used. However as there are only two Z neurons, a way to amplify their produced signals was needed, otherwise their impact on the membrane potential of Y would not be distinctive enough. So the EPSPs $z_l(t)$ were multiplied by the factor $Z_{factor}$. This factor was determined via grid search. The additional Z layer resulted in an expanded version of the membrane potential $U_k(t)$
 
 \begin{equation}
 \label{eqn:ukHorvert}
-U_k(t) = \sum_{i=1}^n w_{ki} \cdot x_i(t) + w_{kl} \ cdot z_l(t)
+U_k(t) = \sum_{i=1}^n w_{ki} \cdot x_i(t) + w_{kl} \cdot Z_{factor} \cdot z_l(t)
 \end{equation}
 
 \subsection{Results} 
@@ -267,7 +267,7 @@ For $Z_{factor} = 10$ and $20$ the Z neurons impacted the learning progress nega
 \end{figure}
 
 
-The best results were achieved with $Z_{factor} = 5$. When looking at the training progress in figure \ref{fig:horvert_c20_3_Zfactor5_averageZ} it can be seen that the training accuracy is higher compared to experiment 1. This is due to the added a-priori information. The network activity at the end of the training process can be seen in figure \ref{fig:horvertLastSpikes}. In figures \ref{fig:horvert_c20_3_Zfactor5_horizontalLines} and \ref{fig:horvert_c20_3_Zfactor5_verticalLines} the most active Y neuron of the trained network is plotted for horizontal lines in every position and in the second plot for vertical lines in every position. Every one of the ten Y neurons responds primarily to one coherent area in one orientation. The values of the learned prior weights $w_{kl}$ were plotted in figures \ref{fig:wkl1} and \ref{fig:wkl2}. In these figures, in combination with figures \ref{fig:horvert_c20_3_Zfactor5_horizontalLines} and \ref{fig:horvert_c20_3_Zfactor5_verticalLines}, can be seen that each Z neuron specialized on one orientation.
+The best results were achieved with $Z_{factor} = 5$. When looking at the training progress in figure \ref{fig:horvert_c20_3_Zfactor5_averageZ} it can be seen that the training accuracy is higher compared to experiment 1. This is due to the added a-priori information and the fact that less of each line in an image is overlapping with multiple areas of Y neurons. The network activity at the end of the training process can be seen in figure \ref{fig:horvertLastSpikes}. In figures \ref{fig:horvert_c20_3_Zfactor5_horizontalLines} and \ref{fig:horvert_c20_3_Zfactor5_verticalLines} the most active Y neuron of the trained network is plotted for horizontal lines in every position and in the second plot for vertical lines in every position. Every one of the ten Y neurons responds primarily to one coherent area in one orientation. The values of the learned prior weights $w_{kl}$ were plotted in figures \ref{fig:wkl1} and \ref{fig:wkl2}. In these figures, in combination with figures \ref{fig:horvert_c20_3_Zfactor5_horizontalLines} and \ref{fig:horvert_c20_3_Zfactor5_verticalLines}, can be seen that each Z neuron specialized on one orientation.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvert/horvert_c20_3_Zfactor5_averageZ.png}
@@ -319,7 +319,7 @@ During the validation of all possible horizontal line images the Y spike activit
 \end{figure}
 
 
-To show the impact of the Z neurons an image with a two lines on it forming a cross (figure \ref{fig:horvertValidationCross}) was generated and $z_2$ was set active indicating that the orientation is supposed to be horizontal. This resulted in the spiking pattern seen in figure \ref{fig:horvert_c20_3_Zfactor5_crossZSpikes}. There it can be seen that $Y_1$ is more active than $Y_9$ due to the influence of the a-priori neuron $Z_2$.
+To show the impact of the Z neurons an image with two lines on it forming a cross (figure \ref{fig:horvertValidationCross}) was generated and $z_2$ was set active indicating that the orientation is supposed to be horizontal. This resulted in the spiking pattern seen in figure \ref{fig:horvert_c20_3_Zfactor5_crossZSpikes}. In it $Y_1$ is more active than $Y_9$ due to the influence of the a-priori neuron $Z_2$.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvert/horvert_c20_3_Zfactor5_validationCross.png}
