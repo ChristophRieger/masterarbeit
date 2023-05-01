@@ -1,6 +1,6 @@
 \chapter{Protocol of work so far}
 \section{Experiment 1: Rotated lines}
-
+\label{section:rotatedLines}
 \subsection{Introduction}
 The goal of this task was to recreate example 2 from \citet{nessler}. In this example they fed a winner-take-all spiking neural network images with lines in different orientations on them. The network then clustered the images into ten groups depending on their orientation.
 
@@ -200,6 +200,7 @@ also yielded a functioning network, but it did perform analogous to $c = 20$. It
 The parameters $c = 20$ and $\lambda = 10^{-3}$ were finally chosen as the network performed the best and trained the quickest with these parameters, without raising the membrane potential needlessly.
 
 \section{Experiment 2: Horizontal and vertical lines}
+\label{section:horvert}
 
 \subsection{Introduction}
 
@@ -326,7 +327,16 @@ To show the impact of the prior neurons an image with two lines on it forming a 
 
 
 
+\section{Experiment 3: Rotated lines with constant output firing rate}
 
+\subsection{Introduction}
+
+This experiment analyses a different approach to the implementation of the inhibition of the output neurons. 
+In Experiment \ref{section:rotatedLines} and \ref{section:horvert} the output neurons were stopped from firing for a defined time window after any output neuron fired. The time window during which the inhibition was active was 5 ms, which resulted in an average output firing rate of 200 Hz. In this experiment an adaptive inhibition will be used which will regulate the membrane potentials of the output neurons so that all of them together fire with 200 Hz on average. The distinction to the previous experiments is that there never is a time window in which no output neuron may fire. Also it is assumed that the weight shifting parameter c will not needed to be fitted to the network, as the adaptive inhibition regulates the output firing rate of the network.
+
+\subsection{Methods}
+
+The adaptive inhibition is given by Equation \ref{eqn:I(t)} which was already used in Experiments \ref{section:rotatedLines} and \ref{section:horvert}. However the total output firing rate $R(t)$ was set to 200 Hz in this experiment. 
 
 
 

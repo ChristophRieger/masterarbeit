@@ -25,19 +25,7 @@ loadWeights = False
 disableIntrinsicWeights = True
 
 plt.close("all")
-# visualize 2 training images
 
-fig, (ax1, ax2) = plt.subplots(1,2)
-
-fig.suptitle('Examples of training images', fontsize=14)
-fig.subplots_adjust(top=1.1)
-image1 = dataGenerator.generateImage(15)
-image2 = dataGenerator.generateImage(130)
-# Line plots
-ax1.set_title('Image 1')
-ax1.imshow(image1[0], cmap='gray')
-ax2.set_title('Image 2')
-ax2.imshow(image2[0], cmap='gray')
 
 # !!! i abandoned this ideas, as the active and nonactive neurons alternate, thus making it very hard to see anything
 # !!! maybe i could only plot all black neurons...
@@ -52,18 +40,15 @@ ax2.imshow(image2[0], cmap='gray')
 
 # took 29, so there is an actual center, which makes everything symmetric (the mask primarily)
 imageSize = (29, 29)
-simulationTime = 800 # seconds
+simulationTime = 3 # seconds
 # legi suggested to increase this from 0.05 to 0.2, works better
 imagePresentationDuration = 0.2
 dt = 0.001 # seconds
 firingRate = 20 # Hz; Input neurons yn should spike with 20Hz => firingRate (Lambda) = 20/second
+RStar = 200 # Hz; total output firing rate
 numberYNeurons = imageSize[0] * imageSize[1] * 2 # 2 neurons per pixel (one for black, one for white)
 numberZNeurons = 10
-#  inhibitory signal
-Iinh = 0
-IinhStartTime = math.inf
-inhActive = False
-tauInh = 0.005
+
 sigma = 0.01 # time frame in which spikes count as before output spike
 c = 20 # 10 seems good, scales weights to 0 ... 1
 tauRise = 0.001
@@ -140,11 +125,10 @@ for t in np.arange(0, simulationTime, dt):
     del YSpikes[1][toDeleteID]
 
   # calculate current Inhibition signal
-  if inhActive:
-    inhTMP = 0
-    for i in range(numberZNeurons):
-      inhTMP += np.exp(U[i])
-    Iinh = np.log(inhTMP)
+  inhTMP = 0
+  for i in range(numberZNeurons):
+    inhTMP += np.exp(U[i])
+  Iinh = - np.log(RStar) + np.log(inhTMP)
 
   # calc instantaneous fire rate for each Z Neuron for this time step
   r = np.zeros(numberZNeurons)
@@ -181,14 +165,6 @@ for t in np.arange(0, simulationTime, dt):
     weights = neuronFunctions.updateWeights(YTilde, weights, ZNeuronWinner, c, learningRate)
     if not disableIntrinsicWeights:
       intrinsicWeights = neuronFunctions.updateIntrinsicWeights(intrinsicWeights, ZNeuronWinner, c, learningRate)
-    # store time of last Z spike
-    IinhStartTime = t
-    inhActive = True
-  elif t - IinhStartTime > tauInh:
-    Iinh = 0
-    IinhStartTime = math.inf
-    inhActive = False
-
     
   if (t) % 1 == 0:
     print("Finished simulation of t= " + str(t))
@@ -198,14 +174,78 @@ if not os.path.exists("c20_3"):
 np.save("c20_3/c20_3_YZWeights.npy", weights)
   
 colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink', 'brown' ,'black']
-# plot the last 100 Z spikes
-plt.figure()
-for i in range(len(ZSpikes[0]) - len(ZSpikes[0][-1000:]), len(ZSpikes[0])):
-  plt.vlines(ZSpikes[1][i], ymin=ZSpikes[0][i] + 1 - 0.5, ymax=ZSpikes[0][i] + 1 + 0.5, color=colors[ZSpikes[0][i]])
-plt.title("Z Spikes")
-plt.ylabel("Z Neuron")
-plt.xlabel("t [s]")
-plt.savefig("c20_3/1000LastZSpikes.png")
+
+# visualize 2 training images
+
+fig = plt.figure(constrained_layout=True)
+
+
+gs = fig.add_gridspec(6,10)
+ax10 = fig.add_subplot(gs[0, 0])
+ax11 = fig.add_subplot(gs[0, 1])
+ax12 = fig.add_subplot(gs[0, 2])
+ax13 = fig.add_subplot(gs[0, 3])
+ax14 = fig.add_subplot(gs[0, 4])
+ax15 = fig.add_subplot(gs[0, 5])
+ax16 = fig.add_subplot(gs[0, 6])
+ax17 = fig.add_subplot(gs[0, 7])
+ax18 = fig.add_subplot(gs[0, 8])
+ax19 = fig.add_subplot(gs[0, 9])
+
+ax20 = fig.add_subplot(gs[1, 0])
+ax21 = fig.add_subplot(gs[1, 1])
+ax22 = fig.add_subplot(gs[1, 2])
+ax23 = fig.add_subplot(gs[1, 3])
+ax24 = fig.add_subplot(gs[1, 4])
+ax25 = fig.add_subplot(gs[1, 5])
+ax26 = fig.add_subplot(gs[1, 6])
+ax27 = fig.add_subplot(gs[1, 7])
+ax28 = fig.add_subplot(gs[1, 8])
+ax29 = fig.add_subplot(gs[1, 9])
+
+ax31 = fig.add_subplot(gs[2:4, 3:7])
+ax41 = fig.add_subplot(gs[4:6, 0:5])
+ax42 = fig.add_subplot(gs[4:6, 5:10])
+
+plt.show()
+
+
+# fig2 = plt.figure()
+# fig2.suptitle('Examples of training images', fontsize=14)
+# fig2.subplots_adjust(top=1.1)
+# image1 = dataGenerator.generateImage(15)
+# image2 = dataGenerator.generateImage(130)
+# Line plots
+# ax1.set_title('Image 1')
+# ax1.
+# ax2.set_title('Image 2')
+# ax2.imshow(image2[0], cmap='gray')
+
+# plot all weights
+for z in range(np.shape(weights)[1]):
+  image = dataGenerator.generateImage(0 + 18*z)
+  eval("ax1" + str(z) + ".imshow(image[0], cmap='gray')")
+  eval("ax1" + str(z) + ".tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelright=False, labelleft=False)")
+  
+  w = weights[0::2, z]
+  w = w.reshape((29, 29))
+  eval("ax2" + str(z) + ".imshow(w, cmap='gray')")
+  eval("ax2" + str(z) + ".tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelright=False, labelleft=False)")
+
+
+# plot the first 500 Z spikes
+for i in range(0, 500):
+  ax41.vlines(ZSpikes[1][i], ymin=ZSpikes[0][i] + 1 - 0.5, ymax=ZSpikes[0][i] + 1 + 0.5, color=colors[ZSpikes[0][i]])
+ax41.set_title("Output before learning")
+ax41.set_ylabel("Output neuron")
+ax41.set_xlabel("Time [s]")
+
+# plot the last 500 Z spikes
+for i in range(len(ZSpikes[0]) - len(ZSpikes[0][-500:]), len(ZSpikes[0])):
+  ax42.vlines(ZSpikes[1][i], ymin=ZSpikes[0][i] + 1 - 0.5, ymax=ZSpikes[0][i] + 1 + 0.5, color=colors[ZSpikes[0][i]])
+ax42.set_title("Output after learning")
+ax42.set_ylabel("Output neuron")
+ax42.set_xlabel("Time [s]")
 
 # plot all images... 
 # for imageToPlot in images[0]:
@@ -242,10 +282,9 @@ for i in range(360):
 
 # plot piechart of most fired Z per degree
 threesixtyAngles = np.ones(360)
-plt.figure()
 # startangle 90 is at top
-plt.pie(threesixtyAngles, colors=pieColors, startangle = 90, counterclock=False,)
-plt.title("Most active Z neuron depending on angle")
+ax31.pie(threesixtyAngles, colors=pieColors, startangle = 90, counterclock=False,)
+ax31.set_title("Most active Z neuron depending on angle")
 pieLegend1 = patches.Patch(color=colors[0], label='Z1')
 pieLegend2 = patches.Patch(color=colors[1], label='Z2')
 pieLegend3 = patches.Patch(color=colors[2], label='Z3')
@@ -256,8 +295,9 @@ pieLegend7 = patches.Patch(color=colors[6], label='Z7')
 pieLegend8 = patches.Patch(color=colors[7], label='Z8')
 pieLegend9 = patches.Patch(color=colors[8], label='Z9')
 pieLegend10 = patches.Patch(color=colors[9], label='Z10')
-plt.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
-plt.savefig("c20_3/pie.png")
+ax31.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
+
+# fig.tight_layout()
 
 # show training progress (how many distinct Z fired during each image presentation duration)
 # remove first empty entry
@@ -276,3 +316,23 @@ plt.title("Certainty of network")
 plt.ylabel("Homogeneity of Z spikes")
 plt.xlabel("Image shown")
 plt.savefig("c20_3/averageZ.png")
+
+# output firing rate
+
+outputFiringRate = []
+for i in range(len(images[0])):
+  ZSpikesForThisImage = 0
+  for j in range(len(ZSpikes[0])):
+    # get all spikes between t and t+imagePresentationDuration
+    if ZSpikes[1][j] > i * imagePresentationDuration and ZSpikes[1][j] < i * imagePresentationDuration + imagePresentationDuration:
+      ZSpikesForThisImage += 1
+  outputFiringRate.append(ZSpikesForThisImage / imagePresentationDuration)
+
+
+
+plt.figure()
+plt.plot(outputFiringRate)
+plt.title("Output firing rate")
+plt.ylabel("Firing rate [Hz]")
+plt.xlabel("Image shown")
+plt.savefig("c20_3/outputFiringRate.png")
