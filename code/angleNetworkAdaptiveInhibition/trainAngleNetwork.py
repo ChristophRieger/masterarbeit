@@ -19,6 +19,8 @@ import matplotlib.patches as patches
 import numpy as np
 import random
 import os
+import pickle
+
 
 # Command Center
 loadWeights = False
@@ -40,7 +42,7 @@ plt.close("all")
 
 # took 29, so there is an actual center, which makes everything symmetric (the mask primarily)
 imageSize = (29, 29)
-simulationTime = 3 # seconds
+simulationTime = 800 # seconds
 # legi suggested to increase this from 0.05 to 0.2, works better
 imagePresentationDuration = 0.2
 dt = 0.001 # seconds
@@ -53,7 +55,8 @@ sigma = 0.01 # time frame in which spikes count as before output spike
 c = 20 # 10 seems good, scales weights to 0 ... 1
 tauRise = 0.001
 tauDecay = 0.015
-learningRate = 10**-3
+learningRateFactor = 3
+learningRate = 10**-learningRateFactor
 
 YSpikes = [[],[]]
 ZSpikes = [[],[]]
@@ -169,18 +172,18 @@ for t in np.arange(0, simulationTime, dt):
   if (t) % 1 == 0:
     print("Finished simulation of t= " + str(t))
   
-if not os.path.exists("c20_3"):
-  os.mkdir("c20_3")
-np.save("c20_3/c20_3_YZWeights.npy", weights)
+  
+directoryPath =  "c" + str(c) + "_eta" + str(learningRateFactor)
+if not os.path.exists(directoryPath):
+  os.mkdir(directoryPath)
+np.save(directoryPath + "/c" + str(c) + "_eta" + str(learningRateFactor) + "_YZWeights.npy", weights)
   
 colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink', 'brown' ,'black']
 
-# visualize 2 training images
+fig = plt.figure()
+gs = fig.add_gridspec(4, 10)
+gs2 = fig.add_gridspec(4, 2, wspace=0.4, hspace=3)
 
-fig = plt.figure(constrained_layout=True)
-
-
-gs = fig.add_gridspec(6,10)
 ax10 = fig.add_subplot(gs[0, 0])
 ax11 = fig.add_subplot(gs[0, 1])
 ax12 = fig.add_subplot(gs[0, 2])
@@ -203,23 +206,25 @@ ax27 = fig.add_subplot(gs[1, 7])
 ax28 = fig.add_subplot(gs[1, 8])
 ax29 = fig.add_subplot(gs[1, 9])
 
-ax31 = fig.add_subplot(gs[2:4, 3:7])
-ax41 = fig.add_subplot(gs[4:6, 0:5])
-ax42 = fig.add_subplot(gs[4:6, 5:10])
+ax31 = fig.add_subplot(gs2[2:4, 0])
+ax32 = fig.add_subplot(gs2[2:4, 1])
 
-plt.show()
+# Add ghost axes and titles
+ax_firstRow = fig.add_subplot(gs[0, :])
+ax_firstRow.axis('off')
+ax_firstRow.set_title('A', loc="left", x=-0.04,y=0.5, fontsize=16.0, fontweight='semibold')
 
+ax_secondRow = fig.add_subplot(gs[1, :])
+ax_secondRow.axis('off')
+ax_secondRow.set_title('B', loc="left", x=-0.04,y=0.5, fontsize=16.0, fontweight='semibold')
 
-# fig2 = plt.figure()
-# fig2.suptitle('Examples of training images', fontsize=14)
-# fig2.subplots_adjust(top=1.1)
-# image1 = dataGenerator.generateImage(15)
-# image2 = dataGenerator.generateImage(130)
-# Line plots
-# ax1.set_title('Image 1')
-# ax1.
-# ax2.set_title('Image 2')
-# ax2.imshow(image2[0], cmap='gray')
+ax_thirdRowFirstColumn = fig.add_subplot(gs2[2:4, 0])
+ax_thirdRowFirstColumn.axis('off')
+ax_thirdRowFirstColumn.set_title('C', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
+
+ax_thirdRowSecondColumn = fig.add_subplot(gs2[2:4, 1])
+ax_thirdRowSecondColumn.axis('off')
+ax_thirdRowSecondColumn.set_title('D', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
 
 # plot all weights
 for z in range(np.shape(weights)[1]):
@@ -230,74 +235,36 @@ for z in range(np.shape(weights)[1]):
   w = weights[0::2, z]
   w = w.reshape((29, 29))
   eval("ax2" + str(z) + ".imshow(w, cmap='gray')")
+  eval("ax2" + str(z) + ".set_title('$w_{' + str(z+1) + 'n}$')")
   eval("ax2" + str(z) + ".tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelright=False, labelleft=False)")
 
 
-# plot the first 500 Z spikes
-for i in range(0, 500):
-  ax41.vlines(ZSpikes[1][i], ymin=ZSpikes[0][i] + 1 - 0.5, ymax=ZSpikes[0][i] + 1 + 0.5, color=colors[ZSpikes[0][i]])
-ax41.set_title("Output before learning")
-ax41.set_ylabel("Output neuron")
-ax41.set_xlabel("Time [s]")
+# plot the first 120 Z spikes
+for i in range(0, 120):
+  ax31.vlines(ZSpikes[1][i], ymin=ZSpikes[0][i] + 1 - 0.5, ymax=ZSpikes[0][i] + 1 + 0.5, color=colors[ZSpikes[0][i]], linewidth=0.5)
+ax31.axvline(x=0, color="red", linestyle="dashed")
+ax31.axvline(x=0.2, color="red", linestyle="dashed")
+ax31.axvline(x=0.4, color="red", linestyle="dashed")
+ax31.axvline(x=0.6, color="red", linestyle="dashed")
+ax31.set_title("Output before learning")
+ax31.set_ylabel("Output neuron")
+ax31.set_xlabel("Time [s]")
 
-# plot the last 500 Z spikes
-for i in range(len(ZSpikes[0]) - len(ZSpikes[0][-500:]), len(ZSpikes[0])):
-  ax42.vlines(ZSpikes[1][i], ymin=ZSpikes[0][i] + 1 - 0.5, ymax=ZSpikes[0][i] + 1 + 0.5, color=colors[ZSpikes[0][i]])
-ax42.set_title("Output after learning")
-ax42.set_ylabel("Output neuron")
-ax42.set_xlabel("Time [s]")
+# plot the last 120 Z spikes
+for i in range(len(ZSpikes[0]) - len(ZSpikes[0][-120:]), len(ZSpikes[0])):
+  ax32.vlines(ZSpikes[1][i], ymin=ZSpikes[0][i] + 1 - 0.5, ymax=ZSpikes[0][i] + 1 + 0.5, color=colors[ZSpikes[0][i]], linewidth=0.5)
+ax32.axvline(x=simulationTime, color="red", linestyle="dashed")
+ax32.axvline(x=simulationTime - 0.2, color="red", linestyle="dashed")
+ax32.axvline(x=simulationTime - 0.4, color="red", linestyle="dashed")
+ax32.axvline(x=simulationTime - 0.6, color="red", linestyle="dashed")
+ax32.set_title("Output after learning")
+ax32.set_ylabel("Output neuron")
+ax32.set_xlabel("Time [s]")
 
-# plot all images... 
-# for imageToPlot in images[0]:
-#   plt.figure()
-#   plt.imshow(imageToPlot, cmap='gray')
+plt.show()
+pickle.dump(fig, open(directoryPath + "/trainingPlot" + '.pickle','wb'))
+plt.savefig(directoryPath + "/trainingPlot.svg")  
 
-# calc which Z fired the most for an angle
-angleAndWhichZFired = np.zeros([360, numberZNeurons])
-for i in range(len(images[0])):
-  # check which degree the image was
-  for angle in range(360):
-    if images[1][i] > angle and images[1][i] <= angle + 1:
-      currentAngle = angle
-  for j in range(len(ZSpikes[0])):
-    # get all spikes between t and t+imagePresentationDuration
-    # !!! maybe save last index to not always start from 0 like above for YNeuronspikes
-    if ZSpikes[1][j] > i * imagePresentationDuration and ZSpikes[1][j] < i * imagePresentationDuration + imagePresentationDuration:
-      angleAndWhichZFired[currentAngle, ZSpikes[0][j]] += 1
-
-# determine Z neuron that fired the most for each degree
-pieColors = []
-for i in range(360):
-  winnerID = math.inf
-  maxSpikes = 0
-  for j in range(numberZNeurons):
-    if angleAndWhichZFired[i][j] > maxSpikes:
-      winnerID = j
-      maxSpikes = angleAndWhichZFired[i][j]
-  # code winnerID of Z neuron to its color used above
-  if winnerID == math.inf:
-    pieColors.append('white')
-  else:
-    pieColors.append(colors[winnerID])
-
-# plot piechart of most fired Z per degree
-threesixtyAngles = np.ones(360)
-# startangle 90 is at top
-ax31.pie(threesixtyAngles, colors=pieColors, startangle = 90, counterclock=False,)
-ax31.set_title("Most active Z neuron depending on angle")
-pieLegend1 = patches.Patch(color=colors[0], label='Z1')
-pieLegend2 = patches.Patch(color=colors[1], label='Z2')
-pieLegend3 = patches.Patch(color=colors[2], label='Z3')
-pieLegend4 = patches.Patch(color=colors[3], label='Z4')
-pieLegend5 = patches.Patch(color=colors[4], label='Z5')
-pieLegend6 = patches.Patch(color=colors[5], label='Z6')
-pieLegend7 = patches.Patch(color=colors[6], label='Z7')
-pieLegend8 = patches.Patch(color=colors[7], label='Z8')
-pieLegend9 = patches.Patch(color=colors[8], label='Z9')
-pieLegend10 = patches.Patch(color=colors[9], label='Z10')
-ax31.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
-
-# fig.tight_layout()
 
 # show training progress (how many distinct Z fired during each image presentation duration)
 # remove first empty entry
@@ -305,17 +272,19 @@ distinctZFiredHistory.pop(0)
 plt.figure()
 plt.plot(distinctZFiredHistory)
 plt.title("Training progress")
-plt.ylabel("Number of distinct Z neurons spiking")
+plt.ylabel("Number of distinct output neurons spiking")
 plt.xlabel("Image shown")
-plt.savefig("c20_3/distinctZ.png")
+pickle.dump(fig, open(directoryPath + "/distinctY" + '.pickle','wb'))
+plt.savefig(directoryPath + "/distinctY.svg") 
 
 # show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
 plt.figure()
 plt.plot(averageZFiredHistory)
 plt.title("Certainty of network")
-plt.ylabel("Homogeneity of Z spikes")
+plt.ylabel("Homogeneity of output spikes")
 plt.xlabel("Image shown")
-plt.savefig("c20_3/averageZ.png")
+pickle.dump(fig, open(directoryPath + "/averageY" + '.pickle','wb'))
+plt.savefig(directoryPath + "/averageY.svg") 
 
 # output firing rate
 
@@ -328,11 +297,66 @@ for i in range(len(images[0])):
       ZSpikesForThisImage += 1
   outputFiringRate.append(ZSpikesForThisImage / imagePresentationDuration)
 
-
-
 plt.figure()
 plt.plot(outputFiringRate)
 plt.title("Output firing rate")
 plt.ylabel("Firing rate [Hz]")
 plt.xlabel("Image shown")
-plt.savefig("c20_3/outputFiringRate.png")
+pickle.dump(fig, open(directoryPath + "/outputFiringRate" + '.pickle','wb'))
+plt.savefig(directoryPath + "/outputFiringRate.svg") 
+
+
+
+
+
+
+
+
+
+
+
+
+# # calc which Z fired the most for an angle
+# angleAndWhichZFired = np.zeros([360, numberZNeurons])
+# for i in range(len(images[0])):
+#   # check which degree the image was
+#   for angle in range(360):
+#     if images[1][i] > angle and images[1][i] <= angle + 1:
+#       currentAngle = angle
+#   for j in range(len(ZSpikes[0])):
+#     # get all spikes between t and t+imagePresentationDuration
+#     # !!! maybe save last index to not always start from 0 like above for YNeuronspikes
+#     if ZSpikes[1][j] > i * imagePresentationDuration and ZSpikes[1][j] < i * imagePresentationDuration + imagePresentationDuration:
+#       angleAndWhichZFired[currentAngle, ZSpikes[0][j]] += 1
+
+# # determine Z neuron that fired the most for each degree
+# pieColors = []
+# for i in range(360):
+#   winnerID = math.inf
+#   maxSpikes = 0
+#   for j in range(numberZNeurons):
+#     if angleAndWhichZFired[i][j] > maxSpikes:
+#       winnerID = j
+#       maxSpikes = angleAndWhichZFired[i][j]
+#   # code winnerID of Z neuron to its color used above
+#   if winnerID == math.inf:
+#     pieColors.append('white')
+#   else:
+#     pieColors.append(colors[winnerID])
+
+# # plot piechart of most fired Z per degree
+# threesixtyAngles = np.ones(360)
+# # startangle 90 is at top
+# ax31.pie(threesixtyAngles, colors=pieColors, startangle = 90, counterclock=False,)
+# ax31.set_title("Most active Z neuron depending on angle")
+# pieLegend1 = patches.Patch(color=colors[0], label='Z1')
+# pieLegend2 = patches.Patch(color=colors[1], label='Z2')
+# pieLegend3 = patches.Patch(color=colors[2], label='Z3')
+# pieLegend4 = patches.Patch(color=colors[3], label='Z4')
+# pieLegend5 = patches.Patch(color=colors[4], label='Z5')
+# pieLegend6 = patches.Patch(color=colors[5], label='Z6')
+# pieLegend7 = patches.Patch(color=colors[6], label='Z7')
+# pieLegend8 = patches.Patch(color=colors[7], label='Z8')
+# pieLegend9 = patches.Patch(color=colors[8], label='Z9')
+# pieLegend10 = patches.Patch(color=colors[9], label='Z10')
+# ax31.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))

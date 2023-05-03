@@ -26,10 +26,11 @@ dt = 0.001 # seconds
 firingRate = 20 # Hz
 numberYNeurons = imageSize[0] * imageSize[1] * 2
 numberZNeurons = 10
-tauInh = 0.005
 sigma = 0.01 
 tauRise = 0.001
 tauDecay = 0.015
+RStar = 200 # Hz; total output firing rate
+
 
 colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink', 'brown' ,'black']
 pieColors = []
@@ -64,9 +65,6 @@ for angleIterator in range(0,180):
   encodedImage = dataEncoder.encodeImage(image)
   distinctZFiredHistory.append(len(distinctZFired))
   distinctZFired = []
-  Iinh = 0
-  IinhStartTime = math.inf
-  inhActive = False
 
   if averageZFired:
     mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
@@ -104,11 +102,10 @@ for angleIterator in range(0,180):
       del YSpikes[1][toDeleteID]
       
     # calculate current Inhibition signal
-    if inhActive:
-      inhTMP = 0
-      for i in range(numberZNeurons):
-        inhTMP += np.exp(U[i])
-      Iinh = np.log(inhTMP)
+    inhTMP = 0
+    for i in range(numberZNeurons):
+      inhTMP += np.exp(U[i])
+    Iinh = - np.log(RStar) + np.log(inhTMP)
   
     # calc instantaneous fire rate for each Z Neuron for this time step
     r = np.zeros(numberZNeurons)
@@ -143,13 +140,7 @@ for angleIterator in range(0,180):
       # append ID of Z if this Z has not fired yet in this imagePresentationDuration
       if not distinctZFired.count(ZNeuronWinner):
         distinctZFired.append(ZNeuronWinner)
-      # store time of last Z spike
-      IinhStartTime = t
-      inhActive = True
-    elif t - IinhStartTime > tauInh:
-      Iinh = 0
-      IinhStartTime = math.inf
-      inhActive = False
+
   # determine distinctZ
   
   # calc which Z fired the most for this angle
