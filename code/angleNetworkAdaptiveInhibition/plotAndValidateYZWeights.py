@@ -4,6 +4,9 @@ Created on Wed Jan 25 14:04:22 2023
 
 @author: chris
 """
+import sys
+sys.path.insert(0, '../helpers')
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -14,6 +17,7 @@ import kernel
 import math
 import pickle
 import sys
+import os
 
 plt.close("all")
 
@@ -31,11 +35,13 @@ tauRise = 0.001
 tauDecay = 0.015
 RStar = 200 # Hz; total output firing rate
 
+c = 20
+learningRateFactor = 3
 
 colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink', 'brown' ,'black']
 pieColors = []
 
-weights = np.load("c20_3_YZWeights.npy")
+weights = np.load("c" + str(c) + "_" + str(learningRateFactor) + "_YZWeights.npy")
 intrinsicWeights = np.zeros(numberZNeurons)
 # plot all weights
 if plotWeights:
@@ -170,45 +176,54 @@ threesixtyAngles = np.ones(360)
 for i in range(180, 360):
   pieColors.append('white')
   
-fig_object = plt.figure()
+  
+directoryPath =  "validation_c" + str(c) + "_eta" + str(learningRateFactor)
+if not os.path.exists(directoryPath):
+  os.mkdir(directoryPath)
+  
+fig = plt.figure()
+gs = fig.add_gridspec(2, 2, wspace=1, hspace=1)
+
+ax1 = fig.add_subplot(gs[0, 0])
+ax2 = fig.add_subplot(gs[0, 1])
+ax3 = fig.add_subplot(gs[1, 0])
+ax4 = fig.add_subplot(gs[1, 1])
+
 # startangle 90 is at top
-plt.pie(threesixtyAngles, colors=pieColors, startangle = 90, counterclock=False,)
-plt.title("Most active Z neuron depending on angle")
-pieLegend1 = patches.Patch(color=colors[0], label='Z1')
-pieLegend2 = patches.Patch(color=colors[1], label='Z2')
-pieLegend3 = patches.Patch(color=colors[2], label='Z3')
-pieLegend4 = patches.Patch(color=colors[3], label='Z4')
-pieLegend5 = patches.Patch(color=colors[4], label='Z5')
-pieLegend6 = patches.Patch(color=colors[5], label='Z6')
-pieLegend7 = patches.Patch(color=colors[6], label='Z7')
-pieLegend8 = patches.Patch(color=colors[7], label='Z8')
-pieLegend9 = patches.Patch(color=colors[8], label='Z9')
-pieLegend10 = patches.Patch(color=colors[9], label='Z10')
-plt.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
-pickle.dump(fig_object, open('pie.pickle','wb'))
+ax1.pie(threesixtyAngles, colors=pieColors, startangle = 90, counterclock=False,)
+ax1.set_title("Most active output neuron")
+pieLegend1 = patches.Patch(color=colors[0], label='y1')
+pieLegend2 = patches.Patch(color=colors[1], label='y2')
+pieLegend3 = patches.Patch(color=colors[2], label='y3')
+pieLegend4 = patches.Patch(color=colors[3], label='y4')
+pieLegend5 = patches.Patch(color=colors[4], label='y5')
+pieLegend6 = patches.Patch(color=colors[5], label='y6')
+pieLegend7 = patches.Patch(color=colors[6], label='y7')
+pieLegend8 = patches.Patch(color=colors[7], label='y8')
+pieLegend9 = patches.Patch(color=colors[8], label='y9')
+pieLegend10 = patches.Patch(color=colors[9], label='y10')
+ax1.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
 
 # show training progress (how many distinct Z fired during each image presentation duration)
 # remove first empty entry
 distinctZFiredHistory.pop(0)
-fig_object = plt.figure()
-plt.plot(distinctZFiredHistory)
-plt.title("Number of distinct Z neurons spiking")
-plt.ylabel("Number of distinct Z neurons spiking")
-plt.xlabel("Image shown")
-pickle.dump(fig_object, open('distinctZ.pickle','wb'))
+ax3.plot(distinctZFiredHistory)
+ax3.set_title("Distinct output neurons spiking")
+ax3.set_ylabel("Number of distinct output neurons spiking")
+ax3.set_xlabel("Image shown")
 
-fig_object = plt.figure()
 for i in range(0, len(ZSpikeHistory[0])):
-  plt.vlines(ZSpikeHistory[1][i], ymin=ZSpikeHistory[0][i] + 1 - 0.5, ymax=ZSpikeHistory[0][i] + 1 + 0.5, color=colors[ZSpikeHistory[0][i]])
-plt.title("Z Spikes")
-plt.ylabel("Z Neuron")
-plt.xlabel("t [s]")
-pickle.dump(fig_object, open('ZSpikes.pickle','wb'))
+  ax2.vlines(ZSpikeHistory[1][i], ymin=ZSpikeHistory[0][i] + 1 - 0.5, ymax=ZSpikeHistory[0][i] + 1 + 0.5, color=colors[ZSpikeHistory[0][i]])
+ax2.set_title("Output spikes")
+ax2.set_ylabel("Output neuron")
+ax2.set_xlabel("t [s]")
       
 # show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
-plt.figure()
-plt.plot(averageZFiredHistory)
-plt.title("Certainty of network")
-plt.ylabel("Homogeneity of Z spikes")
-plt.xlabel("Image shown")
-pickle.dump(fig_object, open('averageZ.pickle','wb'))
+ax4.plot(averageZFiredHistory)
+ax4.set_title("Certainty of network")
+ax4.set_ylabel("Homogeneity of output spikes")
+ax4.set_xlabel("Image shown")
+
+pickle.dump(fig, open(directoryPath + '/validation.pickle','wb'))
+plt.savefig(directoryPath + "/validation.svg") 
+plt.show()
