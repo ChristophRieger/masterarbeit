@@ -41,12 +41,7 @@ AfiringRate = 50
 numberYNeurons = imageSize[0] * imageSize[1] * 2 # 2 neurons per pixel (one for black, one for white)
 numberZNeurons = 10
 numberANeurons = 2
-#  inhibitory signal
-Iinh = 0
-IinhStartTime = math.inf
-inhActive = False
 
-tauInh = 0.005
 sigma = 0.01 # time frame in which spikes count as before output spike
 c = 20 # 10 seems good, scales weights to 0 ... 1
 cPrior = 20
@@ -55,6 +50,7 @@ tauDecay = 0.015
 learningRateFactor = 3
 learningRate = 10**-learningRateFactor
 ATildeFactor = 5
+RStar = 200 # Hz; total output firing rate
 
 YSpikes = [[],[]]
 ZSpikes = [[],[]]
@@ -157,11 +153,10 @@ for t in np.arange(0, simulationTime, dt):
 
 
   # calculate current Inhibition signal
-  if inhActive:
-    inhTMP = 0
-    for i in range(numberZNeurons):
-      inhTMP += np.exp(U[i])
-    Iinh = np.log(inhTMP)
+  inhTMP = 0
+  for i in range(numberZNeurons):
+    inhTMP += np.exp(U[i])
+  Iinh = - np.log(RStar) + np.log(inhTMP)
     
   # calc instantaneous fire rate for each Z Neuron for this time step
   r = np.zeros(numberZNeurons)
@@ -197,13 +192,6 @@ for t in np.arange(0, simulationTime, dt):
     # update weights of all Y to ZThatFired
     weights = neuronFunctions.updateWeights(YTilde, weights, ZNeuronWinner, c, learningRate)
     priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronWinner, cPrior, learningRate)
-    # store time of last Z spike
-    IinhStartTime = t
-    inhActive = True
-  elif t - IinhStartTime > tauInh:
-    Iinh = 0
-    IinhStartTime = math.inf
-    inhActive = False
     
   if (t) % 1 == 0:
     print("Finished simulation of t= " + str(t))
