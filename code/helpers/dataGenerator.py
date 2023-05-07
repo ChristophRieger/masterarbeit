@@ -111,7 +111,7 @@ def generateRandomVerticalLineImage(imageSize = (29, 29), noiseLevel = 0.1, line
   image = np.full(imageSize, white, dtype=np.uint8)
   
   # random position of the line
-  xPosition = int(np.random.uniform(lineThickness / 2, imageSize[1] - (lineThickness / 2)))
+  xPosition = int(np.random.uniform(0, imageSize[1]))
   
   # Calculate the start and end points of the line
   startRow = 0
@@ -173,7 +173,7 @@ def generateRandomHorizontalLineImage(imageSize = (29, 29), noiseLevel = 0.1, li
   image = np.full(imageSize, white, dtype=np.uint8)
   
   # random position of the line
-  yPosition = int(np.random.uniform(lineThickness / 2, imageSize[0] - (lineThickness / 2)))
+  yPosition = int(np.random.uniform(0, imageSize[0]))
   
   # Calculate the start and end points of the line
   startColumn = 0
@@ -237,9 +237,9 @@ def generateRandomCrossLineImage(imageSize = (29, 29), noiseLevel = 0.1, lineThi
   image = np.full(imageSize, white, dtype=np.uint8)
   
   # random position of the vertical line
-  xPosition = int(np.random.uniform(lineThickness / 2, imageSize[1] - (lineThickness / 2)))
+  xPosition = int(np.random.uniform(0, imageSize[1]))
   # random position of the horizontal line
-  yPosition = int(np.random.uniform(lineThickness / 2, imageSize[0] - (lineThickness / 2)))
+  yPosition = int(np.random.uniform(0, imageSize[0]))
   position = [xPosition, yPosition]
   
   # Calculate the start and end points of the vertical line
@@ -284,9 +284,9 @@ def generateCrossLineImage(orientation, imageSize = (29, 29), noiseLevel = 0.1, 
   image = np.full(imageSize, white, dtype=np.uint8)
   
   # random position of the vertical line
-  xPosition = int(np.random.uniform(lineThickness / 2, imageSize[1] - (lineThickness / 2)))
+  xPosition = int(np.random.uniform(0, imageSize[1]))
   # random position of the horizontal line
-  yPosition = int(np.random.uniform(lineThickness / 2, imageSize[0] - (lineThickness / 2)))
+  yPosition = int(np.random.uniform(0, imageSize[0]))
   
   # Calculate the start and end points of the vertical line
   startRow = 0
