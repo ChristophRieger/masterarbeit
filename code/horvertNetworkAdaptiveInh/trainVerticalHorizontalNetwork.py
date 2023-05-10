@@ -19,6 +19,7 @@ import matplotlib.patches as patches
 import numpy as np
 import random
 import os
+import pickle
 
 # Command Center
 loadWeights = False
@@ -30,14 +31,14 @@ plt.close("all")
 # # plt.imshow(image, cmap='gray')
 # encodedImage = dataEncoder.encodeImage(image)
 
-# took 29, so there is an actual center, which makes everything symmetric (the mask primarily)
-imageSize = (29, 29)
+# took 35, lineWidth (7) * outputneurons / 2
+imageSize = (35, 35)
 simulationTime = 800 # seconds
 # legi suggested to increase this from 0.05 to 0.2, works better
 imagePresentationDuration = 0.2
 dt = 0.001 # seconds
 firingRate = 20 # Hz; Input neurons yn should spike with 20Hz => firingRate (Lambda) = 20/second
-AfiringRate = 50
+AfiringRate = 200
 numberYNeurons = imageSize[0] * imageSize[1] * 2 # 2 neurons per pixel (one for black, one for white)
 numberZNeurons = 10
 numberANeurons = 2
@@ -49,7 +50,7 @@ tauRise = 0.001
 tauDecay = 0.015
 learningRateFactor = 3
 learningRate = 10**-learningRateFactor
-ATildeFactor = 5
+ATildeFactor = 1
 RStar = 200 # Hz; total output firing rate
 
 YSpikes = [[],[]]
@@ -203,14 +204,138 @@ np.save(directoryPath + "/c" + str(c) + "_eta" + str(learningRateFactor) + "_ATi
 np.save(directoryPath + "/c" + str(cPrior) + "_eta" + str(learningRateFactor) + "_ATildeFactor" + str(ATildeFactor) + "_AZWeights.npy", priorWeights)
   
 colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink', 'brown' ,'black']
-# plot the last 100 Z spikes
-plt.figure()
-for i in range(len(ZSpikes[0]) - len(ZSpikes[0][-1000:]), len(ZSpikes[0])):
-  plt.vlines(ZSpikes[1][i], ymin=ZSpikes[0][i] + 1 - 0.5, ymax=ZSpikes[0][i] + 1 + 0.5, color=colors[ZSpikes[0][i]])
-plt.title("Z Spikes")
-plt.ylabel("Z Neuron")
-plt.xlabel("t [s]")
-plt.savefig(directoryPath + "/1000LastZSpikes.png")
+
+fig = plt.figure()
+gs = fig.add_gridspec(6, 10, hspace=1)
+gs2 = fig.add_gridspec(6, 2, wspace=0.4, hspace=25)
+# hspace seems to be capped and doesnt really influence the spacing anymore. 
+# but the .svg seems fine anyway, solve only if figure is not good enough.
+gs3 = fig.add_gridspec(6, 2, wspace=0.4, hspace=400)
+
+
+ax10 = fig.add_subplot(gs[0, 0])
+ax11 = fig.add_subplot(gs[0, 1])
+ax12 = fig.add_subplot(gs[0, 2])
+ax13 = fig.add_subplot(gs[0, 3])
+ax14 = fig.add_subplot(gs[0, 4])
+ax15 = fig.add_subplot(gs[0, 5])
+ax16 = fig.add_subplot(gs[0, 6])
+ax17 = fig.add_subplot(gs[0, 7])
+ax18 = fig.add_subplot(gs[0, 8])
+ax19 = fig.add_subplot(gs[0, 9])
+
+ax20 = fig.add_subplot(gs[1, 0])
+ax21 = fig.add_subplot(gs[1, 1])
+ax22 = fig.add_subplot(gs[1, 2])
+ax23 = fig.add_subplot(gs[1, 3])
+ax24 = fig.add_subplot(gs[1, 4])
+ax25 = fig.add_subplot(gs[1, 5])
+ax26 = fig.add_subplot(gs[1, 6])
+ax27 = fig.add_subplot(gs[1, 7])
+ax28 = fig.add_subplot(gs[1, 8])
+ax29 = fig.add_subplot(gs[1, 9])
+
+ax31 = fig.add_subplot(gs2[2:4, 0])
+ax32 = fig.add_subplot(gs2[2:4, 1])
+
+ax41 = fig.add_subplot(gs3[4:6, 0])
+ax42 = fig.add_subplot(gs3[4:6, 1])
+
+# Add ghost axes and titles
+ax_firstRow = fig.add_subplot(gs[0, :])
+ax_firstRow.axis('off')
+ax_firstRow.set_title('A', loc="left", x=-0.04,y=0.5, fontsize=16.0, fontweight='semibold')
+
+ax_secondRow = fig.add_subplot(gs[1, :])
+ax_secondRow.axis('off')
+ax_secondRow.set_title('B', loc="left", x=-0.04,y=0.5, fontsize=16.0, fontweight='semibold')
+
+ax_thirdRowFirstColumn = fig.add_subplot(gs2[2:4, 0])
+ax_thirdRowFirstColumn.axis('off')
+ax_thirdRowFirstColumn.set_title('C', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
+ax_thirdRowSecondColumn = fig.add_subplot(gs2[2:4, 1])
+ax_thirdRowSecondColumn.axis('off')
+ax_thirdRowSecondColumn.set_title('D', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
+
+ax_fourthRowFirstColumn = fig.add_subplot(gs3[4:6, 0])
+ax_fourthRowFirstColumn.axis('off')
+ax_fourthRowFirstColumn.set_title('E', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
+ax_fourthRowSecondColumn = fig.add_subplot(gs3[4:6, 1])
+ax_fourthRowSecondColumn.axis('off')
+ax_fourthRowSecondColumn.set_title('F', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
+
+# plot training data examples and weights
+for z in range(int(numberZNeurons/2)):
+  # 4 = linethickness/2 aufgerundet
+  # TODO due to int() we are 1 pixel off in plots... fix pls
+  image = dataGenerator.generateHorizontalLineImage(int(3.5 + z * (imageSize[0]) / (numberZNeurons/2)), imageSize)
+  eval("ax1" + str(z) + ".imshow(image[0], cmap='gray')")
+  eval("ax1" + str(z) + ".tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelright=False, labelleft=False)")
+  w = weights[0::2, z]
+  w = w.reshape((imageSize[0], imageSize[1]))
+  eval("ax2" + str(z) + ".imshow(w, cmap='gray')")
+  eval("ax2" + str(z) + ".set_title('$w_{' + str(z+1) + 'n}$', pad=5)")
+  eval("ax2" + str(z) + ".tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelright=False, labelleft=False)")
+
+for z in range(int(numberZNeurons / 2), int(numberZNeurons)):
+  # 4 = linethickness/2 aufgerundet
+  image = dataGenerator.generateVerticalLineImage(int(3.5 + (z - 5) * (imageSize[1]) / (numberZNeurons/2)), imageSize)
+  eval("ax1" + str(z) + ".imshow(image[0], cmap='gray')")
+  eval("ax1" + str(z) + ".tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelright=False, labelleft=False)")
+  
+  w = weights[0::2, z]
+  w = w.reshape((imageSize[0], imageSize[1]))
+  eval("ax2" + str(z) + ".imshow(w, cmap='gray')")
+  eval("ax2" + str(z) + ".set_title('$w_{' + str(z+1) + 'n}$', pad=5)")
+  eval("ax2" + str(z) + ".tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelright=False, labelleft=False)")
+
+# plot the first 120 output spikes
+for i in range(0, 120):
+  ax31.vlines(ZSpikes[1][i], ymin=ZSpikes[0][i] + 1 - 0.5, ymax=ZSpikes[0][i] + 1 + 0.5, color=colors[ZSpikes[0][i]], linewidth=0.5)
+ax31.axvline(x=0, color="red", linestyle="dashed")
+ax31.axvline(x=0.2, color="red", linestyle="dashed")
+ax31.axvline(x=0.4, color="red", linestyle="dashed")
+ax31.axvline(x=0.6, color="red", linestyle="dashed")
+ax31.set_title("Output before learning")
+ax31.set_ylabel("Output neuron")
+ax31.set_xlabel("Time [s]")
+
+# plot the last 120 Z spikes
+for i in range(len(ZSpikes[0]) - len(ZSpikes[0][-120:]), len(ZSpikes[0])):
+  ax32.vlines(ZSpikes[1][i], ymin=ZSpikes[0][i] + 1 - 0.5, ymax=ZSpikes[0][i] + 1 + 0.5, color=colors[ZSpikes[0][i]], linewidth=0.5)
+ax32.axvline(x=simulationTime, color="red", linestyle="dashed")
+ax32.axvline(x=simulationTime - 0.2, color="red", linestyle="dashed")
+ax32.axvline(x=simulationTime - 0.4, color="red", linestyle="dashed")
+ax32.axvline(x=simulationTime - 0.6, color="red", linestyle="dashed")
+ax32.set_title("Output after learning")
+ax32.set_ylabel("Output neuron")
+ax32.set_xlabel("Time [s]")
+
+
+# show training progress (how many distinct Z fired during each image presentation duration)
+# remove first empty entry
+distinctZFiredHistory.pop(0)
+ax41.plot(distinctZFiredHistory)
+ax41.set_title("Training progress")
+ax41.set_ylabel("Output neurons spiking")
+ax41.set_xlabel("Image shown")
+
+# show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
+ax42.plot(averageZFiredHistory)
+ax42.set_title("Certainty of the network")
+ax42.set_ylabel("Certainty")
+ax42.set_xlabel("Image shown")
+
+plt.show()
+pickle.dump(fig, open(directoryPath + "/trainingPlot" + '.pickle','wb'))
+plt.savefig(directoryPath + "/trainingPlot.svg")  
+
+
+
+
+
+
+
 
 # plot all images... 
 # for imageToPlot in images[0]:
@@ -249,7 +374,7 @@ for i in range(imageSize[0]):
 yPosition = np.arange(imageSize[1])
 plt.figure()
 plt.barh(yPosition, imageSize[1], align='edge', height=1.0, color=horizontalLineColors)
-plt.title("Most active Z neuron depending on position and orientation ")
+plt.title("Most active output neuron depending on position and orientation ")
 plt.xlabel("width [px]")
 plt.ylabel("height [px]")
 pieLegend1 = patches.Patch(color=colors[0], label='Z1')
@@ -298,7 +423,7 @@ for i in range(imageSize[1]):
 xPosition = np.arange(imageSize[0])
 plt.figure()
 plt.bar(xPosition, imageSize[0], align='edge', width=1.0, color=verticalLineColors)
-plt.title("Most active Z neuron depending on position and orientation ")
+plt.title("Most active output neuron depending on position and orientation ")
 plt.xlabel("width [px]")
 plt.ylabel("height [px]")
 pieLegend1 = patches.Patch(color=colors[0], label='Z1')
@@ -314,21 +439,3 @@ pieLegend10 = patches.Patch(color=colors[9], label='Z10')
 plt.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
 plt.tight_layout()
 plt.savefig(directoryPath + "/verticalLines.png")      
-
-# show training progress (how many distinct Z fired during each image presentation duration)
-# remove first empty entry
-distinctZFiredHistory.pop(0)
-plt.figure()
-plt.plot(distinctZFiredHistory)
-plt.title("Training progress")
-plt.ylabel("Number of distinct Z neurons spiking")
-plt.xlabel("Image shown")
-plt.savefig(directoryPath + "/distinctZ.png")
-
-# show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
-plt.figure()
-plt.plot(averageZFiredHistory)
-plt.title("Certainty of network")
-plt.ylabel("Homogeneity of Z spikes")
-plt.xlabel("Image shown")
-plt.savefig(directoryPath + "/averageZ.png")
