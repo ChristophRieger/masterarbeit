@@ -226,7 +226,7 @@ ax_thirdRowSecondColumn = fig.add_subplot(gs2[2:4, 1])
 ax_thirdRowSecondColumn.axis('off')
 ax_thirdRowSecondColumn.set_title('D', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
 
-# plot all weights
+# plot training data examples and weights
 for z in range(np.shape(weights)[1]):
   image = dataGenerator.generateImage(0 + 18*z)
   eval("ax1" + str(z) + ".imshow(image[0], cmap='gray')")
@@ -269,7 +269,7 @@ plt.savefig(directoryPath + "/trainingPlot.svg")
 # show training progress (how many distinct Z fired during each image presentation duration)
 # remove first empty entry
 distinctZFiredHistory.pop(0)
-plt.figure()
+fig = plt.figure()
 plt.plot(distinctZFiredHistory)
 plt.title("Training progress")
 plt.ylabel("Number of distinct output neurons spiking")
@@ -278,7 +278,7 @@ pickle.dump(fig, open(directoryPath + "/distinctY" + '.pickle','wb'))
 plt.savefig(directoryPath + "/distinctY.svg") 
 
 # show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
-plt.figure()
+fig = plt.figure()
 plt.plot(averageZFiredHistory)
 plt.title("Certainty of network")
 plt.ylabel("Homogeneity of output spikes")
@@ -297,7 +297,7 @@ for i in range(len(images[0])):
       ZSpikesForThisImage += 1
   outputFiringRate.append(ZSpikesForThisImage / imagePresentationDuration)
 
-plt.figure()
+fig = plt.figure()
 plt.plot(outputFiringRate)
 plt.title("Output firing rate")
 plt.ylabel("Firing rate [Hz]")
