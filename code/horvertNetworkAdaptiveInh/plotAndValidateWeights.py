@@ -28,46 +28,50 @@ validateVertical = False
 validateHorizontal = False
 validateCross = False
 showImpactOfVariablePriorOnCross = True
-ATildeFactor = 5
+ATildeFactor = 1
+
 
 directoryPath =  "TEST" + str(ATildeFactor)
 if not os.path.exists(directoryPath):
   os.mkdir(directoryPath)
 
 
-imageSize = (29, 29)
-imagePresentationDuration = 1
+imageSize = (35, 35)
+imagePresentationDuration = 0.2
 dt = 0.001 # seconds
 firingRate = 20 # Hz
-AfiringRate = 50
+AfiringRate = 200
 
 numberYNeurons = imageSize[0] * imageSize[1] * 2
 numberZNeurons = 10
-numberANeurons = 2
-tauInh = 0.005
+numberANeurons = 100
 sigma = 0.01 
 tauRise = 0.001
 tauDecay = 0.015
+RStar = 200 # Hz; total output firing rate
 
 colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink', 'brown' ,'black']
 verticalLineColors = []
 horizontalLineColors = []
 
-weights = np.load("c20_eta3_" + "ATildeFactor" + str(ATildeFactor) + "_YZWeights.npy")
-priorWeights = np.load("c20_eta3_" + "ATildeFactor" + str(ATildeFactor) + "_AZWeights.npy")
+# weights = np.load("c20_eta3_" + "ATildeFactor" + str(ATildeFactor) + "_YZWeights.npy")
+# priorWeights = np.load("c20_eta3_" + "ATildeFactor" + str(ATildeFactor) + "_AZWeights.npy")
+weights = np.load("c20_eta3_" + "ATildeFactor" + str(ATildeFactor) + "_YZWeights"  + "_numberPriorNeurons" + str(numberANeurons) + ".npy")
+priorWeights = np.load("c20_eta3_" + "ATildeFactor" + str(ATildeFactor) + "_AZWeights"  + "_numberPriorNeurons" + str(numberANeurons) + ".npy")
 
 if plotWeights:
 # plot all weights
   for z in range(np.shape(weights)[1]):
     plt.figure()
-    plt.title("Weights of Z" + str(z+1) + " to all Y")
+    plt.title("Weights of y" + str(z+1) + " to all input neurons")
     wYZ = weights[0::2, z]
-    wYZ = wYZ.reshape((29, 29))
+    wYZ = wYZ.reshape(imageSize)
     plt.imshow(wYZ, origin='lower', cmap='gray')
     plt.savefig(directoryPath + '/weight' + str(z+1) + '.png')
   for a in range(np.shape(priorWeights)[0]):
     plt.figure()
-    plt.title("Weights of A" + str(a+1) + " to all Z")
+    plt.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
+    plt.title("Weights of z" + str(a+1) + " to all output neurons")
     wAZ = priorWeights[a].reshape((10, 1))
     plt.imshow(wAZ, origin='lower', cmap='gray')
     plt.savefig(directoryPath + '/priorWeight' + str(a+1) + '.png')
@@ -96,9 +100,6 @@ if validateVertical:
     encodedImage = dataEncoder.encodeImage(image)
     distinctZFiredHistory.append(len(distinctZFired))
     distinctZFired = []
-    Iinh = 0
-    IinhStartTime = math.inf
-    inhActive = False
 
     if averageZFired:
       mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
@@ -164,11 +165,10 @@ if validateVertical:
         del ASpikes[1][toDeleteID]
         
       # calculate current Inhibition signal
-      if inhActive:
-        inhTMP = 0
-        for i in range(numberZNeurons):
-          inhTMP += np.exp(U[i])
-        Iinh = np.log(inhTMP)
+      inhTMP = 0
+      for i in range(numberZNeurons):
+        inhTMP += np.exp(U[i])
+      Iinh = - np.log(RStar) + np.log(inhTMP)
     
       # calc instantaneous fire rate for each Z Neuron for this time step
       r = np.zeros(numberZNeurons)
@@ -203,13 +203,6 @@ if validateVertical:
         # append ID of Z if this Z has not fired yet in this imagePresentationDuration
         if not distinctZFired.count(ZNeuronWinner):
           distinctZFired.append(ZNeuronWinner)
-        # store time of last Z spike
-        IinhStartTime = t
-        inhActive = True
-      elif t - IinhStartTime > tauInh:
-        Iinh = 0
-        IinhStartTime = math.inf
-        inhActive = False
     # determine distinctZ
     
     # calc which Z fired the most for this position
@@ -308,9 +301,6 @@ if validateHorizontal:
     encodedImage = dataEncoder.encodeImage(image)
     distinctZFiredHistory.append(len(distinctZFired))
     distinctZFired = []
-    Iinh = 0
-    IinhStartTime = math.inf
-    inhActive = False
     
     if averageZFired:
       mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
@@ -376,11 +366,10 @@ if validateHorizontal:
         del ASpikes[1][toDeleteID]   
     
       # calculate current Inhibition signal
-      if inhActive:
-        inhTMP = 0
-        for i in range(numberZNeurons):
-          inhTMP += np.exp(U[i])
-        Iinh = np.log(inhTMP)
+      inhTMP = 0
+      for i in range(numberZNeurons):
+        inhTMP += np.exp(U[i])
+      Iinh = - np.log(RStar) + np.log(inhTMP)
     
       # calc instantaneous fire rate for each Z Neuron for this time step
       r = np.zeros(numberZNeurons)
@@ -415,13 +404,6 @@ if validateHorizontal:
         # append ID of Z if this Z has not fired yet in this imagePresentationDuration
         if not distinctZFired.count(ZNeuronWinner):
           distinctZFired.append(ZNeuronWinner)
-        # store time of last Z spike
-        IinhStartTime = t
-        inhActive = True
-      elif t - IinhStartTime > tauInh:
-        Iinh = 0
-        IinhStartTime = math.inf
-        inhActive = False
     # determine distinctZ
     
     # calc which Z fired the most for this position
@@ -522,9 +504,6 @@ if validateCross:
   encodedImage = dataEncoder.encodeImage(image)
   distinctZFiredHistory.append(len(distinctZFired))
   distinctZFired = []
-  Iinh = 0
-  IinhStartTime = math.inf
-  inhActive = False
   
   if averageZFired:
     mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
@@ -591,11 +570,10 @@ if validateCross:
   
         
     # calculate current Inhibition signal
-    if inhActive:
-      inhTMP = 0
-      for i in range(numberZNeurons):
-        inhTMP += np.exp(U[i])
-      Iinh = np.log(inhTMP)
+    inhTMP = 0
+    for i in range(numberZNeurons):
+      inhTMP += np.exp(U[i])
+    Iinh = - np.log(RStar) + np.log(inhTMP)
       
     # calc instantaneous fire rate for each Z Neuron for this time step
     r = np.zeros(numberZNeurons)
@@ -632,13 +610,6 @@ if validateCross:
       # append ID of Z if this Z has not fired yet in this imagePresentationDuration
       if not distinctZFired.count(ZNeuronWinner):
         distinctZFired.append(ZNeuronWinner)
-      # store time of last Z spike
-      IinhStartTime = t
-      inhActive = True
-    elif t - IinhStartTime > tauInh:
-      Iinh = 0
-      IinhStartTime = math.inf
-      inhActive = False
   
   fig_object = plt.figure()
   for i in range(0, len(ZSpikeHistory[0])):
@@ -653,7 +624,7 @@ if showImpactOfVariablePriorOnCross:
   # validate for cross images with variable prior 
   
   images = [[],[],[],[]]
-  image, xPosition, yPosition, prior = dataGenerator.generateCrossLineImageAtPosition(0, 19, 20) 
+  image, xPosition, yPosition, prior = dataGenerator.generateCrossLineImageAtPosition(0, 3, 32, imageSize) 
   plt.figure()
   plt.imshow(image, origin='lower', cmap='gray')
   plt.savefig(directoryPath + '/crossImageForVariablePrior.png')
@@ -681,9 +652,6 @@ if showImpactOfVariablePriorOnCross:
   
     distinctZFiredHistory.append(len(distinctZFired))
     distinctZFired = []
-    Iinh = 0
-    IinhStartTime = math.inf
-    inhActive = False
     
     if averageZFired:
       mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
@@ -692,6 +660,8 @@ if showImpactOfVariablePriorOnCross:
       averageZFired = []
     
     ASpikeHistory = []
+    UHistory = [[],[],[],[],[],[],[],[],[],[]]
+
     
     # generate all ASpikes for this prior iteration in advance and ensure that
     # the exact firing frequency is generated
@@ -831,13 +801,16 @@ if showImpactOfVariablePriorOnCross:
       for toDeleteID in sorted(expiredASpikeIDs, reverse=True):
         del ASpikes[0][toDeleteID]
         del ASpikes[1][toDeleteID]
+      
+      for uValue in range(numberZNeurons):
+        UHistory[uValue].append(U[uValue])
+
         
       # calculate current Inhibition signal
-      if inhActive:
-        inhTMP = 0
-        for i in range(numberZNeurons):
-          inhTMP += np.exp(U[i])
-        Iinh = np.log(inhTMP)
+      inhTMP = 0
+      for i in range(numberZNeurons):
+        inhTMP += np.exp(U[i])
+      Iinh = - np.log(RStar) + np.log(inhTMP)
     
       # calc instantaneous fire rate for each Z Neuron for this time step
       r = np.zeros(numberZNeurons)
@@ -874,13 +847,6 @@ if showImpactOfVariablePriorOnCross:
         # append ID of Z if this Z has not fired yet in this imagePresentationDuration
         if not distinctZFired.count(ZNeuronWinner):
           distinctZFired.append(ZNeuronWinner)
-        # store time of last Z spike
-        IinhStartTime = t
-        inhActive = True
-      elif t - IinhStartTime > tauInh:
-        Iinh = 0
-        IinhStartTime = math.inf
-        inhActive = False
     
     fig_object = plt.figure()
     for i in range(0, len(ZSpikeHistory[0])):
@@ -951,6 +917,15 @@ if showImpactOfVariablePriorOnCross:
       else:
         firingRateY0.append(0)
 
+  fig_object = plt.figure()
+  for k in range(numberZNeurons):  
+    plt.plot(UHistory[k], color=colors[k])
+  plt.title("Membrane potentials")
+  plt.ylabel("U")
+  plt.xlabel("Time [s]")
+  # plt.legend()
+  pickle.dump(fig_object, open(directoryPath + '/membranePotentials' + str(currentPrior) + '.pickle','wb'))
+  plt.savefig(directoryPath + '/membranePotentials' + str(currentPrior) + '.png')    
 
   fig_object = plt.figure() 
   xPositionPlt = np.arange(AfiringRate)
@@ -961,4 +936,6 @@ if showImpactOfVariablePriorOnCross:
   plt.xlabel("Z0 firing frequency [Hz]")
   # plt.legend()
   pickle.dump(fig_object, open(directoryPath + '/YFrequency_prior' + str(currentPrior) + '.pickle','wb'))
-  plt.savefig(directoryPath + '/YFrequency_prior' + str(currentPrior) + '.png')        
+  plt.savefig(directoryPath + '/YFrequency_prior' + str(currentPrior) + '.png')   
+
+         
