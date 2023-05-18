@@ -41,7 +41,7 @@ firingRate = 20 # Hz; Input neurons yn should spike with 20Hz => firingRate (Lam
 AfiringRate = 200
 numberYNeurons = imageSize[0] * imageSize[1] * 2 # 2 neurons per pixel (one for black, one for white)
 numberZNeurons = 10
-numberANeurons = 2
+numberANeurons = 100
 
 sigma = 0.01 # time frame in which spikes count as before output spike
 c = 20 # 10 seems good, scales weights to 0 ... 1
@@ -110,13 +110,15 @@ for t in np.arange(0, simulationTime, dt):
        
   # generate A Spikes for this step
   if prior == 0:
-    if poissonGenerator.doesNeuronFire(AfiringRate, dt):
-      ASpikes[0].append(t)
-      ASpikes[1].append(0)
+    for priorIterator in range (0, int(numberANeurons/2)):
+      if poissonGenerator.doesNeuronFire(AfiringRate, dt):
+        ASpikes[0].append(t)
+        ASpikes[1].append(priorIterator)
   elif prior == 1:
-    if poissonGenerator.doesNeuronFire(AfiringRate, dt):
-      ASpikes[0].append(t)
-      ASpikes[1].append(1)
+    for priorIterator in range (int(numberANeurons/2), numberANeurons):
+      if poissonGenerator.doesNeuronFire(AfiringRate, dt):
+        ASpikes[0].append(t)
+        ASpikes[1].append(priorIterator)
   
   # Next we have to calculate Uk
   U = np.zeros(numberZNeurons)
@@ -197,11 +199,11 @@ for t in np.arange(0, simulationTime, dt):
   if (t) % 1 == 0:
     print("Finished simulation of t= " + str(t))
 
-directoryPath =  "c" + str(c) + "_eta" + str(learningRateFactor) + "_ATildeFactor" + str(ATildeFactor)
+directoryPath =  "c" + str(c) + "_eta" + str(learningRateFactor) + "_ATildeFactor" + str(ATildeFactor) + "_numberPriorNeurons" + str(numberANeurons)
 if not os.path.exists(directoryPath):
   os.mkdir(directoryPath)
-np.save(directoryPath + "/c" + str(c) + "_eta" + str(learningRateFactor) + "_ATildeFactor" + str(ATildeFactor) + "_YZWeights.npy", weights)
-np.save(directoryPath + "/c" + str(cPrior) + "_eta" + str(learningRateFactor) + "_ATildeFactor" + str(ATildeFactor) + "_AZWeights.npy", priorWeights)
+np.save(directoryPath + "/c" + str(c) + "_eta" + str(learningRateFactor) + "_ATildeFactor" + str(ATildeFactor) + "_YZWeights"  + "_numberPriorNeurons" + str(numberANeurons) + ".npy", weights)
+np.save(directoryPath + "/c" + str(cPrior) + "_eta" + str(learningRateFactor) + "_ATildeFactor" + str(ATildeFactor) + "_AZWeights"  + "_numberPriorNeurons" + str(numberANeurons) + ".npy", priorWeights)
   
 colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink', 'brown' ,'black']
 
@@ -329,6 +331,8 @@ ax42.set_xlabel("Image shown")
 plt.show()
 pickle.dump(fig, open(directoryPath + "/trainingPlot" + '.pickle','wb'))
 plt.savefig(directoryPath + "/trainingPlot.svg")  
+plt.savefig(directoryPath + "/trainingPlot.png")
+plt.savefig(directoryPath + "/trainingPlot.jpg")    
 
 
 
