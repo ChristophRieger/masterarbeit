@@ -1,2 +1,2 @@
 - protocol horvertadaptiveinh with finally working prior (20 neurons?, mby look at others, or better look at different crosses how it performs)
-
+  ... started, but really not done yet
