@@ -1,0 +1,40 @@
+fInput:
+
+Feuerrate der input neuronen war im netz bei 1225 input pixel = 20 Hz
+
+hier haben wir ein input image mit 1 x 9 = 9 input pixel...
+mit 20 prior neurons (10 pro klasse...) und 200 Hz (quasi das maximum das wir vertreten können) hatte es einen merklichen Impact.
+
+I würd mal versuchen die 9 Pixel mit 200 Hz feuern zu lassen und schau was passiert....
+
+fPrior:
+lass ich mal auf 200 Hz
+
+numberZNeurons:
+sollte 4 sein, eins pro Klasse (nur eins von denen ist active at a time)
+
+numberYNeurons:
+4 (eins pro Klasse)
+
+numberXNeurons:
+9 * 2 = 18
+
+c:
+
+Ich würd gerne versuchen c = 1 zu lassen, weil das macht es leichter die mathematische analyse durchzuführen. Aber es geht auch mit c ungleich 1.
+
+STEHENGEBLIEBEN:
+in datagenerator beim auswählen des Priors.
+
+
+WHAT I DID SO FAR:
+- small initial changes in train file
+- added generateRandom1DLineImage() to dataGenerator (not tested)
+
+FRAGEN:
+wie soll ich den Noise des Inputs implementieren? 
+kann mehr als 1 der 3 Input neurons flippen?
+Können je mehr als 3 Input neurons aktiv sein?
+Wandert der 3er input in 1er schritten?
+I glaub mei Prior Matrix is falsch, wegen case position = 2 usw (wenn mitte des 3er blocks zwischen 2 klassen liegt)
+
