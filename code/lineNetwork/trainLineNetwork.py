@@ -34,7 +34,7 @@ dt = 0.001 # seconds
 
 firingRate = 200 # Hz; Input neurons yn should spike with 20Hz => firingRate (Lambda) = 20/second
 AfiringRate = 200
-numberXNeurons = imageSize[0] * imageSize[1] * 2 # 2 neurons per pixel (one for black, one for white) # input
+numberXNeurons = imageSize[0] * imageSize[1] # 1 neurons per pixel (one for black) # input
 numberYNeurons = 4 # output
 numberZNeurons = 4 # prior
 
@@ -56,12 +56,23 @@ if loadWeights:
   weights = np.load("c20_3_" + ATildeFactor + "ATilde_YZWeights.npy")
   priorWeights = np.load("c20_3_" + ATildeFactor + "ATilde_AZWeights.npy")
 else:
-  weights = np.full((numberXNeurons, numberYNeurons), 2, "float64")
-  priorWeights = np.full((numberZNeurons, numberYNeurons), 2, "float64")
+  weights = np.array([[0.9, 0.9, 0.9, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+                        [0.1, 0.1, 0.9, 0.9, 0.9, 0.1, 0.1, 0.1, 0.1],
+                        [0.1, 0.1, 0.1, 0.1, 0.9, 0.9, 0.9, 0.1, 0.1],
+                        [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.9, 0.9, 0.9]],
+                        "float64")
+  priorWeights = np.array([[0.9, 0.0333, 0.0333, 0.0333],
+                           [0.0333, 0.9, 0.0333, 0.0333],
+                           [0.0333, 0.0333, 0.9, 0.0333],
+                           [0.0333, 0.0333, 0.0333, 0.9]],
+                        "float64")
+
+  # weights = np.full((numberXNeurons, numberYNeurons), 2, "float64")
+  # priorWeights = np.full((numberZNeurons, numberYNeurons), 2, "float64")
 
 indexOfLastYSpike = [0] * numberXNeurons
 ZNeuronsRecievedYSpikes = [[],[]]
-images = [[],[],[],[]]
+images = [[],[]]
 
 # Metric to measure training progress
 # check how many different Z neurons fired during one image
@@ -70,15 +81,18 @@ distinctZFired = []
 averageZFired = []
 averageZFiredHistory = []
 
+# image, prior = dataGenerator.generateRandom1DLineImage(imageSize)
+# plt.figure()
+# plt.imshow(image, cmap='gray')
+# sys.exit()
+
 # start simulation
 for t in np.arange(0, simulationTime, dt):
   # generate training data every 50ms
   if abs(t - round(t / imagePresentationDuration) * imagePresentationDuration) < 1e-10:
-    image, position, prior, orientation = dataGenerator.generateRandomHorizontalLineImage(imageSize)
+    image, prior = dataGenerator.generateRandom1DLineImage(imageSize)
     images[0].append(image)
-    images[1].append(position)
-    images[2].append(prior)
-    images[3].append(orientation)
+    images[1].append(prior)
     encodedImage = dataEncoder.encodeImage(image)
     distinctZFiredHistory.append(len(distinctZFired))
     distinctZFired = []

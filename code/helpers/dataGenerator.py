@@ -352,6 +352,9 @@ def generateCrossLineImageAtPosition(orientation, xPosition, yPosition, imageSiz
 #  imageSize(height, width)
 def generateRandom1DLineImage(imageSize = (1, 9), noiseLevel = 0.1, priorFlipChance = 0.1):
   activePixels = 3 # not variable for now, as not needed. To be variable adapt 'position' and setting of active pixels
+  possibleClasses = 4
+  classes = [0, 1, 2, 3]
+  positions = [1, 3, 5, 7] # center coords of the 4 classes
   
   white = 255
   black = 0
@@ -359,14 +362,8 @@ def generateRandom1DLineImage(imageSize = (1, 9), noiseLevel = 0.1, priorFlipCha
   # Create an empty image with all pixels set to white (255)
   image = np.full(imageSize, white, dtype=np.uint8)
   
-  # random position of the active area
-  # 0.5 and minus 1.5 needed so that the positions 1 and 8 have the same probability
-  # as the other positions: 0.5 - 1.5 = > 1,  1.5 - 2.5 => 2, ... 6.5 - 7.5 => 7
-  # and so that the 3 active pixels dont fuck anything up...
-  # range of position should now be: 1 - 7 (pixel positions range from 0 - 8, block one pixel at the edges due to activePixels = 3)
-  # does this make sense? I will have to draw it and come back....
-  # it does make sense, 1 - 7 it is.
-  position = round(np.random.uniform(0.5001, imageSize[1] - 1.4999))
+  chosenClass = random.choice(classes)
+  position = positions[chosenClass]
   
   # set the active pixels to black, according to position
   image[0, position] = 0
@@ -382,9 +379,11 @@ def generateRandom1DLineImage(imageSize = (1, 9), noiseLevel = 0.1, priorFlipCha
         else:
           image[row,column] = white
           
-  # how to handle prior? possible: 0, 1, 2, 3
-  prior = 1
+  # prior and its flip chance
+  prior = chosenClass
   if random.random() < priorFlipChance:
-    prior = 0
+    classes.remove(chosenClass)
+    # each 'wrong' prior is equally likely
+    prior = random.choice(classes)
   
-  return image, yPosition, prior, 1
+  return image, prior

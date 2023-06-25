@@ -29,12 +29,14 @@ in datagenerator beim auswählen des Priors.
 
 WHAT I DID SO FAR:
 - small initial changes in train file
-- added generateRandom1DLineImage() to dataGenerator (not tested)
+- added generateRandom1DLineImage() to dataGenerator ... works
+- added analytically determined weights to file (not w yet, but only p... check how to convert)
+- script doesnt run, debug
 
 FRAGEN:
-wie soll ich den Noise des Inputs implementieren? 
-kann mehr als 1 der 3 Input neurons flippen?
-Können je mehr als 3 Input neurons aktiv sein?
-Wandert der 3er input in 1er schritten?
-I glaub mei Prior Matrix is falsch, wegen case position = 2 usw (wenn mitte des 3er blocks zwischen 2 klassen liegt)
+wie soll ich den Noise des Inputs implementieren? ... pro klasse sind 3 pixel aktive, die gehen immer nur in 2 pixel schritten weiter. Also es gibt kein input bild zwischen den klassen.
+kann mehr als 1 der 3 Input neurons flippen?  ... ja, 3 pixel aktiv setzen, dann alle mit 10% flippen
+Können je mehr als 3 Input neurons aktiv sein? ... ja, 3 pixel aktiv setzen, dann alle mit 10% flippen
+Wandert der 3er input in 1er schritten?   ... nein, nur in 2er schritten wo die klassen definiert sind.
+I glaub mei Prior Matrix is falsch, wegen case position = 2 usw (wenn mitte des 3er blocks zwischen 2 klassen liegt) ...  na sie hat gepasst, da wir in 2er schritten gehn.
 
