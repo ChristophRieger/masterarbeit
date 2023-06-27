@@ -28,10 +28,10 @@ in datagenerator beim auswählen des Priors.
 
 
 WHAT I DID SO FAR:
-- small initial changes in train file
-- added generateRandom1DLineImage() to dataGenerator ... works
-- added analytically determined weights to file (not w yet, but only p... check how to convert)
-- script doesnt run, debug
+- added generateRandom1DLineImage() to dataGenerator DONE
+- added analytically determined weights to file DONE
+- script works, need to calc percentages of spikes of different outputs ...
+- started generation of result plot ...
 
 FRAGEN:
 wie soll ich den Noise des Inputs implementieren? ... pro klasse sind 3 pixel aktive, die gehen immer nur in 2 pixel schritten weiter. Also es gibt kein input bild zwischen den klassen.
