@@ -24,6 +24,7 @@ loadWeights = False
 
 plt.close("all")
 
+simulationTime = 200
 imageSize = (1, 9)
 imagePresentationDuration = 2
 dt = 0.001 # seconds
@@ -78,37 +79,18 @@ distinctZFired = []
 averageZFired = []
 averageZFiredHistory = []
 
-image, prior = dataGenerator.generateRandom1DLineImage(imageSize)
-fig, ax = plt.subplots()
-ax.imshow(image, cmap='gray')
-rect = patches.Rectangle((1.5,-0.5), 3, 1, linewidth=8, edgecolor='r', facecolor='none')
-ax.add_patch(rect)
-rect.set_clip_path(rect)
-ax.axvline(x=0.5)
-ax.axvline(x=1.5)
-ax.axvline(x=2.5)
-ax.axvline(x=3.5)
-ax.axvline(x=4.5)
-ax.axvline(x=5.5)
-ax.axvline(x=6.5)
-ax.axvline(x=7.5)
-ax.axvline(x=8.5)
-
-ax.set_ylim([-0.5, 0.5])
-plt.show()
+# image, prior = dataGenerator.generateRandom1DLineImage(imageSize)
 # plt.figure()
 # plt.imshow(image, cmap='gray')
-sys.exit()
-
-# generate Input data
-image, prior = dataGenerator.generateRandom1DLineImage(imageSize)
-images[0].append(image)
-images[1].append(prior)
+# sys.exit()
 
 # start simulation
-for t in np.arange(0, imagePresentationDuration, dt):
+for t in np.arange(0, simulationTime, dt):
   # generate training data every 50ms
   if abs(t - round(t / imagePresentationDuration) * imagePresentationDuration) < 1e-10:
+    image, prior = dataGenerator.generateRandom1DLineImage(imageSize)
+    images[0].append(image)
+    images[1].append(prior)
     distinctZFiredHistory.append(len(distinctZFired))
     distinctZFired = []
     if averageZFired:
@@ -208,8 +190,11 @@ for t in np.arange(0, imagePresentationDuration, dt):
       distinctZFired.append(ZNeuronWinner)
     # update weights of all Y to ZThatFired
     # do not update weights in this experiment for now we want to analyze the mathematically determined weights
-    # weights = neuronFunctions.updateWeights(YTilde, weights, ZNeuronWinner, c, learningRate)
-    # priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronWinner, c, learningRate)
+    weights = neuronFunctions.updateWeights(YTilde, weights, ZNeuronWinner, c, learningRate)
+    priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronWinner, c, learningRate)
+    
+  if (t) % 1 == 0:
+    print("Finished simulation of t= " + str(t))
 
 directoryPath =  "c" + str(c) + "_eta" + str(learningRateFactor) + "_numberPriorNeurons" + str(numberZNeurons)
 if not os.path.exists(directoryPath):
