@@ -18,6 +18,7 @@ import numpy as np
 import random
 import os
 import pickle
+import mathematischeAnalyse
 
 # Command Center
 loadWeights = False
@@ -78,27 +79,25 @@ distinctZFired = []
 averageZFired = []
 averageZFiredHistory = []
 
-image, prior = dataGenerator.generateRandom1DLineImage(imageSize)
-fig, ax = plt.subplots()
-ax.imshow(image, cmap='gray')
-rect = patches.Rectangle((1.5,-0.5), 3, 1, linewidth=8, edgecolor='r', facecolor='none')
-ax.add_patch(rect)
-rect.set_clip_path(rect)
-ax.axvline(x=0.5)
-ax.axvline(x=1.5)
-ax.axvline(x=2.5)
-ax.axvline(x=3.5)
-ax.axvline(x=4.5)
-ax.axvline(x=5.5)
-ax.axvline(x=6.5)
-ax.axvline(x=7.5)
-ax.axvline(x=8.5)
+# image, prior = dataGenerator.generateRandom1DLineImage(imageSize)
+# fig, ax = plt.subplots()
+# ax.imshow(image, cmap='gray')
+# rect = patches.Rectangle((1.5,-0.5), 3, 1, linewidth=8, edgecolor='r', facecolor='none')
+# ax.add_patch(rect)
+# rect.set_clip_path(rect)
+# ax.axvline(x=0.5)
+# ax.axvline(x=1.5)
+# ax.axvline(x=2.5)
+# ax.axvline(x=3.5)
+# ax.axvline(x=4.5)
+# ax.axvline(x=5.5)
+# ax.axvline(x=6.5)
+# ax.axvline(x=7.5)
+# ax.axvline(x=8.5)
+# ax.set_ylim([-0.5, 0.5])
+# plt.show()
 
-ax.set_ylim([-0.5, 0.5])
-plt.show()
-# plt.figure()
-# plt.imshow(image, cmap='gray')
-sys.exit()
+# sys.exit()
 
 # generate Input data
 image, prior = dataGenerator.generateRandom1DLineImage(imageSize)
@@ -210,6 +209,53 @@ for t in np.arange(0, imagePresentationDuration, dt):
     # do not update weights in this experiment for now we want to analyze the mathematically determined weights
     # weights = neuronFunctions.updateWeights(YTilde, weights, ZNeuronWinner, c, learningRate)
     # priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronWinner, c, learningRate)
+
+# Simulation DONE
+
+# 1 hot encode prior
+priorEncoded = np.zeros(4)
+priorEncoded[prior] = 1
+# 1 hot encode image
+# were image has value 0 => black pixel => should become 1 in encoded image
+imageEncoded = np.zeros(9)
+for i in range(image.shape[1]):
+  if image[0, i] == 0:
+    imageEncoded[i] = 1
+
+PvonYvorausgesetztXundZAnalysis = mathematischeAnalyse.calcPvonYvorausgesetztXundZ(imageEncoded, priorEncoded)
+
+PvonYvorausgesetztXundZSimulation = np.zeros(4)
+totalSpikes = len(YSpikes[0])
+amountY0Spikes = len(np.where(np.array(YSpikes[0]) == 0)[0])
+amountY1Spikes = len(np.where(np.array(YSpikes[0]) == 1)[0])
+amountY2Spikes = len(np.where(np.array(YSpikes[0]) == 2)[0])
+amountY3Spikes = len(np.where(np.array(YSpikes[0]) == 3)[0])
+PvonYvorausgesetztXundZSimulation[0] = amountY0Spikes / totalSpikes
+PvonYvorausgesetztXundZSimulation[1] = amountY1Spikes / totalSpikes
+PvonYvorausgesetztXundZSimulation[2] = amountY2Spikes / totalSpikes
+PvonYvorausgesetztXundZSimulation[3] = amountY3Spikes / totalSpikes
+
+
+fig, ax = plt.subplots()
+ax.imshow(image, cmap='gray')
+rect = patches.Rectangle((-0.5 + prior*2,-0.5), 3, 1, linewidth=8, edgecolor='r', facecolor='none')
+ax.add_patch(rect)
+rect.set_clip_path(rect)
+ax.axvline(x=0.5)
+ax.axvline(x=1.5)
+ax.axvline(x=2.5)
+ax.axvline(x=3.5)
+ax.axvline(x=4.5)
+ax.axvline(x=5.5)
+ax.axvline(x=6.5)
+ax.axvline(x=7.5)
+ax.axvline(x=8.5)
+ax.set_ylim([-0.5, 0.5])
+plt.show()
+
+# everything below was copied from horvert experiment and is trash
+print("Finished")
+sys.exit()
 
 directoryPath =  "c" + str(c) + "_eta" + str(learningRateFactor) + "_numberPriorNeurons" + str(numberZNeurons)
 if not os.path.exists(directoryPath):

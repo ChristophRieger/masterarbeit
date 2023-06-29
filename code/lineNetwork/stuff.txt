@@ -1,3 +1,13 @@
+WHAT I DID SO FAR:
+- added generateRandom1DLineImage() to dataGenerator DONE
+- added analytically determined weights to file DONE
+- script works, need to calc percentages of spikes of different outputs DONE
+- started generation of result plot ... visualization of training image + prior is fine... percentages of simulation and math analysis missing...
+- implemented mathematische analyse at end of simulation and hand over x and z. (image and prior)... DONEn
+- whole anaconda stuff finally broke :( ... created new env MASTER, WIP, probly need to update some stuff after? and create this env on IGI Cluster.
+... got old anaconda running again, altough linting and debugging doesnt work anymore
+
+
 fInput:
 
 Feuerrate der input neuronen war im netz bei 1225 input pixel = 20 Hz
@@ -22,16 +32,6 @@ numberXNeurons:
 c:
 
 Ich würd gerne versuchen c = 1 zu lassen, weil das macht es leichter die mathematische analyse durchzuführen. Aber es geht auch mit c ungleich 1.
-
-STEHENGEBLIEBEN:
-in datagenerator beim auswählen des Priors.
-
-
-WHAT I DID SO FAR:
-- added generateRandom1DLineImage() to dataGenerator DONE
-- added analytically determined weights to file DONE
-- script works, need to calc percentages of spikes of different outputs ...
-- started generation of result plot ...
 
 FRAGEN:
 wie soll ich den Noise des Inputs implementieren? ... pro klasse sind 3 pixel aktive, die gehen immer nur in 2 pixel schritten weiter. Also es gibt kein input bild zwischen den klassen.
