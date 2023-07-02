@@ -261,9 +261,10 @@ ax32.set_title("Output after learning")
 ax32.set_ylabel("Output neuron")
 ax32.set_xlabel("Time [s]")
 
-plt.show()
 pickle.dump(fig, open(directoryPath + "/trainingPlot" + '.pickle','wb'))
 plt.savefig(directoryPath + "/trainingPlot.svg")  
+plt.show()
+
 
 
 # show training progress (how many distinct Z fired during each image presentation duration)

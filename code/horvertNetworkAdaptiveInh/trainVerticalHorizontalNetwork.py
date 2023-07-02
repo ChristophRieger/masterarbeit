@@ -328,11 +328,12 @@ ax42.set_title("Certainty of the network")
 ax42.set_ylabel("Certainty")
 ax42.set_xlabel("Image shown")
 
-plt.show()
 pickle.dump(fig, open(directoryPath + "/trainingPlot" + '.pickle','wb'))
 plt.savefig(directoryPath + "/trainingPlot.svg")  
 plt.savefig(directoryPath + "/trainingPlot.png")
-plt.savefig(directoryPath + "/trainingPlot.jpg")    
+plt.savefig(directoryPath + "/trainingPlot.jpg") 
+plt.show()
+   
 
 
 
