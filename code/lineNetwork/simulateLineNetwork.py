@@ -29,7 +29,7 @@ imageSize = (1, 9)
 imagePresentationDuration = 20
 dt = 0.001 # seconds
 
-firingRate = 200 # Hz; Input neurons yn should spike with 20Hz => firingRate (Lambda) = 20/second
+firingRate = 100 # Hz;
 AfiringRate = 400
 numberXNeurons = imageSize[0] * imageSize[1] # 1 neurons per pixel (one for black) # input
 numberYNeurons = 4 # output
@@ -53,7 +53,9 @@ else:
                         [0.1, 0.1, 0.1, 0.1, 0.9, 0.9, 0.9, 0.1, 0.1],
                         [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.9, 0.9, 0.9]],
                         "float64")
+  weightsInverted = 1 - weights
   weights = np.log(weights)
+  weightsInverted = np.log(weightsInverted)
   priorWeights = np.array([[0.9, 0.0333, 0.0333, 0.0333],
                            [0.0333, 0.9, 0.0333, 0.0333],
                            [0.0333, 0.0333, 0.9, 0.0333],
@@ -64,35 +66,40 @@ else:
 # generate Input data
 # no random generation needed for this experiment, rather I use handpicked examples.
 # image, prior = dataGenerator.generateRandom1DLineImage(imageSize)
-images = [[],[]]
+images = [[],[],[]]
 imagesEncoded = []
 priorsEncoded = []
 PvonYvorausgesetztXundZSimulationList = []
 # 1
-image = np.array([[0, 255, 0, 255, 255, 255, 0, 255, 0]], dtype=np.uint8)
-prior = 0
+image = np.array([[255, 255, 0, 0, 0, 255, 255, 255, 255]], dtype=np.uint8)
+prior = 3
 images[0].append(image)
 images[1].append(prior)
+# for each pixel there are 2 neurons, this vector represents the active neurons for non active pixels
+images[2].append(255 - image)
 # 2
-image = np.array([[0, 0, 0, 255, 0, 0, 255, 255, 255]], dtype=np.uint8)
+image = np.array([[0, 0, 0, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
 prior = 3
 images[0].append(image)
 images[1].append(prior)
-
+images[2].append(255 - image)
 # 3
-image = np.array([[255, 0, 0, 0, 255, 0, 255, 0, 255]], dtype=np.uint8)
-prior = 0
-images[0].append(image)
-images[1].append(prior)
-# 4
-image = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0]], dtype=np.uint8)
+image = np.array([[255, 0, 0, 0, 255, 255, 255, 255, 255]], dtype=np.uint8)
 prior = 3
 images[0].append(image)
 images[1].append(prior)
+images[2].append(255 - image)
+# 4
+image = np.array([[255, 255, 255, 255, 255, 255, 0, 0, 0]], dtype=np.uint8)
+prior = 3
+images[0].append(image)
+images[1].append(prior)
+images[2].append(255 - image)
 
 # 1 simulation per handpicked input data
 for inputIterator in range(len(images[0])):
   XSpikes = [[],[]] # input
+  XSpikesInverted = [[],[]] # input
   YSpikes = [[],[]] # output
   ZSpikes = [[],[]] # prior
   
@@ -108,6 +115,7 @@ for inputIterator in range(len(images[0])):
   
   # pick current image and prior
   image = images[0][inputIterator]
+  imageInverted = images[2][inputIterator]
   prior = images[1][inputIterator]
   
   # start simulation
@@ -133,6 +141,17 @@ for inputIterator in range(len(images[0])):
          # which X spiked
          XSpikes[1].append(i)
          
+    # generate X SpikesInverted for this step
+    for i in range(imageInverted.shape[1]):
+      # check if the Xi is active
+      if imageInverted[0][i] == 0:
+       # check if Xi spiked in this timestep
+       if poissonGenerator.doesNeuronFire(firingRate, dt):
+         # when did it spike
+         XSpikesInverted[0].append(t)
+         # which X spiked
+         XSpikesInverted[1].append(i)
+         
     # generate A Spikes for this step
     if poissonGenerator.doesNeuronFire(AfiringRate, dt):
       ZSpikes[0].append(t)
@@ -141,7 +160,7 @@ for inputIterator in range(len(images[0])):
     
     # Next we have to calculate Uk
     U = np.zeros(numberYNeurons)
-    # Add contribution of Y
+    # Add contribution of X
     expiredYSpikeIDs = []
     YTilde = np.zeros(numberXNeurons)
     for i, YNeuron in enumerate(XSpikes[1]):
@@ -156,6 +175,22 @@ for inputIterator in range(len(images[0])):
     for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
       del XSpikes[0][toDeleteID]
       del XSpikes[1][toDeleteID]
+      
+    # Add contribution of XInverted
+    expiredYSpikeIDs = []
+    YTilde = np.zeros(numberXNeurons)
+    for i, YNeuron in enumerate(XSpikesInverted[1]):
+      # First mark all XSpikes older than sigma and do not use for calculation of Uk
+      if XSpikesInverted[0][i] < t - sigma:
+        expiredYSpikeIDs.append(i)
+      else:
+        YTilde[XSpikesInverted[1][i]] = kernel.tilde(t, dt, XSpikesInverted[0][i], tauRise, tauDecay)
+        for k in range(numberYNeurons):
+          U[k] += weightsInverted[k, YNeuron] * YTilde[XSpikesInverted[1][i]]
+    # delete all spikes that are longer ago than sigma (10ms?) from XSpikes
+    for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
+      del XSpikesInverted[0][toDeleteID]
+      del XSpikesInverted[1][toDeleteID]
       
     # Add contribution of A
     ATilde = np.zeros(numberZNeurons)
@@ -196,7 +231,7 @@ for inputIterator in range(len(images[0])):
         ZNeuronsThatWantToFire.append(k)
         ZNeuronWantsToFireAtTime.append(t)
         ZNeuronFireFactors.append(ZNeuronFireFactor)
-      
+    
     # check if any Z Neurons want to fire and determine winner Z
     if len(ZNeuronsThatWantToFire) > 0:
       ZFireFactorMax = -math.inf
@@ -215,13 +250,12 @@ for inputIterator in range(len(images[0])):
       # do not update weights in this experiment for now we want to analyze the mathematically determined weights
       # weights = neuronFunctions.updateWeights(YTilde, weights, ZNeuronWinner, c, learningRate)
       # priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronWinner, c, learningRate)
-  
   # Simulation DONE
   
   directoryPath =  "fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay)
   if not os.path.exists(directoryPath):
     os.mkdir(directoryPath)
-  np.save(directoryPath + "/weights)" + ".npy", weights)
+  np.save(directoryPath + "/weights" + ".npy", weights)
   np.save(directoryPath + "/priorWeights" + ".npy", priorWeights)
     
   
@@ -321,9 +355,9 @@ for i in range(int(len(imagesEncoded)/2)):
     
     counter += 1
   
-pickle.dump(fig, open(directoryPath + "/trainingPlot2" + '.pickle','wb'))
-plt.savefig(directoryPath + "/trainingPlot2" + ".svg")  
-plt.savefig(directoryPath + "/trainingPlot2" + ".png")
-plt.savefig(directoryPath + "/trainingPlot2" + ".jpg") 
+pickle.dump(fig, open(directoryPath + "/trainingPlot5" + '.pickle','wb'))
+plt.savefig(directoryPath + "/trainingPlot5" + ".svg")  
+plt.savefig(directoryPath + "/trainingPlot5" + ".png")
+plt.savefig(directoryPath + "/trainingPlot5" + ".jpg") 
 plt.show()
 
