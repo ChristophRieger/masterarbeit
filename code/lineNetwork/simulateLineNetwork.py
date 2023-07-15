@@ -19,6 +19,7 @@ import random
 import os
 import pickle
 import mathematischeAnalyse
+import copy
 
 # Command Center
 loadWeights = False
@@ -26,11 +27,11 @@ loadWeights = False
 plt.close("all")
 
 imageSize = (1, 9)
-imagePresentationDuration = 20
+imagePresentationDuration = 5
 dt = 0.001 # seconds
 
 firingRate = 100 # Hz;
-AfiringRate = 400
+AfiringRate = 300
 numberXNeurons = imageSize[0] * imageSize[1] # 1 neurons per pixel (one for black) # input
 numberYNeurons = 4 # output
 numberZNeurons = 4 # prior
@@ -129,48 +130,69 @@ for inputIterator in range(len(images[0])):
         amountMostSpikingZ = averageZFired.count(mostSpikingZ)
         averageZFiredHistory.append(amountMostSpikingZ / len(averageZFired))
         averageZFired = []
-      
+    
     # generate X Spikes for this step
     for i in range(image.shape[1]):
       # check if the Xi is active
       if image[0][i] == 0:
        # check if Xi spiked in this timestep
-       if poissonGenerator.doesNeuronFire(firingRate, dt):
-         # when did it spike
-         XSpikes[0].append(t)
-         # which X spiked
-         XSpikes[1].append(i)
-         
+       if poissonGenerator.doesNeuronFire(0.9 * firingRate, dt):
+          # when did it spike
+          XSpikes[0].append(t)
+          # which X spiked
+          XSpikes[1].append(i)
+      else:
+        if poissonGenerator.doesNeuronFire(0.1 * firingRate, dt):
+          # when did it spike
+          XSpikes[0].append(t)
+          # which X spiked
+          XSpikes[1].append(i)
+          
     # generate X SpikesInverted for this step
     for i in range(imageInverted.shape[1]):
       # check if the Xi is active
       if imageInverted[0][i] == 0:
        # check if Xi spiked in this timestep
-       if poissonGenerator.doesNeuronFire(firingRate, dt):
-         # when did it spike
-         XSpikesInverted[0].append(t)
-         # which X spiked
-         XSpikesInverted[1].append(i)
+       if poissonGenerator.doesNeuronFire(0.9 * firingRate, dt):
+          # when did it spike
+          XSpikesInverted[0].append(t)
+          # which X spiked
+          XSpikesInverted[1].append(i)
+      else:
+        if poissonGenerator.doesNeuronFire(0.1 * firingRate, dt):
+          # when did it spike
+          XSpikesInverted[0].append(t)
+          # which X spiked
+          XSpikesInverted[1].append(i)
          
+    priorChoices = [0, 1, 2, 3]
     # generate A Spikes for this step
     if poissonGenerator.doesNeuronFire(AfiringRate, dt):
-      ZSpikes[0].append(t)
-      ZSpikes[1].append(prior)
+      #  check if neuron does randomly flip:
+      if random.random() < 0.9:
+        ZSpikes[0].append(t)
+        ZSpikes[1].append(prior)
+      else:
+        ZSpikes[0].append(t)
+        tmpChoices = copy.deepcopy(priorChoices)
+        tmpChoices.pop(prior)
+        choice = random.choice(tmpChoices)
+        ZSpikes[1].append(choice)
   
     
     # Next we have to calculate Uk
     U = np.zeros(numberYNeurons)
     # Add contribution of X
     expiredYSpikeIDs = []
-    YTilde = np.zeros(numberXNeurons)
-    for i, YNeuron in enumerate(XSpikes[1]):
+    XTilde = np.zeros(numberXNeurons)
+    for i, XNeuron in enumerate(XSpikes[1]):
       # First mark all XSpikes older than sigma and do not use for calculation of Uk
       if XSpikes[0][i] < t - sigma:
         expiredYSpikeIDs.append(i)
       else:
-        YTilde[XSpikes[1][i]] = kernel.tilde(t, dt, XSpikes[0][i], tauRise, tauDecay)
+        XTilde[XSpikes[1][i]] = kernel.tilde(t, dt, XSpikes[0][i], tauRise, tauDecay)
         for k in range(numberYNeurons):
-          U[k] += weights[k, YNeuron] * YTilde[XSpikes[1][i]]
+          U[k] += weights[k, XNeuron] * XTilde[XSpikes[1][i]]
     # delete all spikes that are longer ago than sigma (10ms?) from XSpikes
     for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
       del XSpikes[0][toDeleteID]
@@ -178,15 +200,15 @@ for inputIterator in range(len(images[0])):
       
     # Add contribution of XInverted
     expiredYSpikeIDs = []
-    YTilde = np.zeros(numberXNeurons)
-    for i, YNeuron in enumerate(XSpikesInverted[1]):
+    XTilde = np.zeros(numberXNeurons)
+    for i, XNeuron in enumerate(XSpikesInverted[1]):
       # First mark all XSpikes older than sigma and do not use for calculation of Uk
       if XSpikesInverted[0][i] < t - sigma:
         expiredYSpikeIDs.append(i)
       else:
-        YTilde[XSpikesInverted[1][i]] = kernel.tilde(t, dt, XSpikesInverted[0][i], tauRise, tauDecay)
+        XTilde[XSpikesInverted[1][i]] = kernel.tilde(t, dt, XSpikesInverted[0][i], tauRise, tauDecay)
         for k in range(numberYNeurons):
-          U[k] += weightsInverted[k, YNeuron] * YTilde[XSpikesInverted[1][i]]
+          U[k] += weightsInverted[k, XNeuron] * XTilde[XSpikesInverted[1][i]]
     # delete all spikes that are longer ago than sigma (10ms?) from XSpikes
     for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
       del XSpikesInverted[0][toDeleteID]
@@ -232,24 +254,33 @@ for inputIterator in range(len(images[0])):
         ZNeuronWantsToFireAtTime.append(t)
         ZNeuronFireFactors.append(ZNeuronFireFactor)
     
-    # check if any Z Neurons want to fire and determine winner Z
-    if len(ZNeuronsThatWantToFire) > 0:
-      ZFireFactorMax = -math.inf
-      ZNeuronWinner = math.inf
-      for i in range(len(ZNeuronsThatWantToFire)):
-        if ZNeuronFireFactors[i] > ZFireFactorMax:  
-          ZNeuronWinner = ZNeuronsThatWantToFire[i]
-          ZFireFactorMax = ZNeuronFireFactors[i]      
-      YSpikes[0].append(ZNeuronWinner)
+    # let all output neurons fire that want to fire
+    for i in range(len(ZNeuronsThatWantToFire)):
+      YSpikes[0].append(ZNeuronsThatWantToFire[i])
       YSpikes[1].append(t)
-      averageZFired.append(ZNeuronWinner)
-      # append ID of Z if this Z has not fired yet in this imagePresentationDuration
-      if not distinctZFired.count(ZNeuronWinner):
-        distinctZFired.append(ZNeuronWinner)
-      # update weights of all Y to ZThatFired
-      # do not update weights in this experiment for now we want to analyze the mathematically determined weights
-      # weights = neuronFunctions.updateWeights(YTilde, weights, ZNeuronWinner, c, learningRate)
-      # priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronWinner, c, learningRate)
+      averageZFired.append(ZNeuronsThatWantToFire[i])
+    
+    # !!!!!!!!!!! swap this out for the version above to see if it fixes the bug
+    # where low Y probabilities never seem to get the chance to fire
+    # # check if any Z Neurons want to fire and determine winner Z
+    # if len(ZNeuronsThatWantToFire) > 0:
+    #   ZFireFactorMax = -math.inf
+    #   ZNeuronWinner = math.inf
+    #   for i in range(len(ZNeuronsThatWantToFire)):
+    #     if ZNeuronFireFactors[i] > ZFireFactorMax:  
+    #       ZNeuronWinner = ZNeuronsThatWantToFire[i]
+    #       ZFireFactorMax = ZNeuronFireFactors[i]      
+    #   YSpikes[0].append(ZNeuronWinner)
+    #   YSpikes[1].append(t)
+    #   averageZFired.append(ZNeuronWinner)
+    #   # append ID of Z if this Z has not fired yet in this imagePresentationDuration
+    #   if not distinctZFired.count(ZNeuronWinner):
+    #     distinctZFired.append(ZNeuronWinner)
+    #   # update weights of all Y to ZThatFired
+    #   # do not update weights in this experiment for now we want to analyze the mathematically determined weights
+    #   # weights = neuronFunctions.updateWeights(XTilde, weights, ZNeuronWinner, c, learningRate)
+    #   # priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronWinner, c, learningRate)
+      
   # Simulation DONE
   
   directoryPath =  "fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay)
