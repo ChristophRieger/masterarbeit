@@ -40,3 +40,18 @@ Können je mehr als 3 Input neurons aktiv sein? ... ja, 3 pixel aktiv setzen, da
 Wandert der 3er input in 1er schritten?   ... nein, nur in 2er schritten wo die klassen definiert sind.
 I glaub mei Prior Matrix is falsch, wegen case position = 2 usw (wenn mitte des 3er blocks zwischen 2 klassen liegt) ...  na sie hat gepasst, da wir in 2er schritten gehn.
 
+
+
+....... fehlersuche:
+soweit ichs jetzt verstehe, sind sowohl input als auch prior feuerraten relevant.... je höher input firing rate, desto schmäler wird die wahrscheinlichkeitsglocke... da ich dadruch quasi mehrere Messungen vornehme und dadurch die klasse mit der meisten
+Überlappung wahrscheinlicher wird.... die Inhibition holt die Info der vielfachen Messungen definitiv nicht raus (probiere zb U * 100 zu rechnen, nur mehr eine Klasse spiked.)
+Ich bin mir nicht sicher ob und wie ich das lösen sollte... hab jetzt mit den parametern gespielt... tauDecay von 0.015 auf 0.003 zu setzen hat sehr geholfen, da dadurch weniger input spikes eingehen in die probabilities, und ich 
+die input firing rate nicht noooch niedriger drehen muss (das machte probleme, da dann zu selten spikes kommen bei nur 3 - 9 input neurons...)
+=> parameter: taudecay 0.003, firingRate = 90, AfiringRate = 450
+=> mit diesen parametern sehn die inputs bei denen alle 3 pixel ungleich prior sind gut aus. (das ursprünglich problematische inputset)
+=> normaleres input set: hier wirkt der prior zu schwach, versuchen prior schneller spiken zu lassen und dann nochmal probieren. Macht mby sinn, da ich jetzt ja 9 input neuronen hab (anstatt wie früher nur 3).
+
+JE größer taudecay. desto mehr muss man firingRate (input) runter drehen, damit sie nicht nur eine klasse angeben. Das passiert, da mit größerem taudecay mehr spikes ins U einfließen.
+
+
+Wie ich die output neuronen feuern lasse: würfeln welches feuert (abh. von rate) vs alle immer feuern lassen. Scheint kaum unterschied zu machen, im paper sagen sie dass alle feuern dürfen

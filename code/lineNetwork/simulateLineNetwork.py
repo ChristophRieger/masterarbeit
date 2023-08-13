@@ -27,11 +27,13 @@ loadWeights = False
 plt.close("all")
 
 imageSize = (1, 9)
-imagePresentationDuration = 5
+imagePresentationDuration = 20
+# imagePresentationDuration = 1
 dt = 0.001 # seconds
 
-firingRate = 100 # Hz;
-AfiringRate = 300
+# 100/500 and 0.003 seems nice to me
+firingRate = 500 # Hz;
+AfiringRate = 460
 numberXNeurons = imageSize[0] * imageSize[1] # 1 neurons per pixel (one for black) # input
 numberYNeurons = 4 # output
 numberZNeurons = 4 # prior
@@ -39,7 +41,9 @@ numberZNeurons = 4 # prior
 sigma = 0.01 # time frame in which spikes count as before output spike
 c = 20 # 10 seems good, scales weights to 0 ... 1
 tauRise = 0.001
-tauDecay = 0.015
+tauDecay = 0.004  # might be onto something here, my problem gets better
+# tauDecay = 0.015
+
 learningRateFactor = 3
 learningRate = 10**-learningRateFactor
 RStar = 200 # Hz; total output firing rate
@@ -68,327 +72,351 @@ else:
 # no random generation needed for this experiment, rather I use handpicked examples.
 # image, prior = dataGenerator.generateRandom1DLineImage(imageSize)
 images = [[],[],[]]
-imagesEncoded = []
-priorsEncoded = []
-PvonYvorausgesetztXundZSimulationList = []
 # 1
+image = np.array([[255, 255, 0, 0, 0, 255, 255, 255, 255]], dtype=np.uint8)
+prior = 1
+images[0].append(image)
+images[1].append(prior)
+# for each pixel there are 2 neurons, this vector represents the active neurons for non active pixels
+images[2].append(255 - image)
+# 2
+image = np.array([[255, 255, 0, 0, 0, 0, 255, 255, 255]], dtype=np.uint8)
+prior = 1
+images[0].append(image)
+images[1].append(prior)
+images[2].append(255 - image)
+# 3
+image = np.array([[255, 0, 0, 0, 255, 255, 255, 255, 255]], dtype=np.uint8)
+prior = 1
+images[0].append(image)
+images[1].append(prior)
+images[2].append(255 - image)
+# 4
+image = np.array([[255, 255, 0, 0, 255, 255, 255, 255, 255]], dtype=np.uint8)
+prior = 1
+images[0].append(image)
+images[1].append(prior)
+images[2].append(255 - image)
+
+# 5
 image = np.array([[255, 255, 0, 0, 0, 255, 255, 255, 255]], dtype=np.uint8)
 prior = 3
 images[0].append(image)
 images[1].append(prior)
 # for each pixel there are 2 neurons, this vector represents the active neurons for non active pixels
 images[2].append(255 - image)
-# 2
-image = np.array([[0, 0, 0, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
-prior = 3
-images[0].append(image)
-images[1].append(prior)
-images[2].append(255 - image)
-# 3
+# 6
 image = np.array([[255, 0, 0, 0, 255, 255, 255, 255, 255]], dtype=np.uint8)
 prior = 3
 images[0].append(image)
 images[1].append(prior)
 images[2].append(255 - image)
-# 4
-image = np.array([[255, 255, 255, 255, 255, 255, 0, 0, 0]], dtype=np.uint8)
-prior = 3
-images[0].append(image)
-images[1].append(prior)
-images[2].append(255 - image)
 
-# 1 simulation per handpicked input data
-for inputIterator in range(len(images[0])):
-  XSpikes = [[],[]] # input
-  XSpikesInverted = [[],[]] # input
-  YSpikes = [[],[]] # output
-  ZSpikes = [[],[]] # prior
+# TODO grid search
+firingRateList = [500]
+AfiringRateList = [400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500]
+# tauDecayList = [0.003, 0.005, 0.007, 0.015]
+
+for gridIterator in range(len(firingRateList)):
+  # change parameters due to grid search
+  firingRate = firingRateList[gridIterator]
   
-  indexOfLastYSpike = [0] * numberXNeurons
-  ZNeuronsRecievedYSpikes = [[],[]]
-  
-  # Metric to measure training progress
-  # check how many different Z neurons fired during one image
-  distinctZFiredHistory = []
-  distinctZFired = []
-  averageZFired = []
-  averageZFiredHistory = []
-  
-  # pick current image and prior
-  image = images[0][inputIterator]
-  imageInverted = images[2][inputIterator]
-  prior = images[1][inputIterator]
-  
-  # start simulation
-  for t in np.arange(0, imagePresentationDuration, dt):
-    # generate training data every 50ms
-    if abs(t - round(t / imagePresentationDuration) * imagePresentationDuration) < 1e-10:
-      distinctZFiredHistory.append(len(distinctZFired))
-      distinctZFired = []
-      if averageZFired:
-        mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
-        amountMostSpikingZ = averageZFired.count(mostSpikingZ)
-        averageZFiredHistory.append(amountMostSpikingZ / len(averageZFired))
-        averageZFired = []
+  imagesEncoded = []
+  priorsEncoded = []
+  PvonYvorausgesetztXundZSimulationList = []
+  # 1 simulation per handpicked input data
+  for inputIterator in range(len(images[0])):
+    XSpikes = [[],[]] # input
+    XSpikesInverted = [[],[]] # input
+    YSpikes = [[],[]] # output
+    ZSpikes = [[],[]] # prior
     
-    # generate X Spikes for this step
-    for i in range(image.shape[1]):
-      # check if the Xi is active
-      if image[0][i] == 0:
-       # check if Xi spiked in this timestep
-       if poissonGenerator.doesNeuronFire(0.9 * firingRate, dt):
-          # when did it spike
-          XSpikes[0].append(t)
-          # which X spiked
-          XSpikes[1].append(i)
-      else:
-        if poissonGenerator.doesNeuronFire(0.1 * firingRate, dt):
-          # when did it spike
-          XSpikes[0].append(t)
-          # which X spiked
-          XSpikes[1].append(i)
-          
-    # generate X SpikesInverted for this step
-    for i in range(imageInverted.shape[1]):
-      # check if the Xi is active
-      if imageInverted[0][i] == 0:
-       # check if Xi spiked in this timestep
-       if poissonGenerator.doesNeuronFire(0.9 * firingRate, dt):
-          # when did it spike
-          XSpikesInverted[0].append(t)
-          # which X spiked
-          XSpikesInverted[1].append(i)
-      else:
-        if poissonGenerator.doesNeuronFire(0.1 * firingRate, dt):
-          # when did it spike
-          XSpikesInverted[0].append(t)
-          # which X spiked
-          XSpikesInverted[1].append(i)
-         
-    priorChoices = [0, 1, 2, 3]
-    # generate A Spikes for this step
-    if poissonGenerator.doesNeuronFire(AfiringRate, dt):
-      #  check if neuron does randomly flip:
-      if random.random() < 0.9:
+    indexOfLastYSpike = [0] * numberXNeurons
+    ZNeuronsRecievedYSpikes = [[],[]]
+    
+    # Metric to measure training progress
+    # check how many different Z neurons fired during one image
+    distinctZFiredHistory = []
+    distinctZFired = []
+    averageZFired = []
+    averageZFiredHistory = []
+    
+    # pick current image and prior
+    image = images[0][inputIterator]
+    imageInverted = images[2][inputIterator]
+    prior = images[1][inputIterator]
+    
+    # start simulation
+    for t in np.arange(0, imagePresentationDuration, dt):
+      # generate training data every 50ms
+      if abs(t - round(t / imagePresentationDuration) * imagePresentationDuration) < 1e-10:
+        distinctZFiredHistory.append(len(distinctZFired))
+        distinctZFired = []
+        if averageZFired:
+          mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
+          amountMostSpikingZ = averageZFired.count(mostSpikingZ)
+          averageZFiredHistory.append(amountMostSpikingZ / len(averageZFired))
+          averageZFired = []
+      
+      # generate X Spikes for this step
+      for i in range(image.shape[1]):
+        # check if the Xi is active
+        if image[0][i] == 0:
+         # check if Xi spiked in this timestep
+         if poissonGenerator.doesNeuronFire(firingRate, dt):
+            # when did it spike
+            XSpikes[0].append(t)
+            # which X spiked
+            XSpikes[1].append(i)
+            
+      # generate X SpikesInverted for this step
+      for i in range(imageInverted.shape[1]):
+        # check if the Xi is active
+        if imageInverted[0][i] == 0:
+         # check if Xi spiked in this timestep
+         if poissonGenerator.doesNeuronFire(firingRate, dt):
+            # when did it spike
+            XSpikesInverted[0].append(t)
+            # which X spiked
+            XSpikesInverted[1].append(i)
+           
+      priorChoices = [0, 1, 2, 3]
+      # generate A Spikes for this step
+      if poissonGenerator.doesNeuronFire(AfiringRate, dt):
         ZSpikes[0].append(t)
         ZSpikes[1].append(prior)
-      else:
-        ZSpikes[0].append(t)
-        tmpChoices = copy.deepcopy(priorChoices)
-        tmpChoices.pop(prior)
-        choice = random.choice(tmpChoices)
-        ZSpikes[1].append(choice)
   
     
-    # Next we have to calculate Uk
-    U = np.zeros(numberYNeurons)
-    # Add contribution of X
-    expiredYSpikeIDs = []
-    XTilde = np.zeros(numberXNeurons)
-    for i, XNeuron in enumerate(XSpikes[1]):
-      # First mark all XSpikes older than sigma and do not use for calculation of Uk
-      if XSpikes[0][i] < t - sigma:
-        expiredYSpikeIDs.append(i)
-      else:
-        XTilde[XSpikes[1][i]] = kernel.tilde(t, dt, XSpikes[0][i], tauRise, tauDecay)
-        for k in range(numberYNeurons):
-          U[k] += weights[k, XNeuron] * XTilde[XSpikes[1][i]]
-    # delete all spikes that are longer ago than sigma (10ms?) from XSpikes
-    for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
-      del XSpikes[0][toDeleteID]
-      del XSpikes[1][toDeleteID]
       
-    # Add contribution of XInverted
-    expiredYSpikeIDs = []
-    XTilde = np.zeros(numberXNeurons)
-    for i, XNeuron in enumerate(XSpikesInverted[1]):
-      # First mark all XSpikes older than sigma and do not use for calculation of Uk
-      if XSpikesInverted[0][i] < t - sigma:
-        expiredYSpikeIDs.append(i)
-      else:
-        XTilde[XSpikesInverted[1][i]] = kernel.tilde(t, dt, XSpikesInverted[0][i], tauRise, tauDecay)
-        for k in range(numberYNeurons):
-          U[k] += weightsInverted[k, XNeuron] * XTilde[XSpikesInverted[1][i]]
-    # delete all spikes that are longer ago than sigma (10ms?) from XSpikes
-    for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
-      del XSpikesInverted[0][toDeleteID]
-      del XSpikesInverted[1][toDeleteID]
+      # Next we have to calculate Uk
+      U = np.zeros(numberYNeurons)
+      # Add contribution of X
+      expiredYSpikeIDs = []
+      XTilde = np.zeros(numberXNeurons)
+      for i, XNeuron in enumerate(XSpikes[1]):
+        # First mark all XSpikes older than sigma and do not use for calculation of Uk
+        if XSpikes[0][i] < t - sigma:
+          expiredYSpikeIDs.append(i)
+        else:
+          XTilde[XSpikes[1][i]] = kernel.tilde(t, dt, XSpikes[0][i], tauRise, tauDecay)
+          for k in range(numberYNeurons):
+            U[k] += weights[k, XNeuron] * XTilde[XSpikes[1][i]]
+      # delete all spikes that are longer ago than sigma (10ms?) from XSpikes
+      for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
+        del XSpikes[0][toDeleteID]
+        del XSpikes[1][toDeleteID]
+        
+      # Add contribution of XInverted
+      expiredYSpikeIDs = []
+      XTilde = np.zeros(numberXNeurons)
+      for i, XNeuron in enumerate(XSpikesInverted[1]):
+        # First mark all XSpikes older than sigma and do not use for calculation of Uk
+        if XSpikesInverted[0][i] < t - sigma:
+          expiredYSpikeIDs.append(i)
+        else:
+          XTilde[XSpikesInverted[1][i]] = kernel.tilde(t, dt, XSpikesInverted[0][i], tauRise, tauDecay)
+          for k in range(numberYNeurons):
+            U[k] += weightsInverted[k, XNeuron] * XTilde[XSpikesInverted[1][i]]
+      # delete all spikes that are longer ago than sigma (10ms?) from XSpikes
+      for toDeleteID in sorted(expiredYSpikeIDs, reverse=True):
+        del XSpikesInverted[0][toDeleteID]
+        del XSpikesInverted[1][toDeleteID]
+        
+      # Add contribution of A
+      ATilde = np.zeros(numberZNeurons)
+      expiredASpikeIDs = []
+      for i in range(len(ZSpikes[1])):
+        # First mark all ZSpikes older than sigma and do not use for calculation of Uk
+        if ZSpikes[0][i] < t - sigma:
+          expiredASpikeIDs.append(i)
+        else:
+          ATilde[ZSpikes[1][i]] = kernel.tilde(t, dt, ZSpikes[0][i], tauRise, tauDecay)
+          for k in range(numberYNeurons):
+            U[k] += priorWeights[prior, k] * ATilde[ZSpikes[1][i]]
+      # delete all spikes that are longer ago than sigma (10ms?) from ZSpikes
+      for toDeleteID in sorted(expiredASpikeIDs, reverse=True):
+        del ZSpikes[0][toDeleteID]
+        del ZSpikes[1][toDeleteID]
+    
+      # !!!!!!! TEST to normalize U to 1... to remove dependency of output probabs
+      # FAILED
+      # of the input and prior firing frequencies
+      # if (sum(U) != 0):
+        # U = U / sum(abs(U)) + 0.25
+        
+      # !!!DEBUG: analzye impact of doubling U => corresponds to taking twice as many samples
+      # U2 = U * 2
+      # inhTMP2 = 0
+      # for i in range(numberYNeurons):
+      #   inhTMP2 += np.exp(U2[i])
+      # Iinh2 = - np.log(RStar) + np.log(inhTMP2)
+      # # calc instantaneous fire rate for each Z Neuron for this time step
+      # r2 = np.zeros(numberYNeurons)
+      # for k in range(numberYNeurons):
+      #   r2[k] = np.exp(U2[k] - Iinh2)
+      # !!!DEBUG END 
+    
+      # calculate current Inhibition signal
+      inhTMP = 0
+      for i in range(numberYNeurons):
+        inhTMP += np.exp(U[i])
+      Iinh = - np.log(RStar) + np.log(inhTMP)
+        
+      # calc instantaneous fire rate for each Z Neuron for this time step
+      r = np.zeros(numberYNeurons)
+      ZNeuronsThatWantToFire = []
+      ZNeuronWantsToFireAtTime = []
+      # ZNeuronFireFactors is used to choose between multiple Z firing in this timestep
+      ZNeuronFireFactors = []
+      for k in range(numberYNeurons):
+        r[k] = np.exp(U[k] - Iinh)
+        # as far as i understand rk (titled "instantaneous fire rate" in nessler) just says
+        # how many events occur per second on average
+        ZkFires, ZNeuronFireFactor = poissonGenerator.doesZNeuronFire(r[k], dt) 
+        if ZkFires:
+          # mark that Zk wants to fire and also save the time it wants to fire at
+          ZNeuronsThatWantToFire.append(k)
+          ZNeuronWantsToFireAtTime.append(t)
+          ZNeuronFireFactors.append(ZNeuronFireFactor)
       
-    # Add contribution of A
-    ATilde = np.zeros(numberZNeurons)
-    expiredASpikeIDs = []
-    for i in range(len(ZSpikes[1])):
-      # First mark all ZSpikes older than sigma and do not use for calculation of Uk
-      if ZSpikes[0][i] < t - sigma:
-        expiredASpikeIDs.append(i)
-      else:
-        ATilde[ZSpikes[1][i]] = kernel.tilde(t, dt, ZSpikes[0][i], tauRise, tauDecay)
-        for k in range(numberYNeurons):
-          U[k] += priorWeights[prior, k] * ATilde[ZSpikes[1][i]]
-    # delete all spikes that are longer ago than sigma (10ms?) from ZSpikes
-    for toDeleteID in sorted(expiredASpikeIDs, reverse=True):
-      del ZSpikes[0][toDeleteID]
-      del ZSpikes[1][toDeleteID]
-  
-  
-    # calculate current Inhibition signal
-    inhTMP = 0
-    for i in range(numberYNeurons):
-      inhTMP += np.exp(U[i])
-    Iinh = - np.log(RStar) + np.log(inhTMP)
+      # TEST
+      # let all output neurons fire that want to fire
+      for i in range(len(ZNeuronsThatWantToFire)):
+        YSpikes[0].append(ZNeuronsThatWantToFire[i])
+        YSpikes[1].append(t)
+        averageZFired.append(ZNeuronsThatWantToFire[i])
+      # ORIGINAL
+      # this was BULLSHIT BY ME. Nessler clearly stated that multiple Z may fire at the same time
+      # This partially caused adjacent regions to be expressed weaker than they shouldve
+      # # check if any Z Neurons want to fire and determine winner Z
+      # if len(ZNeuronsThatWantToFire) > 0:
+      #   ZFireFactorMax = -math.inf
+      #   ZNeuronWinner = math.inf
+      #   for i in range(len(ZNeuronsThatWantToFire)):
+      #     if ZNeuronFireFactors[i] > ZFireFactorMax:  
+      #       ZNeuronWinner = ZNeuronsThatWantToFire[i]
+      #       ZFireFactorMax = ZNeuronFireFactors[i]      
+      #   YSpikes[0].append(ZNeuronWinner)
+      #   YSpikes[1].append(t)
       
-    # calc instantaneous fire rate for each Z Neuron for this time step
-    r = np.zeros(numberYNeurons)
-    ZNeuronsThatWantToFire = []
-    ZNeuronWantsToFireAtTime = []
-    # ZNeuronFireFactors is used to choose between multiple Z firing in this timestep
-    ZNeuronFireFactors = []
-    for k in range(numberYNeurons):
-      r[k] = np.exp(U[k] - Iinh)
-      # as far as i understand rk (titled "instantaneous fire rate" in nessler) just says
-      # how many events occur per second on average
-      ZkFires, ZNeuronFireFactor = poissonGenerator.doesZNeuronFire(r[k], dt) 
-      if ZkFires:
-        # mark that Zk wants to fire and also save the time it wants to fire at
-        ZNeuronsThatWantToFire.append(k)
-        ZNeuronWantsToFireAtTime.append(t)
-        ZNeuronFireFactors.append(ZNeuronFireFactor)
+        
+      # NOTNEEDED
+      #   averageZFired.append(ZNeuronWinner)
+      #   # append ID of Z if this Z has not fired yet in this imagePresentationDuration
+      #   if not distinctZFired.count(ZNeuronWinner):
+      #     distinctZFired.append(ZNeuronWinner)
+      #   # update weights of all Y to ZThatFired
+      #   # do not update weights in this experiment for now we want to analyze the mathematically determined weights
+      #   # weights = neuronFunctions.updateWeights(XTilde, weights, ZNeuronWinner, c, learningRate)
+      #   # priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronWinner, c, learningRate)
+        
+    # Simulation DONE
     
-    # let all output neurons fire that want to fire
-    for i in range(len(ZNeuronsThatWantToFire)):
-      YSpikes[0].append(ZNeuronsThatWantToFire[i])
-      YSpikes[1].append(t)
-      averageZFired.append(ZNeuronsThatWantToFire[i])
-    
-    # !!!!!!!!!!! swap this out for the version above to see if it fixes the bug
-    # where low Y probabilities never seem to get the chance to fire
-    # # check if any Z Neurons want to fire and determine winner Z
-    # if len(ZNeuronsThatWantToFire) > 0:
-    #   ZFireFactorMax = -math.inf
-    #   ZNeuronWinner = math.inf
-    #   for i in range(len(ZNeuronsThatWantToFire)):
-    #     if ZNeuronFireFactors[i] > ZFireFactorMax:  
-    #       ZNeuronWinner = ZNeuronsThatWantToFire[i]
-    #       ZFireFactorMax = ZNeuronFireFactors[i]      
-    #   YSpikes[0].append(ZNeuronWinner)
-    #   YSpikes[1].append(t)
-    #   averageZFired.append(ZNeuronWinner)
-    #   # append ID of Z if this Z has not fired yet in this imagePresentationDuration
-    #   if not distinctZFired.count(ZNeuronWinner):
-    #     distinctZFired.append(ZNeuronWinner)
-    #   # update weights of all Y to ZThatFired
-    #   # do not update weights in this experiment for now we want to analyze the mathematically determined weights
-    #   # weights = neuronFunctions.updateWeights(XTilde, weights, ZNeuronWinner, c, learningRate)
-    #   # priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronWinner, c, learningRate)
+    directoryPath =  "fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay)
+    if not os.path.exists(directoryPath):
+      os.mkdir(directoryPath)
+    np.save(directoryPath + "/weights" + ".npy", weights)
+    np.save(directoryPath + "/priorWeights" + ".npy", priorWeights)
       
-  # Simulation DONE
+    
+    # 1 hot encode prior
+    priorEncoded = np.zeros(4)
+    priorEncoded[prior] = 1
+    priorsEncoded.append(priorEncoded)
+    # 1 hot encode image
+    # were image has value 0 => black pixel => should become 1 in encoded image
+    imageEncoded = np.zeros(9)
+    for i in range(image.shape[1]):
+      if image[0, i] == 0:
+        imageEncoded[i] = 1
+    imagesEncoded.append(imageEncoded)
+    
+    PvonYvorausgesetztXundZSimulation = np.zeros(4)
+    totalSpikes = len(YSpikes[0])
+    amountY0Spikes = len(np.where(np.array(YSpikes[0]) == 0)[0])
+    amountY1Spikes = len(np.where(np.array(YSpikes[0]) == 1)[0])
+    amountY2Spikes = len(np.where(np.array(YSpikes[0]) == 2)[0])
+    amountY3Spikes = len(np.where(np.array(YSpikes[0]) == 3)[0])
+    PvonYvorausgesetztXundZSimulation[0] = amountY0Spikes / totalSpikes
+    PvonYvorausgesetztXundZSimulation[1] = amountY1Spikes / totalSpikes
+    PvonYvorausgesetztXundZSimulation[2] = amountY2Spikes / totalSpikes
+    PvonYvorausgesetztXundZSimulation[3] = amountY3Spikes / totalSpikes
+    PvonYvorausgesetztXundZSimulationList.append(PvonYvorausgesetztXundZSimulation)
   
-  directoryPath =  "fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay)
-  if not os.path.exists(directoryPath):
-    os.mkdir(directoryPath)
-  np.save(directoryPath + "/weights" + ".npy", weights)
-  np.save(directoryPath + "/priorWeights" + ".npy", priorWeights)
+  fig = plt.figure(figsize=(20, 10))
+  gs = fig.add_gridspec(2 * int(len(imagesEncoded)/2), 10 * int(len(imagesEncoded)/2))
+  counter = 0
+  for i in range(int(len(imagesEncoded)/2)):
+    for j in range(2):
+      imageEncoded = imagesEncoded[counter]
+      image = images[0][counter]
+      prior = images[1][counter]
+      priorEncoded = priorsEncoded[counter]
+      PvonYvorausgesetztXundZSimulation = PvonYvorausgesetztXundZSimulationList[counter]
+      PvonYvorausgesetztXundZAnalysis = mathematischeAnalyse.calcPvonYvorausgesetztXundZ(imageEncoded, priorEncoded)  
+      
+      # gs2 = fig.add_gridspec(6, 2, wspace=0.4, hspace=25)
+      # hspace seems to be capped and doesnt really influence the spacing anymore. 
+      # but the .svg seems fine anyway, solve only if figure is not good enough.
+      # gs3 = fig.add_gridspec(6, 2, wspace=0.4, hspace=400)
+      
+      ax10 = fig.add_subplot(gs[0 + 2*i, 0 + 2 + 10*j:10 + 10*j - 2])
+      
+      ax21 = fig.add_subplot(gs[1 + 2*i, 0 + 10*j:4 + 10*j])
+      ax22 = fig.add_subplot(gs[1 + 2*i, 6 + 10*j:10 + 10*j])
+      
+      # Add ghost axes and titles
+      ax_firstRow = fig.add_subplot(gs[0 + 2*i, 0 + 10*j:10 + 10*j])
+      ax_firstRow.axis('off')
+      ax_firstRow.set_title('A', loc="left", x=-0.008,y=0.5, fontsize=16.0, fontweight='semibold')
+      
+      ax_secondRow = fig.add_subplot(gs[1 + 2*i, 0 + 10*j])
+      ax_secondRow.axis('off')
+      ax_secondRow.set_title('B', loc="left", x=-0.11,y=0.5, fontsize=16.0, fontweight='semibold')
+      
+      ax_thirdRow = fig.add_subplot(gs[1 + 2*i, 6 + 10*j])
+      ax_thirdRow.axis('off')
+      ax_thirdRow.set_title('C', loc="left", x=-0.11,y=0.5, fontsize=16.0, fontweight='semibold')
+      
+      # plot input data
+      ax10.imshow(images[0][counter], cmap='gray')
+      rect = patches.Rectangle((-0.5 + prior*2,-0.5), 3, 1, linewidth=8, edgecolor='r', facecolor='none')
+      ax10.add_patch(rect)
+      rect.set_clip_path(rect)
+      ax10.axvline(x=0.5)
+      ax10.axvline(x=1.5)
+      ax10.axvline(x=2.5)
+      ax10.axvline(x=3.5)
+      ax10.axvline(x=4.5)
+      ax10.axvline(x=5.5)
+      ax10.axvline(x=6.5)
+      ax10.axvline(x=7.5)
+      ax10.axvline(x=8.5)
+      ax10.set_ylim([-0.5, 0.5])
+      ax10.set_title("Input data", y=1.3)
+      ax10.axes.yaxis.set_visible(False)
+      
+      
+      PvonYvorausgesetztXundZAnalysis = PvonYvorausgesetztXundZAnalysis.reshape(4,1)
+      tab21 = ax21.table(cellText=np.around(PvonYvorausgesetztXundZAnalysis, 3), loc='center')
+      tab21.auto_set_font_size(False)
+      tab21.auto_set_column_width(0)
+      tab21.scale(1,1.2)
+      ax21.axis('off')
+      ax21.set_title("Analysis output \n probabilities", y=0.9)
+      
+      PvonYvorausgesetztXundZSimulation = PvonYvorausgesetztXundZSimulation.reshape(4,1)
+      tab22 = ax22.table(cellText=np.around(PvonYvorausgesetztXundZSimulation, 3), loc='center')
+      tab22.auto_set_font_size(False)
+      tab22.auto_set_column_width(0)
+      tab22.scale(1,1.2)
+      ax22.axis('off')
+      ax22.set_title("Simulation output \n probabilities", y=0.9)
+      
+      counter += 1
     
-  
-  # 1 hot encode prior
-  priorEncoded = np.zeros(4)
-  priorEncoded[prior] = 1
-  priorsEncoded.append(priorEncoded)
-  # 1 hot encode image
-  # were image has value 0 => black pixel => should become 1 in encoded image
-  imageEncoded = np.zeros(9)
-  for i in range(image.shape[1]):
-    if image[0, i] == 0:
-      imageEncoded[i] = 1
-  imagesEncoded.append(imageEncoded)
-  
-  PvonYvorausgesetztXundZSimulation = np.zeros(4)
-  totalSpikes = len(YSpikes[0])
-  amountY0Spikes = len(np.where(np.array(YSpikes[0]) == 0)[0])
-  amountY1Spikes = len(np.where(np.array(YSpikes[0]) == 1)[0])
-  amountY2Spikes = len(np.where(np.array(YSpikes[0]) == 2)[0])
-  amountY3Spikes = len(np.where(np.array(YSpikes[0]) == 3)[0])
-  PvonYvorausgesetztXundZSimulation[0] = amountY0Spikes / totalSpikes
-  PvonYvorausgesetztXundZSimulation[1] = amountY1Spikes / totalSpikes
-  PvonYvorausgesetztXundZSimulation[2] = amountY2Spikes / totalSpikes
-  PvonYvorausgesetztXundZSimulation[3] = amountY3Spikes / totalSpikes
-  PvonYvorausgesetztXundZSimulationList.append(PvonYvorausgesetztXundZSimulation)
-
-fig = plt.figure(figsize=(20, 10))
-gs = fig.add_gridspec(2 * int(len(imagesEncoded)/2), 10 * int(len(imagesEncoded)/2))
-counter = 0
-for i in range(int(len(imagesEncoded)/2)):
-  for j in range(int(len(imagesEncoded)/2)):
-    imageEncoded = imagesEncoded[counter]
-    image = images[0][counter]
-    prior = images[1][counter]
-    priorEncoded = priorsEncoded[counter]
-    PvonYvorausgesetztXundZSimulation = PvonYvorausgesetztXundZSimulationList[counter]
-    PvonYvorausgesetztXundZAnalysis = mathematischeAnalyse.calcPvonYvorausgesetztXundZ(imageEncoded, priorEncoded)  
-    
-    # gs2 = fig.add_gridspec(6, 2, wspace=0.4, hspace=25)
-    # hspace seems to be capped and doesnt really influence the spacing anymore. 
-    # but the .svg seems fine anyway, solve only if figure is not good enough.
-    # gs3 = fig.add_gridspec(6, 2, wspace=0.4, hspace=400)
-    
-    ax10 = fig.add_subplot(gs[0 + 2*i, 0 + 2 + 10*j:10 + 10*j - 2])
-    
-    ax21 = fig.add_subplot(gs[1 + 2*i, 0 + 10*j:4 + 10*j])
-    ax22 = fig.add_subplot(gs[1 + 2*i, 6 + 10*j:10 + 10*j])
-    
-    # Add ghost axes and titles
-    ax_firstRow = fig.add_subplot(gs[0 + 2*i, 0 + 10*j:10 + 10*j])
-    ax_firstRow.axis('off')
-    ax_firstRow.set_title('A', loc="left", x=-0.008,y=0.5, fontsize=16.0, fontweight='semibold')
-    
-    ax_secondRow = fig.add_subplot(gs[1 + 2*i, 0 + 10*j])
-    ax_secondRow.axis('off')
-    ax_secondRow.set_title('B', loc="left", x=-0.11,y=0.5, fontsize=16.0, fontweight='semibold')
-    
-    ax_thirdRow = fig.add_subplot(gs[1 + 2*i, 6 + 10*j])
-    ax_thirdRow.axis('off')
-    ax_thirdRow.set_title('C', loc="left", x=-0.11,y=0.5, fontsize=16.0, fontweight='semibold')
-    
-    # plot input data
-    ax10.imshow(images[0][counter], cmap='gray')
-    rect = patches.Rectangle((-0.5 + prior*2,-0.5), 3, 1, linewidth=8, edgecolor='r', facecolor='none')
-    ax10.add_patch(rect)
-    rect.set_clip_path(rect)
-    ax10.axvline(x=0.5)
-    ax10.axvline(x=1.5)
-    ax10.axvline(x=2.5)
-    ax10.axvline(x=3.5)
-    ax10.axvline(x=4.5)
-    ax10.axvline(x=5.5)
-    ax10.axvline(x=6.5)
-    ax10.axvline(x=7.5)
-    ax10.axvline(x=8.5)
-    ax10.set_ylim([-0.5, 0.5])
-    ax10.set_title("Input data", y=1.3)
-    ax10.axes.yaxis.set_visible(False)
-    
-    
-    PvonYvorausgesetztXundZAnalysis = PvonYvorausgesetztXundZAnalysis.reshape(4,1)
-    tab21 = ax21.table(cellText=np.around(PvonYvorausgesetztXundZAnalysis, 3), loc='center')
-    tab21.auto_set_font_size(False)
-    tab21.auto_set_column_width(0)
-    tab21.scale(1,1.2)
-    ax21.axis('off')
-    ax21.set_title("Analysis output probabilities", y=1.1)
-    
-    PvonYvorausgesetztXundZSimulation = PvonYvorausgesetztXundZSimulation.reshape(4,1)
-    tab22 = ax22.table(cellText=np.around(PvonYvorausgesetztXundZSimulation, 3), loc='center')
-    tab22.auto_set_font_size(False)
-    tab22.auto_set_column_width(0)
-    tab22.scale(1,1.2)
-    ax22.axis('off')
-    ax22.set_title("Simulation output probabilities", y=1.1)
-    
-    counter += 1
-  
-pickle.dump(fig, open(directoryPath + "/trainingPlot5" + '.pickle','wb'))
-plt.savefig(directoryPath + "/trainingPlot5" + ".svg")  
-plt.savefig(directoryPath + "/trainingPlot5" + ".png")
-plt.savefig(directoryPath + "/trainingPlot5" + ".jpg") 
-plt.show()
-
+  pickle.dump(fig, open(directoryPath + "/trainingPlot5" + '.pickle','wb'))
+  plt.savefig(directoryPath + "/trainingPlot5" + ".svg")  
+  plt.savefig(directoryPath + "/trainingPlot5" + ".png")
+  plt.savefig(directoryPath + "/trainingPlot5" + ".jpg") 
+  plt.show()

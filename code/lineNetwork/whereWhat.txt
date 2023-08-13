@@ -1,0 +1,5 @@
+fInput200_fPrior400_tauDecay0.015    main
+
+fInput200_fPrior500_tauDecay0.015   plot 4... made prior fire faster, fixed problem of plot3, but overshoots in other cases instead...
+
+mainly i seem to have problems if prior is active for an area which has not active pixels!
