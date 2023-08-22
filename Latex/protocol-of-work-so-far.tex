@@ -197,7 +197,7 @@ also yielded a functioning network, but it did perform analogous to $c = 20$. It
 
 \subsection{Conclusion}
 
-The parameters $c = 20$ and $\lambda = 10^{-3}$ were finally chosen as the network performed the best and trained the quickest with these parameters, without raising the membrane potential needlessly.
+The parameters $c = 20$ and $\lambda = 10^{-3} $ were finally chosen as the network performed the best and trained the quickest with these parameters, without raising the membrane potential needlessly.
 
 \section{Experiment 2: Horizontal and vertical bars}
 \label{section:horvert}
@@ -452,10 +452,17 @@ The architecture of this network remained the same as in previous experiments (w
 \paragraph{Mathematical Analysis}
 The posterior probability $P(Y = i|X = x, Z = j)$ of the network was calculated by using
 \begin{equation}
-\label{eqn:pXvorausgesetztY}
+\label{eqn:pYvorausgesetztXUndZ}
 P(Y = i|X = x, Z = j) = \frac{P(X=x|Y=i)P(Y = i|Z = j)}{\Sigma_{k}P(X=x,Y=k)P(Y=k|Z=j)}.
 \end{equation}
-$P(X=x|Y=y)$ and $P(Y=y|Z=z)$ were derived by hand corresponding to the paradigm of the experiment. For $P(X=x|Y=y)$ this was done by first writing down a matrix $P(X|Y)$ of all probabilities for each y and x. This matrix was then multiplied with the input image resulting in a probability for each output class. Next $1 - P(X|Y)$ and $1 - input image$ were multiplied to include the effect of the input neurons that are active for non active (white) pixels of the input image. The results of both calculations were then multiplied to yield $P(X=x|Y=y)$.
+$P(X=x|Y=i)$ and $P(Y=i|Z=j)$ were derived by hand corresponding to the paradigm of the experiment. For $P(X=x|Y=i)$ this was done by first calculating the matrix $P^{X|Y}$. This matrix is of size 4 x 9 and contains the probabilities of each input neuron being active, given that an output neuron is active. For example the probability $P_{1,1}^{X|Y}$ that the first input neuron is active, given that the first output neuron is active would equals to 1, if the noise of the input is neglected. By including the noise level of ten percent $P_{1,1}^{X|Y}$ equals 0.9. After calculating all entries of $P^{X|Y}$ its rows were multiplied with the input image vector
+\begin{equation}
+\label{eqn:pXvorausgesetztYMalX}
+P(X = x|Y = i) = P^{X|Y}_{i,*} \cdot x
+\end{equation}
+resulting in a probability for each output class. 
+
+Next $1 - P(X|Y)$ and $1 - input image$ were multiplied to include the effect of the input neurons that are active for non active (white) pixels of the input image. The results of both calculations were then multiplied to yield $P(X=x|Y=y)$.
 $P(Y=y|Z=z)$ was calculated by taking the matrix $P(Y|Z)$ and multiplying it with the input image.
 
 \paragraph{Simulation}
@@ -476,7 +483,7 @@ P(X|Y) = \begin{bmatrix}
 \end{equation}
 and also the matrix
 \begin{equation}
-\label{eqn:pXvorausgesetztY}
+\label{eqn:pYvorausgesetztZ}
 P(Y|Z) = \begin{bmatrix}
 0.9 & 0.0333 & 0.0333 & 0.0333\\
 0.0333 & 0.9 & 0.0333 & 0.0333\\
