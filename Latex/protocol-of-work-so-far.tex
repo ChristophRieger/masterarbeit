@@ -447,7 +447,7 @@ The purpose of this experiment was to mathematically analyse a simpler network, 
 \subsection{Methods}
 
 \paragraph{Network structure}
-The architecture of this network remained the same as in previous experiments (with adaptive inhibition and a noise level of 10\%), only the amount of neurons was changed. The input image consists of nine pixels in a horizontal line. Within those nine pixels four output classes can be represented. Each output class consists of three pixels next to each other. This results in each output class overlapping its neighbour classes by one pixel. As there have to be 2 input neurons for each pixel, one neuron being active if the pixel is white and one if the pixel is black, the network has 18 input neurons. Furthermore four prior neurons were implemented, of which only one is being active for one of the output classes at a time. Lastly the network has four output neurons.
+The architecture of this network remained the same as in previous experiments (with adaptive inhibition and a noise level of 10\%), only the amount of neurons was changed. The input image consists of nine pixels in a horizontal line. Within those nine pixels four output classes can be represented. Each output class consists of three pixels next to each other. This results in each output class overlapping its neighbour classes by one pixel. Thus the centres of the output classes are at position 1, 3, 5 and 7.    As there have to be 2 input neurons for each pixel, one neuron being active if the pixel is white and one if the pixel is black, the network has 18 input neurons. Furthermore four prior neurons were implemented, of which only one is being active for one of the output classes at a time. Lastly the network has four output neurons.
 
 \paragraph{Mathematical Analysis}
 The posterior probability $P(Y = i|X = x, Z = j)$ of the network was calculated by using
@@ -455,15 +455,28 @@ The posterior probability $P(Y = i|X = x, Z = j)$ of the network was calculated 
 \label{eqn:pYvorausgesetztXUndZ}
 P(Y = i|X = x, Z = j) = \frac{P(X=x|Y=i)P(Y = i|Z = j)}{\Sigma_{k}P(X=x,Y=k)P(Y=k|Z=j)}.
 \end{equation}
-$P(X=x|Y=i)$ and $P(Y=i|Z=j)$ were derived by hand corresponding to the paradigm of the experiment. For $P(X=x|Y=i)$ this was done by first calculating the matrix $P^{X|Y}$. This matrix is of size 4 x 9 and contains the probabilities of each input neuron being active, given that an output neuron is active. For example the probability $P_{1,1}^{X|Y}$ that the first input neuron is active, given that the first output neuron is active would equals to 1, if the noise of the input is neglected. By including the noise level of ten percent $P_{1,1}^{X|Y}$ equals 0.9. After calculating all entries of $P^{X|Y}$ its rows were multiplied with the input image vector
+$P(X=x|Y=i)$ and $P(Y=i|Z=j)$ were derived by hand corresponding to the paradigm of the experiment. The calculation of $P(X=x|Y=i)$ was split into two parts. First the contribution of the active input neurons was calculated by determining the matrix $P^{X|Y}$. This matrix is of size 4 x 9 and contains the conditional probabilities of each input neuron being active, given that an output neuron is active. These probabilities were calculated by determining which input neurons are active depending on the output class and which input neurons are inactive, as dictated by the network structure.  Furthermore the noise that was applied to the input neurons had also to be taken into account. For input neurons belonging to the output class the conditional probability was determined as 1 and lowered by the noise level, while for the input neurons outside of the 3-wide pixel block belonging to the output class it was determined as 0 and raised by the noise level. After calculating all entries of $P^{X|Y}$ its rows were multiplied with the input image vector
 \begin{equation}
 \label{eqn:pXvorausgesetztYMalX}
-P(X = x|Y = i) = P^{X|Y}_{i,*} \cdot x
+P_1(X = x|Y = i) = P^{X|Y}_{i,*} \cdot x
 \end{equation}
-resulting in a probability for each output class. 
-
-Next $1 - P(X|Y)$ and $1 - input image$ were multiplied to include the effect of the input neurons that are active for non active (white) pixels of the input image. The results of both calculations were then multiplied to yield $P(X=x|Y=y)$.
-$P(Y=y|Z=z)$ was calculated by taking the matrix $P(Y|Z)$ and multiplying it with the input image.
+resulting in a conditional probability for each output class depending on the input vector. The input vector was given as a vector with entries of 1 for active pixels and with entries of 0 for inactive pixels.
+Next to include the contribution of the input neurons that are spiking when a pixel is inactive the conditional probability of the input neurons that are active for the entries where $x_i = 0$ had to be calculated. This was achieved by subtracting $P(X|Y)$ from one. To include the correct conditional probabilities for this case the input image vector x was subtracted from one. $1 - P(X|Y)$ and $1 - x$ were multiplied to yield
+\begin{equation}
+\label{eqn:p1minusXvorausgesetztYMalX}
+P_2(X = x|Y = i) = (1 - P^{X|Y}_{i,*}) \cdot (1 - x).
+\end{equation}
+The results of both calculations were then multiplied element-wise to yield $P(X=x|Y=i)$
+\begin{equation}
+\label{eqn:pXvorausgesetztY}
+P(X = x|Y = i) = P_1(X = x|Y = i) \odot P_2(X = x|Y = i).
+\end{equation}
+$P(Y=i|Z=j)$ was determined by first calculating the matrix $P^{Y|Z}$. It has a dimension of 4 x 4 and contains the conditional probabilities for the output class given the active prior neuron. For each output class there exists one corresponding prior neuron. As there can never be more than one active prior neuron at a time $P_{i,i}^{Y|Z}$ was one minus the noise level, while all other entries were one third of the noise level. $P(Y=i|Z=j)$ was then obtained by
+\begin{equation}
+\label{eqn:pYvorausgesetztZ}
+P(Y=i|Z=j) = P^{Y|Z} \cdot z
+\end{equation}
+where z is a 4 x 1 one-hot encoded vector of the prior.
 
 \paragraph{Simulation}
 The input weights for the simulation were derived from the matrices $P(X|Y)$ and the prior weights were derived from $P(Y|Z)$ by taking the natural logarithm of each matrix. To include the effects of the input neurons representing non active input pixels, separate inverted input weights were calculated by taking the natural logarithm of $1-P(X|Y)$. Each set of input weights was applied separately to the corresponding input neurons.
@@ -472,6 +485,19 @@ After the image presentation period of each input image the amount of the output
 \subsection{Results}
 
 First the matrix $P(X|Y)$ was analytically calculated 
+
+
+
+
+
+
+ For example the probability $P_{1,1}^{X|Y}$ that the first input neuron is active, given that the first output neuron is active would equals to 1, if the noise of the input is neglected. By including the noise level of ten percent $P_{1,1}^{X|Y}$ equals 0.9. 
+
+
+
+
+
+
 \begin{equation}
 \label{eqn:pXvorausgesetztY}
 P(X|Y) = \begin{bmatrix}
@@ -493,7 +519,7 @@ P(Y|Z) = \begin{bmatrix}
 \end{equation} 
 These two matrices and their inverses were then multiplied with each input image as described in Methods to yield $P(Y = i|X = x, Z = j)$ also called "Analysis output probabilities" in later plots.
 
-First a simulation with $f_{prior} = 500 Hz$ and $\tau_{decay} = 15 ms$ was performed with different values for $f_{input}$ ranging from 70 Hz to 200 Hz. Out of all these variations $f_{input} = 150 Hz$ yielded the best result and can be seen in Figure \ref{fig:1D_150_500_15}. In this figure six different input images can be seen marked with the letter "A". The active pixels are shown in black. The center points of the three-wide output classes are at position 1, 3, 5 and 7. The value of the prior is indicated by the red border which is three-wide and centered at the center position of the corresponding output class. The posterior probability of the mathematical analysis can be seen next to the letter "B". And finally the proportion of output spikes of the different output neurons can be seen next to the letter "C".
+First a simulation with $f_{prior} = 500 Hz$ and $\tau_{decay} = 15 ms$ was performed with different values for $f_{input}$ ranging from 70 Hz to 200 Hz. Out of all these variations $f_{input} = 150 Hz$ yielded the best result and can be seen in Figure \ref{fig:1D_150_500_15}. In this figure six different input images can be seen marked with the letter "A". The active pixels are shown in black. The value of the prior is indicated by the red border which is three-wide and centered at the center position of the corresponding output class. The posterior probability of the mathematical analysis can be seen next to the letter "B". And finally the proportion of output spikes of the different output neurons can be seen next to the letter "C".
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_150_500_15.png}
