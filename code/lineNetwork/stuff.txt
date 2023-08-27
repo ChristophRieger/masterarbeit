@@ -54,4 +54,14 @@ die input firing rate nicht noooch niedriger drehen muss (das machte probleme, d
 JE größer taudecay. desto mehr muss man firingRate (input) runter drehen, damit sie nicht nur eine klasse angeben. Das passiert, da mit größerem taudecay mehr spikes ins U einfließen.
 
 
-Wie ich die output neuronen feuern lasse: würfeln welches feuert (abh. von rate) vs alle immer feuern lassen. Scheint kaum unterschied zu machen, im paper sagen sie dass alle feuern dürfen
+Wie ich die output neuronen feuern lasse: würfeln welches feuert (abh. von rate) vs alle immer feuern lassen. Scheint kaum unterschied zu machen, im paper sagen sie dass alle feuern dürfen\
+
+
+
+
+
+Best parameters without PRIOR:
+taudecay = 0.015    finput 42Hz
+taudecay = 0.004    finput 88Hz
+
+now searching for Afiringrate with prior enabled

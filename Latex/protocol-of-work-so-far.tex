@@ -504,7 +504,12 @@ The prior weights $w_p$ were derived by
 \label{eqn:1DWeightsPrior}
 w_p = \ln{P^{Y|Z}}.
 \end{equation}
-After the image presentation period of each input image the amount of the output spikes of different classes were counted and their proportions were calculated to yield the "simulation output probabilities" in later plots. The three parameters input firing rate $f_{input}$, prior firing rate $f_{prior}$ and the membrane constant $\tau_{decay}$ are varied to inspect their influence on the result, as well as to approximate the analytical solution as closely as possible. Each input image is presented to the network for 20 seconds to reduce the variance between runs.
+The network was simulated for six different input images for each parameter set. After the image presentation period of each input image the amount of the output spikes of different classes were counted and their proportions were calculated to yield the "simulation output probabilities" in later plots. Upon completion of the simulation of an output image the Kullback-Leibler divergence was calculated for that image
+\begin{equation}
+\label{eqn:KLDivergence}
+D_{KL}(P_{analysis}(Y = i|X, Z)||P_{simulation}(Y = i|X, Z)) = \sum_{i=1}^K P_{analysis}(Y = i|X, Z) \cdot \ln{ \frac{P_{analysis}(Y = i|X, Z)}{P_{simulation}(Y = i|X, Z)}}
+\end{equation}
+where K is the number of output neurons and $P_{analysis}(Y = i|X, Z)$ and $P_{simulation}(Y = i|X, Z)$ are the "analysis output probabilities" and "simulation output probabilities". The six resulting Kullback-Leibler divergences for each parameter set were then averaged to create a single metric by which the performance of the different parameter sets was compared. The three parameters input firing rate $f_{input}$, prior firing rate $f_{prior}$ and the membrane constant $\tau_{decay}$ are varied to inspect their influence on the result, as well as to approximate the analytical solution as closely as possible. Each input image is presented to the network for 20 seconds to reduce the variance between runs. Furthermore each simulation was repeated 20 times with the same parameter set to obtain the mean and standard deviation of the simulation output probabilities and of the Kullback-Leibler divergence.
 
 \subsection{Results}
 

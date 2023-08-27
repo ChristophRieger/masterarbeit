@@ -28,12 +28,11 @@ plt.close("all")
 
 imageSize = (1, 9)
 imagePresentationDuration = 20
-# imagePresentationDuration = 1
 dt = 0.001 # seconds
 
 # 100/500 and 0.003 seems nice to me
 firingRate = 110 # Hz;
-AfiringRate = 460
+AfiringRate = 900
 numberXNeurons = imageSize[0] * imageSize[1] # 1 neurons per pixel (one for black) # input
 numberYNeurons = 4 # output
 numberZNeurons = 4 # prior
@@ -113,13 +112,14 @@ images[1].append(prior)
 images[2].append(255 - image)
 
 # TODO grid search
-firingRateList = [110]
-AfiringRateList = [400, 410, 420, 430, 440, 450, 460, 470, 480, 490, 500]
+firingRateList = [50, 80, 90, 100, 110, 120, 130, 140, 150]
+AfiringRateList = [460]
 # tauDecayList = [0.003, 0.005, 0.007, 0.015]
 
-for gridIterator in range(len(firingRateList)):
+for gridIterator in range(len(AfiringRateList)):
   # change parameters due to grid search
-  firingRate = firingRateList[gridIterator]
+  # firingRate = firingRateList[gridIterator]
+  AfiringRate = AfiringRateList[gridIterator]
   
   PvonYvorausgesetztXundZSimulationListList = []
   for standardDeviationIterator in range(20):
@@ -239,25 +239,7 @@ for gridIterator in range(len(firingRateList)):
         # delete all spikes that are longer ago than sigma (10ms?) from ZSpikes
         for toDeleteID in sorted(expiredASpikeIDs, reverse=True):
           del ZSpikes[0][toDeleteID]
-          del ZSpikes[1][toDeleteID]
-      
-        # !!!!!!! TEST to normalize U to 1... to remove dependency of output probabs
-        # FAILED
-        # of the input and prior firing frequencies
-        # if (sum(U) != 0):
-          # U = U / sum(abs(U)) + 0.25
-          
-        # !!!DEBUG: analzye impact of doubling U => corresponds to taking twice as many samples
-        # U2 = U * 2
-        # inhTMP2 = 0
-        # for i in range(numberYNeurons):
-        #   inhTMP2 += np.exp(U2[i])
-        # Iinh2 = - np.log(RStar) + np.log(inhTMP2)
-        # # calc instantaneous fire rate for each Z Neuron for this time step
-        # r2 = np.zeros(numberYNeurons)
-        # for k in range(numberYNeurons):
-        #   r2[k] = np.exp(U2[k] - Iinh2)
-        # !!!DEBUG END 
+          del ZSpikes[1][toDeleteID] 
       
         # calculate current Inhibition signal
         inhTMP = 0
@@ -324,6 +306,7 @@ for gridIterator in range(len(firingRateList)):
       
       # 1 hot encode prior
       priorEncoded = np.zeros(4)
+      # TODO  !!!!!!!! disabled next line to remove prior 
       priorEncoded[prior] = 1
       priorsEncoded.append(priorEncoded)
       # 1 hot encode image
@@ -349,7 +332,7 @@ for gridIterator in range(len(firingRateList)):
   fig = plt.figure(figsize=(20, 12))
   gs = fig.add_gridspec(2 * int(len(imagesEncoded)/2) + 1, 20)
   counter = 0
-  klDivergenceList = []
+  klDivergenceList = [[],[],[],[],[],[]]
   for i in range(int(len(imagesEncoded)/2)):
     for j in range(2):
       imageEncoded = imagesEncoded[counter]
@@ -375,7 +358,9 @@ for gridIterator in range(len(firingRateList)):
         standardDeviations[outputClassIterator] = np.std(PvonYvorausgesetztXundZSimulationStdTmp[outputClassIterator])
         
       
-      PvonYvorausgesetztXundZAnalysis = mathematischeAnalyse.calcPvonYvorausgesetztXundZ(imageEncoded, priorEncoded)  
+      PvonYvorausgesetztXundZAnalysis = mathematischeAnalyse.calcPvonYvorausgesetztXundZ(imageEncoded, priorEncoded)
+      # TODO changed function to disable prior
+      # PvonYvorausgesetztXundZAnalysis = mathematischeAnalyse.calcPvonYvorausgesetztXundZNull(imageEncoded, priorEncoded)
       
       # gs2 = fig.add_gridspec(6, 2, wspace=0.4, hspace=25)
       # hspace seems to be capped and doesnt really influence the spacing anymore. 
@@ -402,6 +387,7 @@ for gridIterator in range(len(firingRateList)):
       
       # plot input data
       ax10.imshow(images[0][counter], cmap='gray')
+      # TODO !!!!!! remove next 3 lines to disable prior
       rect = patches.Rectangle((-0.5 + prior*2,-0.5), 3, 1, linewidth=8, edgecolor='r', facecolor='none')
       ax10.add_patch(rect)
       rect.set_clip_path(rect)
@@ -431,7 +417,7 @@ for gridIterator in range(len(firingRateList)):
       standardDeviations = standardDeviations.reshape(4,1)
       cellTextTmp = [[], [], [], []]
       for cellTextIterator in range(numberYNeurons):  
-        cellTextTmp[cellTextIterator].append(str(np.around(PvonYvorausgesetztXundZSimulation[cellTextIterator], 3)).strip("[]") + " (" + str(np.around(standardDeviations[cellTextIterator], 3)).strip("[]") + ")")
+        cellTextTmp[cellTextIterator].append(str(np.around(PvonYvorausgesetztXundZSimulation[cellTextIterator], 3)).strip("[]") + " (" + str(np.around(standardDeviations[cellTextIterator], 4)).strip("[]") + ")")
       tab22 = ax22.table(cellText=cellTextTmp, loc='center')
       tab22.auto_set_font_size(False)
       tab22.auto_set_column_width(0)
@@ -439,20 +425,30 @@ for gridIterator in range(len(firingRateList)):
       ax22.axis('off')
       ax22.set_title("Simulation output \n probabilities", y=0.9)
       
-      # calculate Kullback Leibler Divergence
-      klDivergenceTmp = 0
-      for klDivergenceIterator in range(numberYNeurons):
-        klDivergenceTmp += PvonYvorausgesetztXundZAnalysis[klDivergenceIterator] * np.log(PvonYvorausgesetztXundZAnalysis[klDivergenceIterator] / PvonYvorausgesetztXundZSimulation[klDivergenceIterator]) 
-      klDivergenceList.append(klDivergenceTmp)
+      # calculate Kullback Leibler Divergence for each image and each run
+      for runsIterator in range(20):
+        klDivergenceTmp = 0
+        for outputClassIterator in range(numberYNeurons):
+          klDivergenceTmp += PvonYvorausgesetztXundZAnalysis[outputClassIterator] * np.log(PvonYvorausgesetztXundZAnalysis[outputClassIterator] / PvonYvorausgesetztXundZSimulationListList[runsIterator][counter][outputClassIterator]) 
+        klDivergenceList[counter].append(klDivergenceTmp)
+      
       counter += 1
-    
- 
-  klDivergence = sum(klDivergenceList) / len(klDivergenceList)
+  
+  klDivergenceMeanPerRun = []
+  for runIterator in range(20):
+    klDivergenceMeanPerRunTmp = 0
+    for imageIterator in range(6):
+      klDivergenceMeanPerRunTmp += klDivergenceList[imageIterator][runIterator]
+    klDivergenceMeanPerRun.append(klDivergenceMeanPerRunTmp)
+     
+      
+  klDivergenceMean = sum(klDivergenceMeanPerRun) / len(klDivergenceMeanPerRun)
+  klDivergenceStd = np.std(klDivergenceMeanPerRun)
   ax3 = fig.add_subplot(gs[2 * int(len(imagesEncoded)/2):2 * int(len(imagesEncoded)/2)+1, 0:20])
   ax3.axis('off')
   textStyle = dict(horizontalalignment='center', verticalalignment='center',
                   fontsize=16)
-  ax3.text(0.5, 0.5, "Kullback–Leibler divergence = " + str(klDivergence), textStyle, transform=ax3.transAxes)
+  ax3.text(0.5, 0.5, "Kullback–Leibler divergence = " + str(np.around(klDivergenceMean, 4)).strip("[]") + " (" + str(np.around(klDivergenceStd, 5)) + ")", textStyle, transform=ax3.transAxes)
   
   pickle.dump(fig, open(directoryPath + "/trainingPlot5" + '.pickle','wb'))
   plt.savefig(directoryPath + "/trainingPlot5" + ".svg")  
