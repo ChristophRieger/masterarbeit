@@ -65,3 +65,12 @@ taudecay = 0.015    finput 42Hz
 taudecay = 0.004    finput 88Hz
 
 now searching for Afiringrate with prior enabled
+taudecay 0.015s    finput 42Hz  fprior 222Hz
+taudecay 0.004s    finput 88Hz  fprior 440Hz
+
+
+
+
+1D_42_0_15
+
+1D_70_0_15

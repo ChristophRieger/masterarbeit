@@ -31,7 +31,7 @@ imagePresentationDuration = 20
 dt = 0.001 # seconds
 
 # 100/500 and 0.003 seems nice to me
-firingRate = 110 # Hz;
+firingRate = 88 # Hz;
 AfiringRate = 900
 numberXNeurons = imageSize[0] * imageSize[1] # 1 neurons per pixel (one for black) # input
 numberYNeurons = 4 # output
@@ -113,7 +113,7 @@ images[2].append(255 - image)
 
 # TODO grid search
 firingRateList = [50, 80, 90, 100, 110, 120, 130, 140, 150]
-AfiringRateList = [460]
+AfiringRateList = [440]
 # tauDecayList = [0.003, 0.005, 0.007, 0.015]
 
 for gridIterator in range(len(AfiringRateList)):
