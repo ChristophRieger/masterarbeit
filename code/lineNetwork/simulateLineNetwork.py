@@ -32,7 +32,7 @@ dt = 0.001 # seconds
 
 # 100/500 and 0.003 seems nice to me
 firingRate = 88 # Hz;
-AfiringRate = 900
+AfiringRate = 440
 numberXNeurons = imageSize[0] * imageSize[1] # 1 neurons per pixel (one for black) # input
 numberYNeurons = 4 # output
 numberZNeurons = 4 # prior
@@ -112,14 +112,14 @@ images[1].append(prior)
 images[2].append(255 - image)
 
 # TODO grid search
-firingRateList = [50, 80, 90, 100, 110, 120, 130, 140, 150]
-AfiringRateList = [440]
+firingRateList = [90, 92, 94, 96, 98, 100, 110, 120]
+AfiringRateList = [0]
 # tauDecayList = [0.003, 0.005, 0.007, 0.015]
 
 for gridIterator in range(len(AfiringRateList)):
   # change parameters due to grid search
-  # firingRate = firingRateList[gridIterator]
-  AfiringRate = AfiringRateList[gridIterator]
+  firingRate = firingRateList[gridIterator]
+  # AfiringRate = AfiringRateList[gridIterator]
   
   PvonYvorausgesetztXundZSimulationListList = []
   for standardDeviationIterator in range(20):
@@ -439,7 +439,7 @@ for gridIterator in range(len(AfiringRateList)):
     klDivergenceMeanPerRunTmp = 0
     for imageIterator in range(6):
       klDivergenceMeanPerRunTmp += klDivergenceList[imageIterator][runIterator]
-    klDivergenceMeanPerRun.append(klDivergenceMeanPerRunTmp)
+    klDivergenceMeanPerRun.append(klDivergenceMeanPerRunTmp / 6)
      
       
   klDivergenceMean = sum(klDivergenceMeanPerRun) / len(klDivergenceMeanPerRun)
