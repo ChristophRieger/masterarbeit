@@ -27,7 +27,7 @@ loadWeights = False
 plt.close("all")
 
 imageSize = (1, 18)
-imagePresentationDuration = 0.1
+imagePresentationDuration = 20
 dt = 0.001 # seconds
 
 # 100/500 and 0.003 seems nice to me
@@ -69,10 +69,8 @@ else:
 
 # generate Input data
 # no random generation needed for this experiment, rather I use handpicked examples.
-# image, prior = dataGenerator.generateRandom1DLineImage(imageSize)
 images = [[],[],[]]
 # 1
-# image = np.array([[255, 255, 0, 0, 0, 255, 255, 255, 255]], dtype=np.uint8)
 image = np.array([[255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
 prior = 1
 images[0].append(image)
@@ -80,37 +78,32 @@ images[1].append(prior)
 # for each pixel there are 2 neurons, this vector represents the active neurons for non active pixels
 images[2].append(255 - image)
 # 2
-# image = np.array([[255, 255, 0, 0, 0, 0, 255, 255, 255]], dtype=np.uint8)
 image = np.array([[255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
 prior = 1
 images[0].append(image)
 images[1].append(prior)
 images[2].append(255 - image)
 # 3
-# image = np.array([[255, 0, 0, 0, 255, 255, 255, 255, 255]], dtype=np.uint8)
 image = np.array([[255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
 prior = 1
 images[0].append(image)
 images[1].append(prior)
 images[2].append(255 - image)
 # 4
-# image = np.array([[255, 255, 0, 0, 255, 255, 255, 255, 255]], dtype=np.uint8)
-image = np.array([[255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
+image = np.array([[255, 255, 255, 255, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
 prior = 1
 images[0].append(image)
 images[1].append(prior)
 images[2].append(255 - image)
 
 # 5
-# image = np.array([[255, 255, 0, 0, 0, 255, 255, 255, 255]], dtype=np.uint8)
-image = np.array([[255, 255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
+image = np.array([[255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
 prior = 3
 images[0].append(image)
 images[1].append(prior)
 # for each pixel there are 2 neurons, this vector represents the active neurons for non active pixels
 images[2].append(255 - image)
 # 6
-# image = np.array([[255, 0, 0, 0, 255, 255, 255, 255, 255]], dtype=np.uint8)
 image = np.array([[255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
 prior = 3
 images[0].append(image)
@@ -118,13 +111,13 @@ images[1].append(prior)
 images[2].append(255 - image)
 
 # TODO grid search
-firingRateList = [90, 92, 94, 96, 98, 100, 110, 120]
-AfiringRateList = [0]
+# firingRateList = [90, 92, 94, 96, 98, 100, 110, 120]
+# AfiringRateList = [0]
 # tauDecayList = [0.003, 0.005, 0.007, 0.015]
 
-for gridIterator in range(len(AfiringRateList)):
+for gridIterator in range(1):
   # change parameters due to grid search
-  firingRate = firingRateList[gridIterator]
+  # firingRate = firingRateList[gridIterator]
   # AfiringRate = AfiringRateList[gridIterator]
   
   PvonYvorausgesetztXundZSimulationListList = []
@@ -158,14 +151,14 @@ for gridIterator in range(len(AfiringRateList)):
       # start simulation
       for t in np.arange(0, imagePresentationDuration, dt):
         # generate training data every 50ms
-        if abs(t - round(t / imagePresentationDuration) * imagePresentationDuration) < 1e-10:
-          distinctZFiredHistory.append(len(distinctZFired))
-          distinctZFired = []
-          if averageZFired:
-            mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
-            amountMostSpikingZ = averageZFired.count(mostSpikingZ)
-            averageZFiredHistory.append(amountMostSpikingZ / len(averageZFired))
-            averageZFired = []
+        # if abs(t - round(t / imagePresentationDuration) * imagePresentationDuration) < 1e-10:
+          # distinctZFiredHistory.append(len(distinctZFired))
+          # distinctZFired = []
+          # if averageZFired:
+            # mostSpikingZ = max(set(averageZFired), key = averageZFired.count)
+            # amountMostSpikingZ = averageZFired.count(mostSpikingZ)
+            # averageZFiredHistory.append(amountMostSpikingZ / len(averageZFired))
+            # averageZFired = []
         
         # generate X Spikes for this step
         for i in range(image.shape[1]):
@@ -189,14 +182,11 @@ for gridIterator in range(len(AfiringRateList)):
               # which X spiked
               XSpikesInverted[1].append(i)
              
-        priorChoices = [0, 1, 2, 3]
         # generate A Spikes for this step
         if poissonGenerator.doesNeuronFire(AfiringRate, dt):
           ZSpikes[0].append(t)
           ZSpikes[1].append(prior)
     
-      
-        
         # Next we have to calculate Uk
         U = np.zeros(numberYNeurons)
         # Add contribution of X
@@ -270,37 +260,11 @@ for gridIterator in range(len(AfiringRateList)):
             ZNeuronWantsToFireAtTime.append(t)
             ZNeuronFireFactors.append(ZNeuronFireFactor)
         
-        # TEST
         # let all output neurons fire that want to fire
         for i in range(len(ZNeuronsThatWantToFire)):
           YSpikes[0].append(ZNeuronsThatWantToFire[i])
           YSpikes[1].append(t)
-          averageZFired.append(ZNeuronsThatWantToFire[i])
-        # ORIGINAL
-        # this was BULLSHIT BY ME. Nessler clearly stated that multiple Z may fire at the same time
-        # This partially caused adjacent regions to be expressed weaker than they shouldve
-        # # check if any Z Neurons want to fire and determine winner Z
-        # if len(ZNeuronsThatWantToFire) > 0:
-        #   ZFireFactorMax = -math.inf
-        #   ZNeuronWinner = math.inf
-        #   for i in range(len(ZNeuronsThatWantToFire)):
-        #     if ZNeuronFireFactors[i] > ZFireFactorMax:  
-        #       ZNeuronWinner = ZNeuronsThatWantToFire[i]
-        #       ZFireFactorMax = ZNeuronFireFactors[i]      
-        #   YSpikes[0].append(ZNeuronWinner)
-        #   YSpikes[1].append(t)
-        
-          
-        # NOTNEEDED
-        #   averageZFired.append(ZNeuronWinner)
-        #   # append ID of Z if this Z has not fired yet in this imagePresentationDuration
-        #   if not distinctZFired.count(ZNeuronWinner):
-        #     distinctZFired.append(ZNeuronWinner)
-        #   # update weights of all Y to ZThatFired
-        #   # do not update weights in this experiment for now we want to analyze the mathematically determined weights
-        #   # weights = neuronFunctions.updateWeights(XTilde, weights, ZNeuronWinner, c, learningRate)
-        #   # priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronWinner, c, learningRate)
-          
+          averageZFired.append(ZNeuronsThatWantToFire[i]) 
       # Simulation DONE
       
       directoryPath =  "fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay)
@@ -309,7 +273,6 @@ for gridIterator in range(len(AfiringRateList)):
       np.save(directoryPath + "/weights" + ".npy", weights)
       np.save(directoryPath + "/priorWeights" + ".npy", priorWeights)
         
-      
       # 1 hot encode prior
       priorEncoded = np.zeros(4)
       # TODO  !!!!!!!! disabled next line to remove prior 
@@ -323,7 +286,7 @@ for gridIterator in range(len(AfiringRateList)):
           imageEncoded[i] = 1
       imagesEncoded.append(imageEncoded)
       
-      PvonYvorausgesetztXundZSimulation = np.zeros(4)
+      PvonYvorausgesetztXundZSimulation = np.zeros(numberYNeurons)
       totalSpikes = len(YSpikes[0])
       amountY0Spikes = len(np.where(np.array(YSpikes[0]) == 0)[0])
       amountY1Spikes = len(np.where(np.array(YSpikes[0]) == 1)[0])
@@ -347,7 +310,7 @@ for gridIterator in range(len(AfiringRateList)):
       priorEncoded = priorsEncoded[counter]
       
       # calc std and average of the 20 runs
-      PvonYvorausgesetztXundZSimulationMeanTmp = np.zeros(4)
+      PvonYvorausgesetztXundZSimulationMeanTmp = np.zeros(numberYNeurons)
       PvonYvorausgesetztXundZSimulationStdTmp = [[],[],[],[]]
       for runsIterator in range(20):
         for outputClassIterator in range(numberYNeurons):
@@ -367,11 +330,6 @@ for gridIterator in range(len(AfiringRateList)):
       PvonYvorausgesetztXundZAnalysis = mathematischeAnalyse.calcPvonYvorausgesetztXundZDoubleSize(imageEncoded, priorEncoded)
       # TODO changed function to disable prior
       # PvonYvorausgesetztXundZAnalysis = mathematischeAnalyse.calcPvonYvorausgesetztXundZNullDoubleSize(imageEncoded, priorEncoded)
-      
-      # gs2 = fig.add_gridspec(6, 2, wspace=0.4, hspace=25)
-      # hspace seems to be capped and doesnt really influence the spacing anymore. 
-      # but the .svg seems fine anyway, solve only if figure is not good enough.
-      # gs3 = fig.add_gridspec(6, 2, wspace=0.4, hspace=400)
       
       ax10 = fig.add_subplot(gs[0 + 2*i, 0 + 2 + 10*j:10 + 10*j - 2])
       
@@ -417,29 +375,30 @@ for gridIterator in range(len(AfiringRateList)):
       ax10.axvline(x=17.5)
 
       ax10.set_ylim([-0.5, 0.5])
-      ax10.set_title("Input data", y=1.3)
+      ax10.set_title("Input data", y=1.3, fontsize=14)
       ax10.axes.yaxis.set_visible(False)
+      ax10.tick_params(axis='x', which='major', labelsize=12)
       
       
-      PvonYvorausgesetztXundZAnalysis = PvonYvorausgesetztXundZAnalysis.reshape(4,1)
-      tab21 = ax21.table(cellText=np.around(PvonYvorausgesetztXundZAnalysis, 3), loc='center')
-      tab21.auto_set_font_size(False)
+      PvonYvorausgesetztXundZAnalysis = PvonYvorausgesetztXundZAnalysis.reshape(numberYNeurons,1)
+      tab21 = ax21.table(cellText=np.around(PvonYvorausgesetztXundZAnalysis, 3), bbox=[0.2, -0.2, 0.3, 1])
+      tab21.set_fontsize(14)
+      # tab21.scale(1.5, 1.5)
       tab21.auto_set_column_width(0)
-      tab21.scale(1,1.2)
       ax21.axis('off')
-      ax21.set_title("Analysis output \n probabilities", y=0.9)
+      ax21.set_title("Analysis output \n probabilities", y=0.9, fontsize=14)
       
-      PvonYvorausgesetztXundZSimulation = PvonYvorausgesetztXundZSimulation.reshape(4,1)
-      standardDeviations = standardDeviations.reshape(4,1)
+      PvonYvorausgesetztXundZSimulation = PvonYvorausgesetztXundZSimulation.reshape(numberYNeurons,1)
+      standardDeviations = standardDeviations.reshape(numberYNeurons,1)
       cellTextTmp = [[], [], [], []]
       for cellTextIterator in range(numberYNeurons):  
         cellTextTmp[cellTextIterator].append(str(np.around(PvonYvorausgesetztXundZSimulation[cellTextIterator], 3)).strip("[]") + " (" + str(np.around(standardDeviations[cellTextIterator], 4)).strip("[]") + ")")
-      tab22 = ax22.table(cellText=cellTextTmp, loc='center')
-      tab22.auto_set_font_size(False)
+      tab22 = ax22.table(cellText=cellTextTmp, bbox=[0.2, -0.2, 0.7, 1])
+      tab22.set_fontsize(14)
+      # tab22.scale(1.5, 1.5)
       tab22.auto_set_column_width(0)
-      tab22.scale(1,1.2)
       ax22.axis('off')
-      ax22.set_title("Simulation output \n probabilities", y=0.9)
+      ax22.set_title("Simulation output \n probabilities", y=0.9, fontsize=14)
       
       # calculate Kullback Leibler Divergence for each image and each run
       for runsIterator in range(20):
