@@ -60,9 +60,9 @@ plt.savefig("KLDvsfPrior_fInput88tau4" + ".png")
 # Last: 
 # fPrior = 440
 # tauDecay = 0.004
-fInput =          [88     , 90     , 92     , 94     , 96     , 98     , 100    , 102]
-KLDivergence =    [0.0111 , 0.0103 , 0.0104 , 0.0100 , 0.0100 , 0.0099 , 0.0100 , 0.0108]
-KLDivergenceStd = [0.00101, 0.00127, 0.00085, 0.00112, 0.00082, 0.00095, 0.00088, 0.00094]
+fInput =          [88     , 90     , 92     , 94     , 96     , 98     , 100    , 102,     104    , 106    , 108    , 110]
+KLDivergence =    [0.0111 , 0.0103 , 0.0104 , 0.0100 , 0.0100 , 0.0099 , 0.0100 , 0.0108 , 0.0111 , 0.0122 , 0.0123 , 0.0134]
+KLDivergenceStd = [0.00101, 0.00127, 0.00085, 0.00112, 0.00082, 0.00095, 0.00088, 0.00094, 0.00118, 0.00106, 0.00130, 0.00091]
 plt.figure()
 plt.errorbar(fInput, KLDivergence, KLDivergenceStd, marker='.', ecolor="Red",)
 plt.xlabel("Input firing rate")
