@@ -351,8 +351,6 @@ def generateCrossLineImageAtPosition(orientation, xPosition, yPosition, imageSiz
 
 #  imageSize(height, width)
 def generateRandom1DLineImage(imageSize = (1, 9), noiseLevel = 0.1, priorFlipChance = 0.1):
-  activePixels = 3 # not variable for now, as not needed. To be variable adapt 'position' and setting of active pixels
-  possibleClasses = 4
   classes = [0, 1, 2, 3]
   positions = [1, 3, 5, 7] # center coords of the 4 classes
   
