@@ -29,7 +29,7 @@ plt.close("all")
 
 imageSize = (1, 9)
 imagePresentationDuration = 0.2
-simulationTime = 10
+simulationTime = 1
 dt = 0.001 # seconds
 
 # 100/500 and 0.003 seems nice to me
@@ -47,6 +47,20 @@ tauDecay = 0.004  # might be onto something here, my problem gets better
 learningRateFactor = 3
 learningRate = 10**-learningRateFactor
 RStar = 200 # Hz; total output firing rate
+
+analyticWeights = np.array([[0.9, 0.9, 0.9, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+                      [0.1, 0.1, 0.9, 0.9, 0.9, 0.1, 0.1, 0.1, 0.1],
+                      [0.1, 0.1, 0.1, 0.1, 0.9, 0.9, 0.9, 0.1, 0.1],
+                      [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.9, 0.9, 0.9]],
+                      "float64")
+# analyticWeights = np.log(analyticWeights)
+
+analyticPriorWeights = np.array([[0.9, 0.0333, 0.0333, 0.0333],
+                         [0.0333, 0.9, 0.0333, 0.0333],
+                         [0.0333, 0.0333, 0.9, 0.0333],
+                         [0.0333, 0.0333, 0.0333, 0.9]],
+                      "float64")
+# analyticPriorWeights = np.log(analyticPriorWeights)
 
 # initialize weights (for now between 0 and 1, not sure)
 if loadWeights:
@@ -70,7 +84,7 @@ averageZFired = []
 averageZFiredHistory = []
       
 # start simulation
-for t in np.arange(0, imagePresentationDuration, dt):
+for t in np.arange(0, simulationTime, dt):
   # generate training data every 50ms
   if abs(t - round(t / imagePresentationDuration) * imagePresentationDuration) < 1e-10:
     image, prior = dataGenerator.generateRandom1DLineImage()
@@ -167,7 +181,9 @@ for t in np.arange(0, imagePresentationDuration, dt):
     # append ID of Z if this Z has not fired yet in this imagePresentationDuration
     if not distinctZFired.count(ZNeuronsThatWantToFire[i]):
       distinctZFired.append(ZNeuronsThatWantToFire[i]) 
-    weights = neuronFunctions.updateWeights(XTilde, weights, ZNeuronsThatWantToFire[i], c, learningRate)
+    weights = neuronFunctions.updateWeights(XTilde, weights.T, ZNeuronsThatWantToFire[i], c, learningRate)
+    # transpose weights again because everything is fucked up
+    weights = weights.T
     priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronsThatWantToFire[i], c, learningRate)
     
 # Simulation DONE ############
@@ -180,93 +196,86 @@ np.save(directoryPath + "/priorWeights" + ".npy", priorWeights)
 
 # TRAINING PLOT
 colors = ['red', 'blue', 'black', 'green']
-fig = plt.figure()
-gs = fig.add_gridspec(6, 10, hspace=1)
-gs2 = fig.add_gridspec(6, 2, wspace=0.4, hspace=25)
+fig = plt.figure(figsize=(12,8))
+gs = fig.add_gridspec(8, 2, hspace=1)
+gs2 = fig.add_gridspec(8, 2, wspace=0.4, hspace=25)
 # hspace seems to be capped and doesnt really influence the spacing anymore. 
 # but the .svg seems fine anyway, solve only if figure is not good enough.
-gs3 = fig.add_gridspec(6, 2, wspace=0.4, hspace=400)
+gs3 = fig.add_gridspec(8, 2, wspace=0.4, hspace=400)
 
 
-ax10 = fig.add_subplot(gs[0, 0])
-ax11 = fig.add_subplot(gs[0, 1])
-ax12 = fig.add_subplot(gs[0, 2])
-ax13 = fig.add_subplot(gs[0, 3])
-ax14 = fig.add_subplot(gs[0, 4])
-ax15 = fig.add_subplot(gs[0, 5])
-ax16 = fig.add_subplot(gs[0, 6])
-ax17 = fig.add_subplot(gs[0, 7])
-ax18 = fig.add_subplot(gs[0, 8])
-ax19 = fig.add_subplot(gs[0, 9])
+ax10 = fig.add_subplot(gs[0:2, 0])
+ax11 = fig.add_subplot(gs[0:2, 1])
+ax20 = fig.add_subplot(gs[2:4, 0])
+ax21 = fig.add_subplot(gs[2:4, 1])
 
-ax20 = fig.add_subplot(gs[1, 0])
-ax21 = fig.add_subplot(gs[1, 1])
-ax22 = fig.add_subplot(gs[1, 2])
-ax23 = fig.add_subplot(gs[1, 3])
-ax24 = fig.add_subplot(gs[1, 4])
-ax25 = fig.add_subplot(gs[1, 5])
-ax26 = fig.add_subplot(gs[1, 6])
-ax27 = fig.add_subplot(gs[1, 7])
-ax28 = fig.add_subplot(gs[1, 8])
-ax29 = fig.add_subplot(gs[1, 9])
+ax31 = fig.add_subplot(gs2[4:6, 0])
+ax32 = fig.add_subplot(gs2[4:6, 1])
 
-ax31 = fig.add_subplot(gs2[2:4, 0])
-ax32 = fig.add_subplot(gs2[2:4, 1])
-
-ax41 = fig.add_subplot(gs3[4:6, 0])
-ax42 = fig.add_subplot(gs3[4:6, 1])
+ax41 = fig.add_subplot(gs3[6:8, 0])
+ax42 = fig.add_subplot(gs3[6:8, 1])
 
 # Add ghost axes and titles
-ax_firstRow = fig.add_subplot(gs[0, :])
-ax_firstRow.axis('off')
-ax_firstRow.set_title('A', loc="left", x=-0.04,y=0.5, fontsize=16.0, fontweight='semibold')
+ax_firstRowFirstColumn = fig.add_subplot(gs[0:2, 0])
+ax_firstRowFirstColumn.axis('off')
+ax_firstRowFirstColumn.set_title('A', loc="left", x=-0.06,y=0.5, fontsize=16.0, fontweight='semibold')
+ax_firstRowSecondColumn = fig.add_subplot(gs[0:2, 1])
+ax_firstRowSecondColumn.axis('off')
+ax_firstRowSecondColumn.set_title('B', loc="left", x=-0.06,y=0.5, fontsize=16.0, fontweight='semibold')
+ax_secondRowFirstColumn = fig.add_subplot(gs[2:4, 0])
+ax_secondRowFirstColumn.axis('off')
+ax_secondRowFirstColumn.set_title('C', loc="left", x=-0.06,y=0.5, fontsize=16.0, fontweight='semibold')
+ax_secondRowSecondColumn = fig.add_subplot(gs[2:4, 1])
+ax_secondRowSecondColumn.axis('off')
+ax_secondRowSecondColumn.set_title('D', loc="left", x=-0.06,y=0.5, fontsize=16.0, fontweight='semibold')
 
-ax_secondRow = fig.add_subplot(gs[1, :])
-ax_secondRow.axis('off')
-ax_secondRow.set_title('B', loc="left", x=-0.04,y=0.5, fontsize=16.0, fontweight='semibold')
-
-ax_thirdRowFirstColumn = fig.add_subplot(gs2[2:4, 0])
+ax_thirdRowFirstColumn = fig.add_subplot(gs2[4:6, 0])
 ax_thirdRowFirstColumn.axis('off')
-ax_thirdRowFirstColumn.set_title('C', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
-ax_thirdRowSecondColumn = fig.add_subplot(gs2[2:4, 1])
+ax_thirdRowFirstColumn.set_title('E', loc="left", x=-0.06, fontsize=16.0, fontweight='semibold')
+ax_thirdRowSecondColumn = fig.add_subplot(gs2[4:6, 1])
 ax_thirdRowSecondColumn.axis('off')
-ax_thirdRowSecondColumn.set_title('D', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
+ax_thirdRowSecondColumn.set_title('F', loc="left", x=-0.151, fontsize=16.0, fontweight='semibold')
 
-ax_fourthRowFirstColumn = fig.add_subplot(gs3[4:6, 0])
+ax_fourthRowFirstColumn = fig.add_subplot(gs3[6:8, 0])
 ax_fourthRowFirstColumn.axis('off')
-ax_fourthRowFirstColumn.set_title('E', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
-ax_fourthRowSecondColumn = fig.add_subplot(gs3[4:6, 1])
+ax_fourthRowFirstColumn.set_title('G', loc="left", x=-0.06, fontsize=16.0, fontweight='semibold')
+ax_fourthRowSecondColumn = fig.add_subplot(gs3[6:8, 1])
 ax_fourthRowSecondColumn.axis('off')
-ax_fourthRowSecondColumn.set_title('F', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
+ax_fourthRowSecondColumn.set_title('H', loc="left", x=-0.151, fontsize=16.0, fontweight='semibold')
 
-# plot training data examples and weights
-for z in range(int(numberZNeurons/2)):
-  # 4 = linethickness/2 aufgerundet
-  # TODO due to int() we are 1 pixel off in plots... fix pls
-  image = dataGenerator.generateHorizontalLineImage(int(3.5 + z * (imageSize[0]) / (numberZNeurons/2)), imageSize)
-  eval("ax1" + str(z) + ".imshow(image[0], cmap='gray')")
-  eval("ax1" + str(z) + ".tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelright=False, labelleft=False)")
-  w = weights[0::2, z]
-  w = w.reshape((imageSize[0], imageSize[1]))
-  eval("ax2" + str(z) + ".imshow(w, cmap='gray')")
-  eval("ax2" + str(z) + ".set_title('$w_{' + str(z+1) + 'n}$', pad=5)")
-  eval("ax2" + str(z) + ".tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelright=False, labelleft=False)")
-
-for z in range(int(numberZNeurons / 2), int(numberZNeurons)):
-  # 4 = linethickness/2 aufgerundet
-  image = dataGenerator.generateVerticalLineImage(int(3.5 + (z - 5) * (imageSize[1]) / (numberZNeurons/2)), imageSize)
-  eval("ax1" + str(z) + ".imshow(image[0], cmap='gray')")
-  eval("ax1" + str(z) + ".tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelright=False, labelleft=False)")
-  
-  w = weights[0::2, z]
-  w = w.reshape((imageSize[0], imageSize[1]))
-  eval("ax2" + str(z) + ".imshow(w, cmap='gray')")
-  eval("ax2" + str(z) + ".set_title('$w_{' + str(z+1) + 'n}$', pad=5)")
-  eval("ax2" + str(z) + ".tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelright=False, labelleft=False)")
+# plot weights
+tab10 = ax10.table(cellText=np.around(np.exp(weights[:, 0::2]), 2), loc='center', cellLoc='center'
+, colWidths=[0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11])
+tab10.scale(1,1.5)
+# tab10.auto_set_column_width([0,1,2,3,4,5,6,7,8])
+tab10.auto_set_font_size(False)
+ax10.axis('off')
+ax10.set_title("Trained weights", y=1)
+tab11 = ax11.table(cellText=np.around(analyticWeights, 2), loc='center', cellLoc='center'
+, colWidths=[0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11])
+tab11.scale(1,1.5)
+# tab11.auto_set_column_width([0,1,2,3,4,5,6,7,8])
+tab11.auto_set_font_size(False)
+ax11.axis('off')
+ax11.set_title("Calculated weights", y=1)
+tab20 = ax20.table(cellText=np.around(np.exp(priorWeights), 2), loc='center', cellLoc='center'
+, colWidths=[0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11])
+tab20.scale(1,1.5)
+# tab20.auto_set_column_width([0,1,2,3,4,5,6,7,8])
+tab20.auto_set_font_size(False)
+ax20.axis('off')
+ax20.set_title("Trained prior weights", y=1)
+tab21 = ax21.table(cellText=np.around(analyticPriorWeights, 2), loc='center', cellLoc='center'
+, colWidths=[0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11])
+tab21.scale(1,1.5)
+# tab21.auto_set_column_width([0,1,2,3,4,5,6,7,8])
+tab21.auto_set_font_size(False)
+ax21.axis('off')
+ax21.set_title("Calculated prior weights", y=1)
 
 # plot the first 120 output spikes
 for i in range(0, 120):
-  ax31.vlines(ZSpikes[1][i], ymin=ZSpikes[0][i] + 1 - 0.5, ymax=ZSpikes[0][i] + 1 + 0.5, color=colors[ZSpikes[0][i]], linewidth=0.5)
+  ax31.vlines(YSpikes[1][i], ymin=YSpikes[0][i] + 1 - 0.5, ymax=YSpikes[0][i] + 1 + 0.5, color=colors[YSpikes[0][i]], linewidth=0.5)
 ax31.axvline(x=0, color="red", linestyle="dashed")
 ax31.axvline(x=0.2, color="red", linestyle="dashed")
 ax31.axvline(x=0.4, color="red", linestyle="dashed")
@@ -276,8 +285,8 @@ ax31.set_ylabel("Output neuron")
 ax31.set_xlabel("Time [s]")
 
 # plot the last 120 Z spikes
-for i in range(len(ZSpikes[0]) - len(ZSpikes[0][-120:]), len(ZSpikes[0])):
-  ax32.vlines(ZSpikes[1][i], ymin=ZSpikes[0][i] + 1 - 0.5, ymax=ZSpikes[0][i] + 1 + 0.5, color=colors[ZSpikes[0][i]], linewidth=0.5)
+for i in range(len(YSpikes[0]) - len(YSpikes[0][-120:]), len(YSpikes[0])):
+  ax32.vlines(YSpikes[1][i], ymin=YSpikes[0][i] + 1 - 0.5, ymax=YSpikes[0][i] + 1 + 0.5, color=colors[YSpikes[0][i]], linewidth=0.5)
 ax32.axvline(x=simulationTime, color="red", linestyle="dashed")
 ax32.axvline(x=simulationTime - 0.2, color="red", linestyle="dashed")
 ax32.axvline(x=simulationTime - 0.4, color="red", linestyle="dashed")
@@ -285,7 +294,6 @@ ax32.axvline(x=simulationTime - 0.6, color="red", linestyle="dashed")
 ax32.set_title("Output after learning")
 ax32.set_ylabel("Output neuron")
 ax32.set_xlabel("Time [s]")
-
 
 # show training progress (how many distinct Z fired during each image presentation duration)
 # remove first empty entry
