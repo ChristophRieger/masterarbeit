@@ -29,7 +29,7 @@ plt.close("all")
 
 imageSize = (1, 9)
 imagePresentationDuration = 0.2
-simulationTime = 1
+simulationTime = 800
 dt = 0.001 # seconds
 
 # 100/500 and 0.003 seems nice to me
@@ -246,32 +246,40 @@ ax_fourthRowSecondColumn.set_title('H', loc="left", x=-0.151, fontsize=16.0, fon
 # plot weights
 tab10 = ax10.table(cellText=np.around(np.exp(weights[:, 0::2]), 2), loc='center', cellLoc='center'
 , colWidths=[0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11])
-tab10.scale(1,1.5)
+tab10.scale(1,1.8)
 # tab10.auto_set_column_width([0,1,2,3,4,5,6,7,8])
 tab10.auto_set_font_size(False)
+tab10.set_fontsize(13)
 ax10.axis('off')
 ax10.set_title("Trained weights", y=1)
+ax10.title.set_size(14)
 tab11 = ax11.table(cellText=np.around(analyticWeights, 2), loc='center', cellLoc='center'
 , colWidths=[0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11])
-tab11.scale(1,1.5)
+tab11.scale(1,1.8)
 # tab11.auto_set_column_width([0,1,2,3,4,5,6,7,8])
 tab11.auto_set_font_size(False)
+tab11.set_fontsize(13)
 ax11.axis('off')
 ax11.set_title("Calculated weights", y=1)
+ax11.title.set_size(14)
 tab20 = ax20.table(cellText=np.around(np.exp(priorWeights), 2), loc='center', cellLoc='center'
 , colWidths=[0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11])
-tab20.scale(1,1.5)
+tab20.scale(1,1.8)
 # tab20.auto_set_column_width([0,1,2,3,4,5,6,7,8])
 tab20.auto_set_font_size(False)
+tab20.set_fontsize(13)
 ax20.axis('off')
 ax20.set_title("Trained prior weights", y=1)
+ax20.title.set_size(14)
 tab21 = ax21.table(cellText=np.around(analyticPriorWeights, 2), loc='center', cellLoc='center'
 , colWidths=[0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11])
-tab21.scale(1,1.5)
+tab21.scale(1,1.8)
 # tab21.auto_set_column_width([0,1,2,3,4,5,6,7,8])
 tab21.auto_set_font_size(False)
+tab21.set_fontsize(13)
 ax21.axis('off')
 ax21.set_title("Calculated prior weights", y=1)
+ax21.title.set_size(14)
 
 # plot the first 120 output spikes
 for i in range(0, 120):
@@ -281,8 +289,10 @@ ax31.axvline(x=0.2, color="red", linestyle="dashed")
 ax31.axvline(x=0.4, color="red", linestyle="dashed")
 ax31.axvline(x=0.6, color="red", linestyle="dashed")
 ax31.set_title("Output before learning")
-ax31.set_ylabel("Output neuron")
-ax31.set_xlabel("Time [s]")
+ax31.title.set_size(14)
+ax31.set_ylabel("Output neuron", fontsize=12)
+ax31.set_xlabel("Time [s]", fontsize=12)
+ax31.tick_params(axis='both', labelsize=11)
 
 # plot the last 120 Z spikes
 for i in range(len(YSpikes[0]) - len(YSpikes[0][-120:]), len(YSpikes[0])):
@@ -292,22 +302,28 @@ ax32.axvline(x=simulationTime - 0.2, color="red", linestyle="dashed")
 ax32.axvline(x=simulationTime - 0.4, color="red", linestyle="dashed")
 ax32.axvline(x=simulationTime - 0.6, color="red", linestyle="dashed")
 ax32.set_title("Output after learning")
-ax32.set_ylabel("Output neuron")
-ax32.set_xlabel("Time [s]")
+ax32.title.set_size(14)
+ax32.set_ylabel("Output neuron", fontsize=12)
+ax32.set_xlabel("Time [s]", fontsize=12)
+ax32.tick_params(axis='both', labelsize=11)
 
 # show training progress (how many distinct Z fired during each image presentation duration)
 # remove first empty entry
 distinctZFiredHistory.pop(0)
 ax41.plot(distinctZFiredHistory)
 ax41.set_title("Training progress")
-ax41.set_ylabel("Output neurons spiking")
-ax41.set_xlabel("Image shown")
+ax41.title.set_size(14)
+ax41.set_ylabel("Output neurons spiking", fontsize=12)
+ax41.set_xlabel("Image shown", fontsize=12)
+ax41.tick_params(axis='both', labelsize=11)
 
 # show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
 ax42.plot(averageZFiredHistory)
 ax42.set_title("Certainty of the network")
-ax42.set_ylabel("Certainty")
-ax42.set_xlabel("Image shown")
+ax42.title.set_size(14)
+ax42.set_ylabel("Certainty", fontsize=12)
+ax42.set_xlabel("Image shown", fontsize=12)
+ax42.tick_params(axis='both', labelsize=11)
 
 pickle.dump(fig, open(directoryPath + "/trainingPlot" + '.pickle','wb'))
 plt.savefig(directoryPath + "/trainingPlot.svg")  
@@ -389,15 +405,15 @@ plt.show()
 #     # Add ghost axes and titles
 #     ax_firstRow = fig.add_subplot(gs[0 + 2*i, 0 + 10*j:10 + 10*j])
 #     ax_firstRow.axis('off')
-#     ax_firstRow.set_title('A' + str(counter+1), loc="left", x=-0.008,y=0.5, fontsize=16.0, fontweight='semibold')
+#     ax_firstRow.set_title('A' + str(counter+1), loc="left", x=-0.008,y=0.5, fontsize=18.0, fontweight='semibold')
     
 #     ax_secondRow = fig.add_subplot(gs[1 + 2*i, 0 + 10*j])
 #     ax_secondRow.axis('off')
-#     ax_secondRow.set_title('B' + str(counter+1), loc="left", x=-0.11,y=0.5, fontsize=16.0, fontweight='semibold')
+#     ax_secondRow.set_title('B' + str(counter+1), loc="left", x=-0.11,y=0.5, fontsize=18.0, fontweight='semibold')
     
 #     ax_thirdRow = fig.add_subplot(gs[1 + 2*i, 6 + 10*j])
 #     ax_thirdRow.axis('off')
-#     ax_thirdRow.set_title('C' + str(counter+1), loc="left", x=-0.11,y=0.5, fontsize=16.0, fontweight='semibold')
+#     ax_thirdRow.set_title('C' + str(counter+1), loc="left", x=-0.11,y=0.5, fontsize=18.0, fontweight='semibold')
     
 #     # plot input data
 #     ax10.imshow(images[0][counter], cmap='gray')
