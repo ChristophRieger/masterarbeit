@@ -40,7 +40,7 @@ numberYNeurons = 4 # output
 numberZNeurons = 4 # prior
 
 sigma = 0.01 # time frame in which spikes count as before output spike
-c = 20 # 10 seems good, scales weights to 0 ... 1
+c = 1 # 10 seems good, scales weights to 0 ... 1
 tauRise = 0.001
 tauDecay = 0.004  # might be onto something here, my problem gets better
 
@@ -188,9 +188,33 @@ for t in np.arange(0, simulationTime, dt):
     
 # Simulation DONE ############
     
-directoryPath =  "fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay)
+directoryPath =  "fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay) + "_c" + str(c)
 if not os.path.exists(directoryPath):
   os.mkdir(directoryPath)
+
+# sort the weights so they align with the analytic weights
+weightsTmp = np.full((numberYNeurons, numberXNeurons), 0, "float64")
+for j in range(4):
+  maxWeight = -99999
+  rowToMove = 99999
+  for i in range(4):
+    if weights[i,2 + j * 4] > maxWeight:
+      maxWeight = weights[i,2 + j * 4]
+      rowToMove = i
+  weightsTmp[j, :] = weights[rowToMove, :]  
+weights = weightsTmp
+
+priorWeightsTmp = np.full((numberYNeurons, numberZNeurons), 0, "float64")
+for j in range(4):
+  maxWeight = -99999
+  rowToMove = 99999
+  for i in range(4):
+    if priorWeights[i, j] > maxWeight:
+      maxWeight = priorWeights[i, j]
+      rowToMove = i
+  priorWeightsTmp[j, :] = priorWeights[rowToMove, :]  
+priorWeights = priorWeightsTmp
+
 np.save(directoryPath + "/weights" + ".npy", weights)
 np.save(directoryPath + "/priorWeights" + ".npy", priorWeights)
 
