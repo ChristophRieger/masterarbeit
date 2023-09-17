@@ -31,7 +31,7 @@ imagePresentationDuration = 20
 dt = 0.001 # seconds
 
 # 100/500 and 0.003 seems nice to me
-firingRate = 88 # Hz;
+firingRate = 98 # Hz;
 AfiringRate = 440
 numberXNeurons = imageSize[0] * imageSize[1] # 1 neurons per pixel (one for black) # input
 numberYNeurons = 4 # output
@@ -401,29 +401,29 @@ for gridIterator in range(len(AfiringRateList)):
       ax10.axvline(x=7.5)
       ax10.axvline(x=8.5)
       ax10.set_ylim([-0.5, 0.5])
-      ax10.set_title("Input data", y=1.3)
+      ax10.set_title("Input data", y=1.3, fontsize=14)
       ax10.axes.yaxis.set_visible(False)
-      
+      ax10.tick_params(axis='x', which='major', labelsize=12)
       
       PvonYvorausgesetztXundZAnalysis = PvonYvorausgesetztXundZAnalysis.reshape(4,1)
-      tab21 = ax21.table(cellText=np.around(PvonYvorausgesetztXundZAnalysis, 3), loc='center')
-      tab21.auto_set_font_size(False)
+      tab21 = ax21.table(cellText=np.around(PvonYvorausgesetztXundZAnalysis, 3), bbox=[0.2, -0.2, 0.3, 1])
+      tab21.set_fontsize(14)
       tab21.auto_set_column_width(0)
-      tab21.scale(1,1.2)
+      # tab21.scale(1,1.2)
       ax21.axis('off')
-      ax21.set_title("Analysis output \n probabilities", y=0.9)
+      ax21.set_title("Analysis output probabilities", y=0.9, fontsize=14)
       
       PvonYvorausgesetztXundZSimulation = PvonYvorausgesetztXundZSimulation.reshape(4,1)
       standardDeviations = standardDeviations.reshape(4,1)
       cellTextTmp = [[], [], [], []]
       for cellTextIterator in range(numberYNeurons):  
         cellTextTmp[cellTextIterator].append(str(np.around(PvonYvorausgesetztXundZSimulation[cellTextIterator], 3)).strip("[]") + " (" + str(np.around(standardDeviations[cellTextIterator], 4)).strip("[]") + ")")
-      tab22 = ax22.table(cellText=cellTextTmp, loc='center')
-      tab22.auto_set_font_size(False)
+      tab22 = ax22.table(cellText=cellTextTmp, bbox=[0.2, -0.2, 0.7, 1])
+      tab22.set_fontsize(14)
       tab22.auto_set_column_width(0)
-      tab22.scale(1,1.2)
+      # tab22.scale(1,1.2)
       ax22.axis('off')
-      ax22.set_title("Simulation output \n probabilities", y=0.9)
+      ax22.set_title("Simulation output probabilities", y=0.9, fontsize=14)
       
       # calculate Kullback Leibler Divergence for each image and each run
       for runsIterator in range(20):
