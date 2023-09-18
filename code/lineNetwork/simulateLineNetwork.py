@@ -22,7 +22,7 @@ import mathematischeAnalyse
 import copy
 
 # Command Center
-loadWeights = False
+loadWeights = True
 
 plt.close("all")
 
@@ -49,8 +49,10 @@ RStar = 200 # Hz; total output firing rate
 
 # initialize weights (for now between 0 and 1, not sure)
 if loadWeights:
-  weights = np.load("c20_3_YZWeights.npy")
-  priorWeights = np.load("c20_3_AZWeights.npy")
+  allWeights = np.load("weights_98_440_4.npy")
+  weights = allWeights[:, 0::2]
+  weightsInverted = allWeights[:, 1::2]
+  priorWeights = np.load("priorWeights_98_440_4.npy")
 else:
   weights = np.array([[0.9, 0.9, 0.9, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
                         [0.1, 0.1, 0.9, 0.9, 0.9, 0.1, 0.1, 0.1, 0.1],
@@ -116,9 +118,9 @@ firingRateList = [90, 92, 94, 96, 98, 100, 110, 120]
 AfiringRateList = [0]
 # tauDecayList = [0.003, 0.005, 0.007, 0.015]
 
-for gridIterator in range(len(AfiringRateList)):
+for gridIterator in range(1):
   # change parameters due to grid search
-  firingRate = firingRateList[gridIterator]
+  #firingRate = firingRateList[gridIterator]
   # AfiringRate = AfiringRateList[gridIterator]
   
   PvonYvorausgesetztXundZSimulationListList = []
@@ -297,11 +299,11 @@ for gridIterator in range(len(AfiringRateList)):
           
       # Simulation DONE
       
-      directoryPath =  "fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay)
+      directoryPath =  "Simulation_fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay)
       if not os.path.exists(directoryPath):
         os.mkdir(directoryPath)
-      np.save(directoryPath + "/weights" + ".npy", weights)
-      np.save(directoryPath + "/priorWeights" + ".npy", priorWeights)
+      # np.save(directoryPath + "/weights" + ".npy", weights)
+      # np.save(directoryPath + "/priorWeights" + ".npy", priorWeights)
         
       
       # 1 hot encode prior

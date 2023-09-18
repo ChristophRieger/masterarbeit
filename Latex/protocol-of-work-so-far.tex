@@ -620,3 +620,25 @@ It is assumed that this happens because the membrane potentials of the output ne
 \paragraph{Approximating the analytic solution}
 After first finding the optimal $f_{input}$ for disabled prior activity and then finding the optimal $f_{prior}$ with enabled prior activity for $\tau_{decay}$ the simulation was not yet approximating the analytical solution perfectly. Because of that it was tried to raise $f_{input}$ to further decrease the Kullback-Leibler divergence. The further search for a better $f_{input}$ was performed for $\tau_{decay} = 0.004 ms$ and $f_{prior} = 440 Hz$, as this set of parameters performed the best overall.
 When comparing the former optimal result in Figure \ref{fig:1D_88_440_4} with $f_{input} = 88 Hz$, to the result with $f_{input} = 98 Hz$ in Figure \ref{fig:1D_98_440_4}, it can be seen that the Kullback-Leibler divergence decreased from 0.0112 to 0.0101. The simulation output probabilities with the higher $f_{input}$ approximated the analysis output probabilities for example for "B3" and "C3" in the mentioned figures on one hand better, while on the other hand for "B5" and "C5" the output probabilities of the analysis and the simulation of class 2 diverged more. A further increase of $f_{input}$ started to increase the Kullback-Leibler divergence again, thus the final optimum of the parameter set was reached. It is assumed that increasing $f_{input}$ after $f_{prior}$ was fitted was necessary because the proportion of the impact of $f_{input}$ on the simulation decreased due to the introduction of the prior activity.
+
+\section{Experiment 5: Simulation of the 1D network with double size}
+\label{section:1DDoubleSize}
+
+\subsection{Introduction}
+
+\subsection{Methods}
+
+\subsection{Results}
+
+\subsection{Discussion}
+
+\section{Experiment 6: Training of the 1D network with predetermined parameters}
+\label{section:1DDoubleSize}
+
+\subsection{Introduction}
+
+\subsection{Methods}
+
+\subsection{Results}
+
+\subsection{Discussion}
