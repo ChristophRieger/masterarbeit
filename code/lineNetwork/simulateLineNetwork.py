@@ -38,7 +38,7 @@ numberYNeurons = 4 # output
 numberZNeurons = 4 # prior
 
 sigma = 0.01 # time frame in which spikes count as before output spike
-c = 20 # 10 seems good, scales weights to 0 ... 1
+c = 4 # 10 seems good, scales weights to 0 ... 1
 tauRise = 0.001
 tauDecay = 0.004  # might be onto something here, my problem gets better
 # tauDecay = 0.015
@@ -49,10 +49,10 @@ RStar = 200 # Hz; total output firing rate
 
 # initialize weights (for now between 0 and 1, not sure)
 if loadWeights:
-  allWeights = np.load("weights_98_440_4.npy")
+  allWeights = np.load("weights_98_440_4_c4.npy")
   weights = allWeights[:, 0::2]
   weightsInverted = allWeights[:, 1::2]
-  priorWeights = np.load("priorWeights_98_440_4.npy")
+  priorWeights = np.load("priorWeights_98_440_4_c4.npy")
 else:
   weights = np.array([[0.9, 0.9, 0.9, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
                         [0.1, 0.1, 0.9, 0.9, 0.9, 0.1, 0.1, 0.1, 0.1],
@@ -299,7 +299,7 @@ for gridIterator in range(1):
           
       # Simulation DONE
       
-      directoryPath =  "Simulation_fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay)
+      directoryPath =  "Simulation_fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay) + "_c" + str(c)
       if not os.path.exists(directoryPath):
         os.mkdir(directoryPath)
       # np.save(directoryPath + "/weights" + ".npy", weights)

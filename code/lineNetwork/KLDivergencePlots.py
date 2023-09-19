@@ -75,6 +75,22 @@ plt.title("Search for best $f_{input}$")
 plt.savefig("KLDvsfInput_fPrior440tau4" + ".svg")  
 plt.savefig("KLDvsfInput_fPrior440tau4" + ".png")
 
+# Last: 
+# fInput = 98
+# fPrior = 440
+# tauDecay = 0.004
+c =          [1, 2, 3, 4]
+KLDivergence =    [0.0625, 0.0377, 0.0342, 0.0447]
+KLDivergenceStd = [0.00238, 0.00194, 0.00160, 0.00242]
+plt.figure()
+plt.errorbar(c, KLDivergence, KLDivergenceStd, marker='.', ecolor="Red",)
+plt.xlabel("c")
+plt.ylabel("KL divergence")
+plt.title("Search for best c")
+plt.savefig("KLD_cvsfInput98_fPrior440tau4" + ".svg")  
+plt.savefig("KLD_cvsfInput98_fPrior440tau4" + ".png")
+
+
 
 
 

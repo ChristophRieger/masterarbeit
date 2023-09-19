@@ -40,7 +40,7 @@ numberYNeurons = 4 # output
 numberZNeurons = 4 # prior
 
 sigma = 0.01 # time frame in which spikes count as before output spike
-c = 1 # 10 seems good, scales weights to 0 ... 1
+c = 4 # 10 seems good, scales weights to 0 ... 1
 tauRise = 0.001
 tauDecay = 0.004  # might be onto something here, my problem gets better
 
@@ -275,7 +275,7 @@ tab10.scale(1,1.8)
 tab10.auto_set_font_size(False)
 tab10.set_fontsize(13)
 ax10.axis('off')
-ax10.set_title("Trained weights", y=1)
+ax10.set_title("Learned $P^{X|Y}$", y=1)
 ax10.title.set_size(14)
 tab11 = ax11.table(cellText=np.around(analyticWeights, 2), loc='center', cellLoc='center'
 , colWidths=[0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11])
@@ -284,7 +284,7 @@ tab11.scale(1,1.8)
 tab11.auto_set_font_size(False)
 tab11.set_fontsize(13)
 ax11.axis('off')
-ax11.set_title("Calculated weights", y=1)
+ax11.set_title("Calculated $P^{X|Y}$", y=1)
 ax11.title.set_size(14)
 tab20 = ax20.table(cellText=np.around(np.exp(priorWeights), 2), loc='center', cellLoc='center'
 , colWidths=[0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11])
@@ -293,7 +293,7 @@ tab20.scale(1,1.8)
 tab20.auto_set_font_size(False)
 tab20.set_fontsize(13)
 ax20.axis('off')
-ax20.set_title("Trained prior weights", y=1)
+ax20.set_title("Learned $P^{Y|Z}$", y=1)
 ax20.title.set_size(14)
 tab21 = ax21.table(cellText=np.around(analyticPriorWeights, 2), loc='center', cellLoc='center'
 , colWidths=[0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11,0.11])
@@ -302,7 +302,7 @@ tab21.scale(1,1.8)
 tab21.auto_set_font_size(False)
 tab21.set_fontsize(13)
 ax21.axis('off')
-ax21.set_title("Calculated prior weights", y=1)
+ax21.set_title("Calculated $P^{Y|Z}$", y=1)
 ax21.title.set_size(14)
 
 # plot the first 120 output spikes
