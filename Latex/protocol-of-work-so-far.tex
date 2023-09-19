@@ -437,7 +437,7 @@ To better show the impact of the prior it was gradually changed from horizontal 
 \end{figure}
 
 
-\section{Experiment 4: Mathematical analysis and simulation of a 1D network}
+\section{Experiment 5: Mathematical analysis and simulation of a 1D network}
 \label{section:1D}
 
 \subsection{Introduction}
@@ -544,7 +544,13 @@ yielded $P(Y = i|X = x, Z = j)$ also called "Analysis output probabilities" in l
 To simplify the parameter fitting process the network was at first simulated with inactive prior neurons. Only after determining the best values for $f_{input}$ and $\tau_{decay}$ were the prior neurons reactivated and $f_{prior}$ was fitted. The values 0.015 seconds and 0.004 seconds for $\tau_{decay}$ were used for the simulation and compared. For each of these values an optimal value for $f_{input}$ was found by simulating different values and looking for the value that yields the smallest Kullback-Leibler divergence.
 
 \subparagraph{$\tau_{decay} = 0.015 seconds$, $f_{prior} = 0 Hz$}
-Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. After identifying the input firing rate with the smallest Kullback-Leibler divergence the network was simulated again for $f_{input}$ values $\pm$ 10 Hz in steps of 2 Hz of the best value. This process yielded the best input firing rate of 42 Hz. The results of this parameter combination can be seen in Figure \ref{fig:1D_42_0_15}. In this figure six different input images can be seen marked with the letter "A". The active pixels are shown in black.  The posterior probability of the mathematical analysis can be seen next to the letter "B". And finally the proportion of output spikes of the different output neurons can be seen next to the letter "C". Each probability of "C" has a standard deviation next to it, which was calculated over 20 runs of the network. At the bottom the value of the Kullback-Leibler divergence is given, with its standard deviation next to it.
+Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. After identifying the input firing rate with the smallest Kullback-Leibler divergence the network was simulated again for $f_{input}$ values $\pm$ 10 Hz in steps of 2 Hz of the best value. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau15}. This process yielded the best input firing rate of 42 Hz. The results of this parameter combination can be seen in Figure \ref{fig:1D_42_0_15}. In this figure six different input images can be seen marked with the letter "A". The active pixels are shown in black.  The posterior probability of the mathematical analysis can be seen next to the letter "B". And finally the proportion of output spikes of the different output neurons can be seen next to the letter "C". Each probability of "C" has a standard deviation next to it, which was calculated over 20 runs of the network. At the bottom the value of the Kullback-Leibler divergence is given, with its standard deviation next to it.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/1D/KLDvsfInput_fPrior0tau15.png}
+  \caption{\textbf{KL divergence for different $f_{input} values$} $f_{prior} = 0 Hz, \tau_{decay} = 15 ms$}
+  \label{fig:1D_KLD_fPrior0_tau15}
+\end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_42_0_15.png}
@@ -561,7 +567,13 @@ When $f_{input}$ was 70 Hz the results of the analysis and the simulation differ
 \end{figure}
 
 \subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{prior} = 0 Hz$}
-For this parameter combination values between 50 and 150 Hz for $f_{input}$ in steps of 10 Hz were simulated. Analogously to the previous parameter set after finding the best input firing rate the search was performed in finer steps until the best value was determined as 88 Hz. The result of those parameters can be seen in Figure \ref{fig:1D_88_0_4}.
+For this parameter combination values between 50 and 150 Hz for $f_{input}$ in steps of 10 Hz were simulated. Analogously to the previous parameter set after finding the best input firing rate the search was performed in finer steps until the best value was determined as 88 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau4}. The result of the simulation with those parameters can be seen in Figure \ref{fig:1D_88_0_4}.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/1D/KLDvsfInput_fPrior0tau4.png}
+  \caption{\textbf{KL divergence for different $f_{input} values$} $f_{prior} = 0 Hz, \tau_{decay} = 4 ms$}
+  \label{fig:1D_KLD_fPrior0_tau4}
+\end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_0_4.png}
@@ -572,7 +584,13 @@ For this parameter combination values between 50 and 150 Hz for $f_{input}$ in s
 \paragraph{Simulation results with prior}
 After determining the best input firing rates for two different values of $\tau_{decay}$, the prior neurons were activated and the best prior firing rate $f_{prior}$ was fitted.
 \subparagraph{$\tau_{decay} = 0.015 seconds$, $f_{input} = 42 Hz$}
-The search for the best value of $f_{prior}$ was performed in the same manner as for $f_{input}$. Values between 140 and 240 Hz were simulated and a prior firing rate of 222 Hz performed the best. Its results can be seen in Figure \ref{fig:1D_42_222_15}. The value of the prior is indicated by the red border which is three pixels wide and centered at the center position of the corresponding output class.
+The search for the best value of $f_{prior}$ was performed in the same manner as for $f_{input}$. Values between 140 and 240 Hz were simulated and a prior firing rate of 222 Hz performed the best. The result of this search can be seen in Figure \ref{fig:1D_KLD_fInput42_tau15}. The simulation results can be seen in Figure \ref{fig:1D_42_222_15}. The value of the prior is indicated by the red border which is three pixels wide and centered at the center position of the corresponding output class.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/1D/KLDvsfPrior_fInput42tau15.png}
+  \caption{\textbf{KL divergence for different $f_{prior} values$} $f_{input} = 42 Hz, \tau_{decay} = 15 ms$}
+  \label{fig:1D_KLD_fInput42_tau15}
+\end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_42_222_15.png}
@@ -581,7 +599,13 @@ The search for the best value of $f_{prior}$ was performed in the same manner as
 \end{figure}
 
 \subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{input} = 88 Hz$}
-The search for the best value of $f_{prior}$ was performed in the same manner as for $f_{input}$. Values between 360 and 460 Hz were simulated and a prior firing rate of 440 Hz performed the best. The results of this parameter combination are given in Figure \ref{fig:1D_88_440_4}.
+The search for the best value of $f_{prior}$ was performed in the same manner as for $f_{input}$. Values between 360 and 460 Hz were simulated and a prior firing rate of 440 Hz performed the best. The result of this search can be seen in Figure \ref{fig:1D_KLD_fInput88_tau4}. The results of this parameter combination are given in Figure \ref{fig:1D_88_440_4}.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/1D/KLDvsfPrior_fInput88tau4.png}
+  \caption{\textbf{KL divergence for different $f_{prior} values$} $f_{input} = 88 Hz, \tau_{decay} = 4 ms$}
+  \label{fig:1D_KLD_fInput88_tau4}
+\end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_440_4.png}
@@ -598,7 +622,13 @@ To demonstrate the impact of rising $f_{prior}$ it was set to 600 Hz and the res
 \end{figure}
 
 \subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{input} = 98$, $f_{prior} = 440 Hz$}
-Finally to it was tested if a increase of $f_{input}$ might decrease the Kullback-Leibler divergence even further. The network was simulated with increasing values of $f_{input}$ in steps of 2 Hz, beginning from 90 Hz. The best result was obtained with an input firing rate of 98 Hz. The results of that simulation can be seen in Figure \ref{fig:1D_98_440_4}.
+Finally to it was tested if a increase of $f_{input}$ might decrease the Kullback-Leibler divergence even further. The network was simulated with increasing values of $f_{input}$ in steps of 2 Hz, beginning from 90 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior440_tau4}. The best result was obtained with an input firing rate of 98 Hz. The results of that simulation can be seen in Figure \ref{fig:1D_98_440_4}.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/1D/KLDvsfInput_fPrior440tau4.png}
+  \caption{\textbf{KL divergence for different $f_{input} values$} $f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
+  \label{fig:1D_KLD_fPrior440_tau4}
+\end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_98_440_4.png}
@@ -621,24 +651,97 @@ It is assumed that this happens because the membrane potentials of the output ne
 After first finding the optimal $f_{input}$ for disabled prior activity and then finding the optimal $f_{prior}$ with enabled prior activity for $\tau_{decay}$ the simulation was not yet approximating the analytical solution perfectly. Because of that it was tried to raise $f_{input}$ to further decrease the Kullback-Leibler divergence. The further search for a better $f_{input}$ was performed for $\tau_{decay} = 0.004 ms$ and $f_{prior} = 440 Hz$, as this set of parameters performed the best overall.
 When comparing the former optimal result in Figure \ref{fig:1D_88_440_4} with $f_{input} = 88 Hz$, to the result with $f_{input} = 98 Hz$ in Figure \ref{fig:1D_98_440_4}, it can be seen that the Kullback-Leibler divergence decreased from 0.0112 to 0.0101. The simulation output probabilities with the higher $f_{input}$ approximated the analysis output probabilities for example for "B3" and "C3" in the mentioned figures on one hand better, while on the other hand for "B5" and "C5" the output probabilities of the analysis and the simulation of class 2 diverged more. A further increase of $f_{input}$ started to increase the Kullback-Leibler divergence again, thus the final optimum of the parameter set was reached. It is assumed that increasing $f_{input}$ after $f_{prior}$ was fitted was necessary because the proportion of the impact of $f_{input}$ on the simulation decreased due to the introduction of the prior activity.
 
-\section{Experiment 5: Simulation of the 1D network with double size}
+\section{Experiment 6: Simulation of the 1D network with double size}
 \label{section:1DDoubleSize}
 
 \subsection{Introduction}
+In this experiment the optimal parameters determined in Experiment 5 were used for a network double in size of the network in Experiment 5. By doing this the applicability of parameters determined for one network to another network was to be examined.
 
 \subsection{Methods}
+The network of Experiment 5 was doubled in size by increasing the number of input neurons from 18 to 36 neurons. This resulted in input images with 18 pixels. Furthermore the matrix $P^{X|Y}$ was doubled in size by inserting each value of the matrix to the right of itself. The amount of the prior neurons was kept the same with 4 prior neurons. However this network was simulated once for a prior firing rate of 440 Hz, and once for the double rate of 880 Hz. The rest of the methods were performed analogously to Experiment 5.
 
 \subsection{Results}
 
+The expanded matrix $P^{X|Y}$ was doubled in size, now being $[18 \times 4]$ yielding
+\begin{equation}
+\label{eqn:pXvorausgesetztYResultDoubled}
+P^{X|Y} = \begin{bmatrix}
+0.9 & 0.9 & 0.9 & 0.9 & 0.9 & 0.9 & 0.1 & 0.1 & 0.1 & ...\\
+... & 0.1 & 0.9 & 0.9 & 0.9 & 0.9 & 0.9 & 0.9 & 0.1 & ...\\
+... & 0.1 & 0.9 & 0.9 & 0.9 & 0.9 & 0.9 & 0.9 & 0.1 & ...\\
+... & 0.1 & 0.1 & 0.1 & 0.9 & 0.9 & 0.9 & 0.9 & 0.9 & 0.9\\
+\end{bmatrix}.
+\end{equation}
+
+The simulation result for $f_{input} = 98 Hz$, $f_{prior} = 440 Hz$ and $\tau_{decay} = 4 ms$ can be seen in Figure \ref{fig:doubleSize_98_440_4}. The Kullback-Leibler divergence is infinity in this result, because some simulation output probabilities were zero and the Kullback-Leibler divergence is not defined for probabilities of zero. To circumvent this an approximated Kullback-Leibler divergence was calculated by setting the simulation output probabilities that were 0 to 0.0000001. This yielded a Kullback-Leibler divergence of 0.1411.
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/1D/doubleSize/doubleSize_98_440_4.png}
+  \caption{\textbf{Analysis and simulation result. Parameters: } $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 18 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities. \textbf{C} Proportions of the spikes of the output neurons during the simulation and their standard deviations in brackets.}
+  \label{fig:doubleSize_98_440_4}
+\end{figure}
+
+Finally the simulation result for $f_{input} = 98 Hz$, $f_{prior} = 880 Hz$ and $\tau_{decay} = 4 ms$ can be seen in Figure \ref{fig:doubleSize_98_880_4}. As in the previous result the Kullback-Leibler divergence was approximated and calculated as 0.2391 for this parameter set.
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/1D/doubleSize/doubleSize_98_880_4.png}
+  \caption{\textbf{Analysis and simulation result. Parameters: } $f_{input} = 98 Hz, f_{prior} = 880 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 18 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities. \textbf{C} Proportions of the spikes of the output neurons during the simulation and their standard deviations in brackets.}
+  \label{fig:doubleSize_98_880_4}
+\end{figure}
+
+Finally the Kullback-Leibler divergence for the results of the network in Experiment 5 with the parameters $f_{input} = 98 Hz$, $f_{prior} = 440 Hz$ and $\tau_{decay} = 4 ms$ was also approximated in the above mentioned way and resulted in a value of 0.0094.
+
 \subsection{Discussion}
 
-\section{Experiment 6: Training of the 1D network with predetermined parameters}
-\label{section:1DDoubleSize}
+When comparing Figures \ref{fig:1D_98_440_4} and \ref{fig:doubleSize_98_440_4} it can be seen that the analysis output probabilities stayed the same. This is expected, because by doubling the pixels of the input images the information within it does not change as the areas corresponding to an output class double in size, as do the active pixels shown in black. However when comparing the Kullback-Leibler divergences of the network in Experiment 5 and the network of this experiment with parameters of $f_{input} = 98 Hz$, $f_{prior} = 440 Hz$ and $\tau_{decay} = 4 ms$ it can be seen the the network with double size performed worse. The Kullback-Leibler divergence of the network with doubled size was 0.1411 compared to 0.0094 of the network the parameters were fitted to. This clearly indicates that the fitted parameters are not universal to every network size. This might be due to the fact that the membrane potentials of the output neurons are never normalized, which was already discussed in Experiment 5. However if such a normalization was implemented the fitted parameters of one network size could be universal to all other sizes.
+
+\section{Experiment 7: Training of the 1D network with predetermined parameters}
+\label{section:1DPreDetermined}
 
 \subsection{Introduction}
 
+In this Experiment the network of Experiment 5 was used, but the weights of the network were not derived from the matrices $P^{X|Y}$ and $P^{Y|Z}$, but they were learned from the input images.
+
 \subsection{Methods}
+
+The network architecture was the same as in Experiment 5 and the training paradigm was the same as in Experiment 4. The used network parameters were $f_{input} = 98 Hz$, $f_{prior} = 440 Hz$ and $\tau_{decay} = 4 ms$. First the weight shifting parameter c was set to 1. Additionally to improve the results the values 2, 3 and 4 were also tried for c.
 
 \subsection{Results}
 
+The training results can be seen in Figure \ref{fig:1DTraining}. 
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/1D/training/trainingPlot_98_440_4.png}
+  \caption{\textbf{Training result} $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms, c = 1$ \textbf{A} The learned probability matrix $P^{X|Y}$. It was determined by taking the weights to the power of e. \textbf{B} The calculated probability matrix $P^{X|Y}$. \textbf{C} The learned prior probability matrix $P^{Y|Z}$. \textbf{D} The calculated prior probability matrix $P^{Y|Z}$. \textbf{E, F} Spike activity expressed by the output neurons before and after the training of the network. \textbf{G} Number of distinct output neurons active during the presentation duration of each training image. \textbf{H} Proportion of most active output neuron  to activity of all other output neurons during the presentation duration of each training image.}
+  \label{fig:1DTraining}
+\end{figure}
+
+The evaluation results can be seen in Figure \ref{fig:1DTrainingEvaluation}.
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/1D/training/trainingEvaluation_98_440_4.png}
+  \caption{\textbf{Analysis and simulation result. Parameters: } $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities. \textbf{C} Proportions of the spikes of the output neurons during the simulation and their standard deviations in brackets.}
+  \label{fig:1DTrainingEvaluation}
+\end{figure}
+
+The Kullback-Leibler divergence for different values of c can be seen in Figure \ref{fig:1DTrainingC}.
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/1D/training/KLD_cvsfInput98_fPrior440tau4.png}
+  \caption{\textbf{KL divergence for different c values} $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
+  \label{fig:1DTrainingC}
+\end{figure}
+
+The training and evaluation results for the best value of $c = 3$ can be seen in Figures \ref{fig:1DTrainingC3} and \ref{fig:1DTrainingEvaluationC3}.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/1D/training/trainingPlot_98_440_4_c3.png}
+  \caption{\textbf{Training result} $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms, c = 3$ \textbf{A} The learned probability matrix $P^{X|Y}$. It was determined by taking the weights to the power of e. \textbf{B} The calculated probability matrix $P^{X|Y}$. \textbf{C} The learned prior probability matrix $P^{Y|Z}$. \textbf{D} The calculated prior probability matrix $P^{Y|Z}$. \textbf{E, F} Spike activity expressed by the output neurons before and after the training of the network. \textbf{G} Number of distinct output neurons active during the presentation duration of each training image. \textbf{H} Proportion of most active output neuron  to activity of all other output neurons during the presentation duration of each training image.}
+  \label{fig:1DTrainingC3}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/1D/training/trainingEvaluation_98_440_4_c3.png}
+  \caption{\textbf{Analysis and simulation result. Parameters: } $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms, c = 3$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities. \textbf{C} Proportions of the spikes of the output neurons during the simulation and their standard deviations in brackets.}
+  \label{fig:1DTrainingEvaluationC3}
+\end{figure}
+
 \subsection{Discussion}
+
+Using the previously determined optimal network parameters for the weight training process was successful. When comparing A with B and C with D in Figure \ref{fig:1DTraining} it can be seen that the network learned the correct discrimination function. However the size the weights and the prior weights is too small. The Kullback-Leibler divergence also was worse with 0.0625 compared to 0.0101 from Experiment 5 Figure \ref{fig:1D_98_440_4}.
+To try to improve the similarity of the learned and the calculated probability matrices, and also to minimize the Kullback-Leibler divergence, different values for the weight shifting parameter c were tried. The lowest Kullback-Leibler divergence was achieved with $c = 3$. For this c the divergence was 0.0342. When comparing  the probability matrices in Figure \ref{fig:1DTrainingC3} it is apparent that the values of the learned $P^{X|Y}$ are still to small and they could profit from further increasing c. On the other hand the values in the learned $P^{Y|Z}$ are already too big and would profit from a smaller c. If one would want to further minimize the Kullback-Leibler divergence two separate weights shifting parameters for the input weights and the prior weights could be implemented.
