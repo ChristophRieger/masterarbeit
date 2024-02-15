@@ -29,7 +29,7 @@ x_i(t) = e^{-(t + \delta t - t_f) / \tau_{decay}} - e^{-(t + \delta t - t_f) / \
   \label{fig:XSpike}
 \end{figure}
 
-The firing rate of an output neuron $y_k$ depends exponentially on its membrane potential $u_k$ and the inhibitory signal I(t) it receives 
+The firing rate of an output neuron $y_k$ is given by
 \begin{equation}
 \label{eqn:rk}
 r_k(t) = e^{u_k(t) - I(t)}.
@@ -41,7 +41,7 @@ r_k(t) \cdot \delta t.
 \end{equation}
 
 \paragraph{Network architecture}
-Each pixel of an input image was connected to two neurons. The first of these neurons is in an active state when the pixel is black and in an inactive state otherwise. The second neuron expresses the opposite behaviour. As a consequence the network needs 1682 ($29 \cdot 29 \cdot 2$) excitatory input neurons $x_1,...,x_n$. These input neurons are fully connected to ten excitatory output neurons $y_1,...,y_k$. This means that that every input neuron $x_i$ is connected to each output neuron $y_k$. The membrane potential $u_k$ of each output neuron is calculated by multiplying the EPSP of each input neuron times the weight of the connection between the input and output neuron 
+Each pixel of an input image was connected to two neurons. The first of these neurons is in an active state when the pixel is black and in an inactive state otherwise. The second neuron expresses the opposite behaviour. As a consequence the network needs 1682 ($29 \cdot 29 \cdot 2$) excitatory input neurons $x_1,...,x_n$. These input neurons are fully connected to ten excitatory output neurons $y_1,...,y_k$. This means that that every input neuron $x_i$ is connected to each output neuron $y_k$. The membrane potential $u_k$ of each output neuron is calculated by multiplying the EPSP of each input neuron times the weight of the connection between them
 \begin{equation}
 \label{eqn:uk}
 u_k(t) = \sum_{i=1}^n w_{ki} \cdot x_i(t).
@@ -76,7 +76,7 @@ I(t) =  - \ln{R(t)} + \ln{  \sum_{k=1}^K e^{u_k(t)}}.
 \end{equation}
 When implementing the inhibition the $- \ln{R(t)}$ term of Equation \ref{eqn:I(t)} was overlooked, that means it was assumed to be zero. Because of that R(t) equals 1 when the inhibition is active. This error was not detected at first, as the chance that a Y neuron fires within a time step of 1 ms with active inhibition is 1/1000 due to that oversight.
 
-Whenever an output neuron produces a spike the inhibition signal I(t) is subtracted from the membrane potential Uk(t) of every output neuron. This happens for the duration of $\sigma_{inh} = 5 ms$. Thus follows
+Whenever an output neuron produces a spike the inhibition signal I(t) is subtracted from the membrane potential $u_k(t)$ of every output neuron. This happens for the duration of $\sigma_{inh} = 5 ms$. Thus follows
 
 \begin{equation}
 \label{eqn:iinh}
@@ -114,7 +114,7 @@ The best results for $c = 1$ were achieved with $\lambda = 10^{-2}$. But overall
   \label{fig:c1Pie}
 \end{figure}
 
-In Figure \ref{fig:c1Distinct} the training progress of the network can be seen. The figure shows the number of distinct output neurons active during the presentation of each training image shown. Due to the large, compared to other values of c, learning rate the network learned quickly. However after iteration 70 there were images shown for which not a single output neuron spiked. This dying out of the networks activity is due to the parameter c being too small, which leads to too low membrane potentials.
+In Figure \ref{fig:c1Distinct} the training progress of the network can be seen. The figure shows the number of distinct output neurons active during the presentation of each training image shown. Due to the large learning rate, compared to other values of c,  the network learned quickly. However after iteration 70 there were images shown for which not a single output neuron spiked. This dying out of the networks activity is due to the parameter c being too small, which leads to too low membrane potentials.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/angleNetwork/c1Distinct.png}
