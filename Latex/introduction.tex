@@ -1,10 +1,11 @@
-Several experiments on animals show that the cerebral cortex utilizes Bayesian inference to compute information like sensory input \citep{neuralSubstrate, leeTS, anatomyOfInference}. These experiments hypothesize that the brain functions as a generative (predictive) model to reach its conclusions. This means, rather than utilizing static neural codes to represent information, the brain expresses information via probability distributions. In the context of cortical computation Bayes theorem yields a posterior probability (the prediction), by multiplying the likelihood (sensory input) with the prior probability (additional information not contained in the sensory input). Lee TS and Mumford D. present experimental evidence that information is passed backwards from high-level areas to low-level areas of the visual cortex. This information can be interpreted as the prior probability of Bayes theorem. 
+The brain needs to handle a high degree of uncertainty in sensory input. When it first receives input it does not know what the information could represent, thus not knowing which parts of the input are most relevant. \citet{leeTS} shows that there is neurophysiological experimental evidence that there is feedback from high-level to low-level areas of the visual cortex. That feedback information is thought to be "explaining away" information, or putting emphasis on specific information of the low-level area.
+Several experiments on animals show that the cerebral cortex utilizes Bayesian inference to compute information like sensory input \citep{neuralSubstrate, leeTS, anatomyOfInference}. They hypothesize that the brain functions as a generative (probabilistic) model to reach its conclusions. This means the brain expresses information via probability distributions, rather than utilizing static neural codes. Bayes theorem yields a posterior probability, by multiplying the likelihood with the prior probability. In the context of cortical computation the posterior is represented by the output of a neural network and the likelihood is represented by its input. The feedback from high-level to low-level cortical areas can be interpreted as the prior probability. This coupling of visual areas via feedback indicates an interactive hierarchy between the different cortical areas involved in a task.
 
+STDP mentionen: STDPDAN STDPFELDMAN
 
+winner take all mentionen: softWTA... horizontal inhibition, that selects what is send on vertically :)
 
-leeTS has evidence for hierarchical baysian inference in visual cortex.
-
-nessler und nesslerClone created winner take all spiking neural network based on bayesian inference. 
+Due to such neurophysiological findings \citet{nessler} and \citet{nesslerClone} created winner take all spiking neural network based on bayesian inference. 
 
 
 This thesis aims to establish a link between the biological evidence of hierarchical cortical computation of the brain and computer simulations of neural networks. 
