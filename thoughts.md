@@ -9,10 +9,15 @@ u = w * y
 ... haaa?
 
 
+I glaub i hab verstanden wo die Normalization fehlt!...
+bei den output neuronen verwenden wir soft-WTA (adaptive inhibition)... und das normalisiert alles...
+ABER bei den Input und prior neuronen gibts keine Normalization und das erzeugt mein Problem... wenn ich 10 input neuronen auf einen output habe sollte es gleich viele spikes empfangen, wie wenn ich 100 input neuronen habe??? .... RESEARCH for DISCUSSION
+
 # check this
 This result is then transformed into an instantaneous
 firing rate, assuming an exponential relationship between rate and
 the membrane potential [38]
+
 
 
 # new papers
