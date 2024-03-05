@@ -1,1 +1,27 @@
-we use spiking stuff with bayes stochastical background to implement prior
+1. Nessler : If the STDP-induced changes in
+synaptic strength depend in a particular way on the current
+synaptic strength, STDP approximates for each synapse exponentially fast the conditional probability that the presynaptic neuron
+has fired just before the postsynaptic neuron (given that the
+postsynaptic neuron fires). This principle suggests that synaptic
+weights can be understood as conditional probabilities, and the
+ensemble of all weights of a neuron as a generative model for highdimensional inputs that - after learning - causes it to fire with a
+probability that depends on how well its current input agrees with
+this generative model. The concept of a generative model is well
+known in theoretical neuroscience [26,27]
+ In a Bayesian inference context, every input
+spike provides evidence for an observed variable, whereas every
+output spike represents one stochastic sample from the posterior
+distribution over hidden causes encoded in the circuit.
+
+2.Nessler showed that STDP is able to approximate expectation maximization, by creating implicit generative models in the synaptic weights.
+
+3. this is unsupervised learning, output neurons autonomously specialize on a hidden cause (due to learning rule)
+
+2. Bayesian inference, what it is, how and why we connect it to spiking network
+\begin{equation}
+\label{eqn:pYvorausgesetztXUndZ}
+P(Y = i|X = x, Z = j) = \frac{P(X=x|Y=i)P(Y = i|Z = j)}{\Sigma_{k}P(X=x,Y=k)P(Y=k|Z=j)}.
+\end{equation}
+
+
+3. generell meine Methoden...
