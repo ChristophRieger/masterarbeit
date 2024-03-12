@@ -1,85 +1,10 @@
 \section{Winner-Take-All networks}
 
+It has been found that pyramidal neurons on layers 2/3 and 5/6 of the neocortex form selection networks. This means that one pyramidal neuron is allowed to fire, while others within the same layer are inhibited. This horizontal selection mechanism determines what is vertically sent on to deeper layers of the cortex. For example pyramidal neurons in layer 5 have such a selection behaviour to determine the output to motor structures. This inhibition is performed by basket and chandelier cells \citep{softWTA}. Basket cells connect to the soma of other neurons and control the action potential discharge rate of those neurons. Their dendritic branches wrap around the target soma, forming a "basket" giving them their name \citep{basketCells}. Chandelier cells perform inhibition directly at the axonal initial segment of pyramidal neurons where action potentials are initiated. \citep{chandelierCells}. The selection of one pyramidal neuron performed this way is called soft winner-take-all mechanism and is used in various neuronal network models \citep{softWTA}. The mechanism is called "soft" because it uses a softmax function, which controls how many winners there can be, and how likely each neuron is to win \citep{ handbookWTA}. It has been shown that winner-take-all mechanisms are computationally powerful compared to threshold gates (McCulloch-Pitts neurons) and sigmoidal gates. It was also possible to approximate arbitrary continuous function by circuits that only contained one soft winner-take-all gate as their only nonlinear operator \cite WTAPower.
 
-1. WTA networks
+\section{Spike timing-dependent plasticity}
 
-\cite softWTA
-Figure 6: pyramidal neurons on layers 2/3 and 5/6 typically inhibit each other => Those are called soft winner-take-all WTA circuits.
-
-ORIGINAL:
-
-A simple model of cortical processing, consistent with the major features of cortical
-circuits discussed in this review, is as follows (see Figure 6): A patch of superficial
-pyramidal neurons receive feedforward excitatory input from subcortical, interareal, and intra-areal sources. In addition to their interactions with their close
-neighbors within their patch, the members of this patch also receive feedback
-from a number of sources: from deep pyramidal cells immediately beneath their
-patch, from other close patches within the superficial layers, and from subcortical
-inter-areal connections. Thus, the neurons of a superficial patch, taken as a group,
-receive a sample of thalamic input (some preprocessed by layer 4), a sample of
-surrounding and remote superficial patches, and a sample of the output from their
-corresponding deep pyramidal neurons.
-All of these inputs are processed by the dendrites of the superficial pyramids
-whose signal transfer properties can be adjusted dynamically by the pattern of
-the vertical inputs from smooth cells (e.g., double bouquet cells). The superficial pyramids collectively participate in a selection network, mediated by the horizontal
-inputs from the smooth cells that control their outputs (e.g., basket and chandelier
-cells). 
-
-https://en.wikipedia.org/wiki/Basket_cell  ... inhibieren in dem sie ein axon zum soma einer anderen zelle verbinden und das axon hat dann viele dendriten (?) ums soma der anderen zelle und discharched diese dadurch.
-
-das neuron lesen auf wikipedia...
-
-gehrin/cortex überfliegen...
-
-https://en.wikipedia.org/wiki/Chandelier_cell
-... have synapses that connect to exclusively to initial axon segment of pyramidal cells and inhibiting them.	
-
-https://en.wikipedia.org/wiki/Pyramidal_cell
-.. primary excitation units in prefrontal cortex
-
-The selection mechanism is a soft winner-take-all or soft MAX mechanism, which are important elements of many neuronal network models (Maass
-2000, Riesenhuber & Poggio 1999, Yuille & Geiger 2003). The outputs of the
-selected superficial pyramids feed back to adapt the pattern of vertical smooth cell
-activation. In this way, the superficial layer neurons within and between patches,
-and within and between areas, cooperate to explore all possible interpretations
-of input, and so select an interpretation consistent with their various subcortical
-inputs.
-The superficial layers are organized to distribute and explore possible interpretations, whereas the deeper layers are organized to exploit the evolving interpretations. The pyramidal cells of layer 5 that drive subcortical structures
-involved in action (e.g., basal ganglia, colliculus, ventral spinal cord) decide the
-output of the cortical circuits. The same layer 5 pyramidal cells influence the ongoing input by their connection to layer 6 pyramidal cells that connect to the thalamic
-input layers. The explorative processing in the superficial layers is constrained via
-the recurrent projection from other layer 5 pyramidal cells to conform to the output
-that has already been decided. These layer 5 pyramidal cells are also the origin of
-the feedback projections to the superficial layers of other cortical areas. In this way,
-they also provide additional contextual information to the evolving interpretations
-occurring in the superficial layers of other cortical areas.
-Clearly, this model is a tentative hypothesis of how the generic circuits might
-express themselves functionally. However, its strength is that it casts antomical
-data in a way that is accessible to theoreticians and systems physiologists. The
-investigation of neocortical structure and its development has entered an exciting
-phase in which the detailed organization is accessible to experiment and essential
-to the theoretical understanding of cortical computation. It is thus a curious paradox that while molecular biology has long recognized the central importance of
-detailed structural studies for understanding function, the same cannot be said for
-contemporary neuroscience.
-
-FIG 6:
-Simple model of cortical processing incorporating the principal features of cortical
-circuits. A patch of superficial pyramidal neurons receive feedforward input from subcortical, inter-areal, and intra-areal excitatory sources. They also receive recurrent input from
-other local superficial and deep pyramidal cells. These inputs are processed by dendrites of
-the superficial pyramidal neurons (upper gray rectangles, layer 2/3) whose signal transfer
-properties are adjusted dynamically by the pattern of vertical smooth cell inputs (oblique
-dark gray arrows). The outputs of the superficial pyramids participate in a selection network
-(e.g., soft winner-take-all mechanism) mediated by the horizontal smooth cells (upper horizontal dark gray line). These outputs of the superficial pyramids adjust the pattern of vertical
-smooth cell activation. In this way, the superficial layer neurons within and between patches,
-and within and between areas, cooperate to resolve a consistent interpretation. The layer 5
-pyramids (lower gray rectangles) have a similar soft selection configuration (lower dark gray
-line) to process local superficial signals and decide on the output to motor structures.
-
-
-\cite WTAPower
-
-
-\cite handbookWTA
-
+6. STDP plasticity, LTP, LTD
 
 \section{The hierarchical structure of the brain}
 
@@ -89,6 +14,8 @@ The most of the information flows upwards along the hierarchy, but there is phys
 \section{Visual cortex}
 
 wikipedia visual cortex (https://en.wikipedia.org/wiki/Visual_cortex
+
+
 https://en.wikipedia.org/wiki/Lateral_geniculate_nucleus):
  Sensory input originating from the eyes travels through the lateral geniculate nucleus in the thalamus and then reaches the visual cortex. The area of the visual cortex that receives the sensory input from the lateral geniculate nucleus is the primary visual cortex, also known as visual area 1 (V1), Brodmann area 17, or the striate cortex. The extrastriate areas consist of visual areas 2, 3, 4, and 5 (also known as V2, V3, V4, and V5, or Brodmann area 18 and all Brodmann area 19)
  Studies involving blindsight have suggested that projections from the LGN travel not only to the primary visual cortex but also to higher cortical areas V2 and V3. Patients with blindsight are phenomenally blind in certain areas of the visual field corresponding to a contralateral lesion in the primary visual cortex; however, these patients are able to perform certain motor tasks accurately in their blind field, such as grasping. This suggests that neurons travel from the LGN to both the primary visual cortex and higher cortex regions.[14]
@@ -113,6 +40,3 @@ input (Funamizu Akihiro, 2016; Lee TS, 2003; Parr and Friston, 2018). They
 hypothesize that the brain functions as a generative (probabilistic) model
 to reach its conclusions. 
 
-\section{Spike timing-dependent plasticity}
-
-6. STDP plasticity, LTP, LTD

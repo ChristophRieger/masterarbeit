@@ -41,6 +41,14 @@ Sie haben da a paar 100 random neuronen vom medial temporal lobe gemessen mit ra
 
 A further surprising feature of brain activity is that it is not input driven: the brain is almost as active when there is (seemingly) nothing to compute. For example, the neurons in the primary visual cortex (area V1) are almost as active as during visual processing as they are in complete darkness [64]. Since brain activity consumes a fair portion of the energy budget of an organism, it is unlikely that this spontaneously ongoing brain activity is just an accident, and highlights a clear organizational difference between computers and brains. A challenge for theoretical work is to understand the role of spontaneous activity in brain computation and learning.
 
+# Discussion
+
+https://en.wikipedia.org/wiki/Neocortex
+The neocortex contains both excitatory (~80%) and inhibitory (~20%) neurons, named for their effect on other neurons.[12]
+... maybe say that i shouldve used more inhibitory neurons.
+
+
+
 # new papers
 
 The neural dynamics of hierarchical Bayesian causal inference in multisensory perception
