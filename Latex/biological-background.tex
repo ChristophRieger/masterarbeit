@@ -20,19 +20,16 @@ According to \citet{complexCellsIntegrated} the larger receptive fields of compl
 Visual information first enters V1, which is the best-understood part of the visual cortex. It consists of six layers that function differently. Layer 4 receives the input from the lateral geniculate nucleus. It has the most simple cells of the six layers and thus processes visual information of small receptive fields. On layers 2, 3 and 6 there are complex cells, which combine the result of layer 4 into larger receptive fields. Through that V1 outputs simple visual components with their orientation or direction. The processed information is the sent on to V2 which further processes it and thus responds to more visual complex patterns. V2 was also found to respond to differences in color and spatial frequency, additional to the more complex patterns and object orientation. After processing V2 sends its information on to V3, V4 and V5. Furthermore it also has feedback connections to V1, which will be talked about later. After V2 the visual information is split up into the dorsal and ventral streams, which each specialize in processing different features of the visual information. The dorsal stream is involved in guidance of motor actions and in recognizing where objects are in space. The ventral stream on the other hand is responsible for object recognition and form representation.
 \citep{visualCortexBook}
 
-LeeTS explain experiments and results of feedback information of higher visual areas
-high degree of uncertainty in visual input... face in shadow.
-
 \section{Probabilistic brain}
-Several experiments on animals show that the cerebral
-cortex utilizes Bayesian inference to compute information like sensory input.
 
-Citep einfach mit komma drinnen trennen.
+Several experiments show that the cerebral
+cortex utilizes Bayesian inference to compute information  \citep{neuralSubstrate, HierachicalBayesVisualCortex, anatomyOfInference, neuralImplementationOfBayesionInferenceSensoryMotor}.
+
+citet{HierachicalBayesVisualCortex} shows that feedback in the visual cortex is not only used for attentional selection or biased competition, but also to modulate the processing of the early visual cortex. Furthermore they show how this modulated processing can be explained via hierarchical Bayesian inference. One theoretical example they give is a picture of a face that is partially in shadow. First V1 recieves the information of the image and performs edge and line detection. In this initial processing the most detected edges are in the well lit portion of the image, while in the shadowy part almost no edges can be found. As this information is passed on upwards along the visual cortex hierarchy it is processed further, until it reaches the inferior temporal cortex where the conclusion is made that there is a face on the image. After that feedback is sent from the inferior temporal cortex back to V1. This feedback tells V1 to look for the missing edges a face should have that were obfuscated by the shadow in the first processing.
+... kaniza triangle...
 
 Funamizu Akihiro, 2016 citep{neuralSubstrate}
 
-Lee TS, 2003 citep{leeTS} 
-They emphasize that inference is more general than just competition and that feedback should not only be conceived in terms of attentional selection or biased competition, but rather that it also influences the inference and processing. (eg show a line where there is non, rather than selecting 1 of 2 existing ones.
 
 Parr and Friston, 2018 citep{anatomyOfInference} 
 
