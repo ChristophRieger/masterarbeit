@@ -6,7 +6,6 @@ Different models for the computational simulation of neural networks exist  \cit
 
 To select the output of a neural network a soft Winner-Take-All mechanism is often applied. It chooses what is information is forwarded vertically into another layer in inhibits its horizontal neighbours of the same layer.  This mechanism resembles the way biological pyramidal neurons function \citep{softWTA}. Furthermore Winner-Take-All modules have a higher computational power than threshold-gates \citep{WTAPower}.
 
-\citet{nessler} and \citet{nesslerClone} created Winner-Take-All spiking neural networks which perform Bayesian inference. In this thesis the hierarchical network model of \citet{nessler} is used and expanded  to simulate the feedback from a high visual cortex area to a lower area.
+\citet{nessler} and \citet{nesslerClone} created Winner-Take-All spiking neural networks which perform Bayesian inference. Both of those works did not include feedback that comes from a network higher up in the hierarchy. As such feedback is proven to exist by experiments this thesis aims to expand the model. The hierarchical network model of \citet{nessler} is taken and expanded to simulate a functional neural network that receives visual input and also feedback from another network higher up in the hierarchy.
 
-!!!!!!!!! Erklären was ich in den nächsten Kapiteln machen werde.
-In the present thesis ... will be shown.
+In Chapter 2 the biological background for this thesis and the underlying hierarchical spiking Winner-Take-All network will be given. The theoretical background, explaining the mathematical model used for the neural networks in this thesis, will be explained in Chapter 3. (Chapter 4 is a work in progress). Finally, in Chapter 5, the results of the experiments will be summarized and their implications will be discussed.
