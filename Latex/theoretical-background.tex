@@ -1,12 +1,28 @@
 \section{Spiking neural networks}
 
-STDP, why spiking?
-%https://en.wikipedia.org/wiki/Spiking_neural_network
+Spiking neural networks (SNNs) are artificial neural networks that resemble biological neural networks more closely. Neurons in typical neural networks used in machine learning transmit information at every propagation cycle. This, however, is not how biological neurons operate. They generate action potentials (neuron spikes) to convey information between each other. These action potentials are only generated when their membrane potential exceeds a threshold. SNN models take this behaviour into account by keeping track of each neurons membrane potential and then determining when they should produce an action potential  \citep{SpikingNeuronModelsBook}.
 
+Previously it was believed that biological neural networks encode information within the spike rates of neurons. However neurobiological research shows evidence that at high speed processing this alone can not be sufficient. For example image recognition tasks can be performed at a speed at which each neuron in the involved layers has only less than 10 ms to process the information. Such a time frame is too short for rate coding to occur. Instead it has been shown that high speed processing tasks can be performed using the precise timing of spikes. Furthermore it requires more energy for a neuron to spike many times to express a spike rate, rather than spiking just once and having the timing of the spike considered. As the brain evolutionary aims to minimize its energy consumption this is a strong argument for spike timing encoded information. Also the information encoding capacity is higher in a small set of spiking neurons, compared to rate encoding. \citep{LearningInBiologicallyPlausibleSNN}
+Because of that Spike Timing Dependent Plasticity (STDP) is often used as learning rule in SNNs. STDP models the synaptic weight changes of neurons depending on the relative timing of pre- and postsynaptic spikes.
 
+ According to STDP, a synaptic weight is potentiated if a presynaptic spikecomes shortly before a postsynaptic spike. If the time interval between the pre- and postsynaptic spike 
+is 𝑡 = 𝑡𝑝𝑜𝑠𝑡 − 𝑡𝑝𝑟𝑒 and t > 0 then the synaptic weight will be potentiated. The magnitude of the 
+potentiation is a function of t which decays exponentially with a time constant τ+ and can be calculated 
+by A+e
+−t/τ+, where A+ is the maximum synaptic change. Alternatively, if a pre synaptic spike occurs 
+shortly after the postsynaptic spike, then the synaptic efficacy is decreased.
+HOWEVER biological experiments show that the standard pair-based STDP models (i.e. pre-before-post and postbefore-pre) cannot give a full description of STDP in a biological neuron. 
+\citep{LearningInBiologicallyPlausibleSNN}	
 
+\section{Bayes theorem}
 
+2. Bayesian inference, what it is, how and why we connect it to spiking network
+\begin{equation}
+\label{eqn:pYvorausgesetztXUndZ}
+P(Y = i|X = x, Z = j) = \frac{P(X=x|Y=i)P(Y = i|Z = j)}{\Sigma_{k}P(X=x,Y=k)P(Y=k|Z=j)}.
+\end{equation}
 
+\section{Connection between synaptic weights and Bayes theorem}
 
 1. Nessler : If the STDP-induced changes in
 synaptic strength depend in a particular way on the current
@@ -27,11 +43,7 @@ distribution over hidden causes encoded in the circuit.
 
 3. this is unsupervised learning, output neurons autonomously specialize on a hidden cause (due to learning rule)
 
-2. Bayesian inference, what it is, how and why we connect it to spiking network
-\begin{equation}
-\label{eqn:pYvorausgesetztXUndZ}
-P(Y = i|X = x, Z = j) = \frac{P(X=x|Y=i)P(Y = i|Z = j)}{\Sigma_{k}P(X=x,Y=k)P(Y=k|Z=j)}.
-\end{equation}
+\section{Mathematical model}
 
-
+... wobei, das gehört wahrscheinlich eher in an den anfang vom experiment chapter? Weils ja kein "Background" ist, sondern "foreground"
 3. generell meine Methoden...
