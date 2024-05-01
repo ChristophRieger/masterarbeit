@@ -6,15 +6,32 @@ Previously it was believed that biological neural networks encode information wi
 Because of that Spike Timing Dependent Plasticity (STDP) is often used as learning rule in SNNs. STDP models the synaptic weight changes of neurons depending on the relative timing of pre- and postsynaptic spikes. If a presynaptic spike arrives shortly before the postsynaptic spike the synaptic weight is increased. The size of that increase depends exponentially on the time between both spikes, according to a time constant. However, when the presynaptic spike occurs after the postsynaptic spike the synaptic weight is decreased. These two mechanisms are called long-term potentiation and long-term depression respectively. Although STDP is often modelled like this, biological experiments show that the standard pair-based approach does not fully explain it in biological neurons. 
 \citep{LearningInBiologicallyPlausibleSNN}	
 
-\section{Bayes theorem}
+\section{Bayes' theorem}
 
-2. Bayesian inference, what it is, how and why we connect it to spiking network
+Bayes' theorem describes the probability of an event to occur, depending on the prior knowledge of conditions related to the event \citep{bayesBasic}. 
 \begin{equation}
-\label{eqn:pYvorausgesetztXUndZ}
-P(Y = i|X = x, Z = j) = \frac{P(X=x|Y=i)P(Y = i|Z = j)}{\Sigma_{k}P(X=x,Y=k)P(Y=k|Z=j)}.
+\label{eqn:bayesianTheorem}
+P(A|B) = \frac{P(B|A)P(A)}{P(B)}.
 \end{equation}
+P(A|B) is the posterior probability of A given that B is true. P(B|A) is called conditional probability of B given A being true. P(A) is the prior probability, the probability of A occurring without any additional information. Finally P(B) is the marginal probability of B without any given condition. This theorem is often used for Bayesian inference where it expresses how a belief, which is represented as probability changes due to related evidence.	
 
-\section{Connection between synaptic weights and Bayes theorem}
+\section{Bayesian inference}
+\label{section:bayesianInference}
+
+Bayesian inference is a process of data analysis to calculate the probability of a hypothesis depending on the available related evidence. As over time more and more evidence becomes available the probabilities can be updated yielding a more sophisticated view on the hypothesis. It is given, according to Bayes' theorem, by
+\begin{equation}
+\label{eqn:bayesianInference}
+P(H|E) = \frac{P(E|H)P(H)}{P(E)},
+\end{equation}
+where H represents a hypothesis and E some related evidence. P(H|E) is the posterior probability which signifies the probability of the hypothesis after the evidence was observed. P(E|H) is called likelihood and it is the probability of observing the evidence 	given the hypothesis. It is a measure of the compatibility of the observed evidence with the given hypothesis. P(H) is the prior probability which is the probability of the hypothesis before any evidence is considered or obtained. P(E) is called marginal likelihood that represents the probability of the evidence being observed. However it is the same independent of the chosen hypothesis. Thus, it is not factored in when comparing different hypotheses.
+Bayesian inference could be applied to the "face in shadow" example of Section \ref{section:feedbackInVisualCortex}. There a neuron sees a small part of the visual field and signals if it sees an edge or not. At first it has the evidence of the observed pixels available and from it can calculate the likelihood that an edge is present. Together with the prior knowledge of how probable an edge being present is, it can conclude the posterior probability for the hypothesis "there is an edge". Later when the related evidence that there is a face in the picture is being fed back from the inferior temporal cortex this additional information updates the posterior probability. The additional evidence $E_2$ that is being fed back can be added to the calculation by
+\begin{equation}
+\label{eqn:bayesianInference}
+P(H|E_2) = \frac{P(E_2|E)P(E|H)P(H)}{P(E_2)}.
+\end{equation}
+\citep{bayesInferenceBook}
+
+\section{Connection between synaptic weights and Bayes inference}
 
 1. Nessler : If the STDP-induced changes in
 synaptic strength depend in a particular way on the current
