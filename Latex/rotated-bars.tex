@@ -15,6 +15,8 @@ The images used in this task were generated with a size of 29 x 29 pixels. Black
 
 \paragraph{Neuron model}
 
+!!!!!!!!! A lot of the following was copied to "Theoretical Background" and rewritten (without specific numbers)
+
 As in \citet{nessler} the input neurons X are firing according to a poisson process with an average firing rate of 20 Hz when active and with 0 Hz when in an inactive state. The excitatory post synaptic potentials (EPSPs) $x_i(t)$ that these neurons produce can be seen in Figure \ref{fig:XSpike}. A double exponential kernel was used to generate the EPSP. The time constant for the rise of the signal $\tau_{rise}$ was 1 ms and the time constant for the decay of the signal $\tau_{decay}$ was 15 ms. The addition of the time step size $\delta t$ was necessary to get the time t at the end of the current simulation step. $t_f$ is the time at which the spike of $x_i$ occurred
 \begin{equation}
 \label{eqn:EPSP}
