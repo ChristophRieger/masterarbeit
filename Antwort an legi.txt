@@ -1,0 +1,4 @@
+i explained spiking neural networks in theoretical background, sorry i forgot to mention in initial email
+that that was planned
+But i moved it to biological background as it is needed there i think.
+and added a section about plasticity

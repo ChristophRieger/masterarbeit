@@ -1,11 +1,3 @@
-\section{Spiking neural networks}
-
-Spiking neural networks (SNNs) are artificial neural networks that resemble biological neural networks more closely. Neurons in typical neural networks used in machine learning transmit information at every propagation cycle. This, however, is not how biological neurons operate. They generate action potentials (neuron spikes) to convey information between each other. These action potentials are only generated when their membrane potential exceeds a threshold. SNN models take this behaviour into account by keeping track of each neurons membrane potential and then determining when they should produce an action potential  \citep{SpikingNeuronModelsBook}.
-
-Previously it was believed that biological neural networks encode information within the spike rates of neurons. However neurobiological research shows evidence that at high speed processing this alone can not be sufficient. For example image recognition tasks can be performed at a speed at which each neuron in the involved layers has only less than 10 ms to process the information. Such a time frame is too short for rate coding to occur. Instead it has been shown that high speed processing tasks can be performed using the precise timing of spikes. Furthermore it requires more energy for a neuron to spike many times to express a spike rate, rather than spiking just once and having the timing of the spike considered. As the brain evolutionary aims to minimize its energy consumption this is a strong argument for spike timing encoded information. Also the information encoding capacity is higher in a small set of spiking neurons, compared to rate encoding. \citep{LearningInBiologicallyPlausibleSNN}
-Because of that Spike Timing Dependent Plasticity (STDP) is often used as learning rule in SNNs. STDP models the synaptic weight changes of neurons depending on the relative timing of pre- and postsynaptic spikes. If a presynaptic spike arrives shortly before the postsynaptic spike the synaptic weight is increased. The size of that increase depends exponentially on the time between both spikes, according to a time constant. However, when the presynaptic spike occurs after the postsynaptic spike the synaptic weight is decreased. These two mechanisms are called long-term potentiation and long-term depression respectively. Although STDP is often modelled like this, biological experiments show that the standard pair-based approach does not fully explain it in biological neurons. 
-\citep{LearningInBiologicallyPlausibleSNN}	
-
 \section{Bayes' theorem}
 
 Bayes' theorem describes the probability of an event to occur, depending on the prior knowledge of conditions related to the event \citep{bayesBasic}. 
@@ -124,3 +116,11 @@ distribution over hidden causes encoded in the circuit.
 2.Nessler showed that STDP is able to approximate expectation maximization, by creating implicit generative models in the synaptic weights.
 
 3. this is unsupervised learning, output neurons autonomously specialize on a hidden cause (due to learning rule)
+
+Mathe:
+
+!!!! equation (4.15) (after The additional prior layer resulted in an) is missing a sum of l !!!!!
+
+
+
+
