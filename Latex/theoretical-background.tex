@@ -45,10 +45,23 @@ The firing rate of an output neuron $y_k$ is given by
 \label{eqn:rk}
 r_k(t) = e^{u_k(t) - I(t)}.
 \end{equation}
+
+The total firing rate of the output neurons is obtained when summing up the firing rates of all output neurons, yielding 
+\begin{equation}
+\label{eqn:R}
+R(t) = \sum_{k=1}^K e^{u_k(t) - I(t)}.
+\end{equation}
+
 The probability of an individual output neuron to fire within a time step $\delta t$ is given by
 \begin{equation}
 \label{eqn:rkdt}
-r_k(t) \cdot \delta t.
+r_k(t) \delta t.
+\end{equation}
+
+The conditional probability $q_k(t)$ that a spike originated from the output neuron $y_k$ is given by
+\begin{equation}
+\label{eqn:qk}
+q_k(t) = \frac{r_k(t) \delta t}{R(t) \delta t} = \frac{e^{U_k(t)}}{\sum_{k'=1}^K e^{U_{k'}(t)}}.
 \end{equation}
 
 \paragraph{Network architecture}
@@ -62,12 +75,8 @@ The output neurons are modelled in a winner-takes-all (WTA) circuit. The WTA beh
 the membrane potentials of the output neurons so that all of them together fire with a total firing rate $R(t) = 200 Hz$ on average. Due to that there never is a time window in which no output neuron may fire. However, it is unlikely for an output neuron to fire right after another output neuron has fired.
 
 \paragraph{Inhibition}
-The inhibition signal was chosen to depend on the current membrane potential of the output neurons. According to \citet{nessler} the total firing rate of the output neurons is
-\begin{equation}
-\label{eqn:R}
-R(t) = \sum_{k=1}^K e^{u_k(t) - I(t)}.
-\end{equation}
-Solving this equation for I(t) yields
+The inhibition signal was chosen to depend on the current membrane potential of the output neurons. 
+Solving Equation \ref{eqn:R} for I(t) yields
 \begin{equation}
 \label{}
 R(t) = \frac{ \sum_{k=1}^K e^{u_k(t)}}{e^{I(t)}}
@@ -107,8 +116,8 @@ an will be analysed in Experiment \ref{section:1D}.
 Furthermore they claimed that in a Bayesian inference context every input spike provides evidence for an observed variable and every output spike represents one stochastic sample from the posterior distribution over hidden causes, which are encoded in the circuit. By combining the firing rate of ... conditional firing prob... bayes... mei zeugs halt!!!
 
 TODO:
-1. qk(t) = rk(t) dt durch R(t) dt... einfügen irgendwo weiter oben. nachdem rk definiert ist i guess
-2.!!!! ich muss alle formeln jeweils erweitern für die experimente mit feedback!!! Normal muss ich das in einem der neueren experimente bereits gemacht habne, hierher kopieren (bzg drüber) 
+1.!!!! ich muss alle formeln jeweils erweitern für die experimente mit feedback!!! Normal muss ich das in einem der neueren experimente bereits gemacht habne, hierher kopieren (bzg drüber) 
 !!! Da is es : Experiment 2: Horizontal and vertical bars
+2. checken ob alle indices passen wie im heft!
 
 
