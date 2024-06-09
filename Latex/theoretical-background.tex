@@ -18,7 +18,7 @@ P(H|E) = \frac{P(E|H)P(H)}{P(E)},
 where H represents a hypothesis and E some related evidence. P(H|E) is the posterior probability which signifies the probability of the hypothesis after the evidence was observed. P(E|H) is called likelihood and it is the probability of observing the evidence 	given the hypothesis. It is a measure of the compatibility of the observed evidence with the given hypothesis. P(H) is the prior probability which is the probability of the hypothesis before any evidence is considered or obtained. P(E) is called marginal likelihood that represents the probability of the evidence being observed. However it is the same independent of the chosen hypothesis. Thus, it is not factored in when comparing different hypotheses.
 Bayesian inference could be applied to the "face in shadow" example of Section \ref{section:feedbackInVisualCortex}. There a neuron sees a small part of the visual field and signals if it sees an edge or not. At first it has the evidence of the observed pixels available and from it can calculate the likelihood that an edge is present. Together with the prior knowledge of how probable an edge being present is, it can conclude the posterior probability for the hypothesis "there is an edge". Later when the related evidence that there is a face in the picture is being fed back from the inferior temporal cortex this additional information updates the posterior probability. The additional evidence $E_2$ that is being fed back can be added to the calculation by
 \begin{equation}
-\label{eqn:bayesianInference}
+\label{eqn:bayesianInferenceExpanded}
 P(H|E_2) = \frac{P(E_2|E)P(E|H)P(H)}{P(E_2)}.
 \end{equation}
 \citep{bayesInferenceBook}
@@ -113,7 +113,38 @@ where $\lambda$ is the learning rate, the parameter c shifts the weight values, 
  w_{ki} = log(p(x_i = 1 | y_k = 1))
 \end{equation}
 an will be analysed in Experiment \ref{section:1D}.
-Furthermore they claimed that in a Bayesian inference context every input spike provides evidence for an observed variable and every output spike represents one stochastic sample from the posterior distribution over hidden causes, which are encoded in the circuit. By combining the firing rate of ... conditional firing prob... bayes... mei zeugs halt!!!
+Furthermore they claimed that in a Bayesian inference context every input spike provides evidence for an observed variable and every output spike represents one stochastic sample from the posterior distribution over hidden causes, which are encoded in the circuit. 
+
+
+To show the connection between the spiking Winner-Take-All network model and Bayesian inference it will be shown that the relative firing probability $q_k(t)$, given in Equation \ref{eqn:qk}, is equal to the posterior probability. Replacing the evidence and hypothesis variables in Equation  \ref{eqn:bayesianInferenceExpanded} for E1 = X, H = Y and E2 = Z
+
+
+AAAAALLSSOOOO
+
+bayes und spiking:
+bayes inference zeigen und erklären dass P(X|Y) likelihood ist und P(Y) der prior. 
+das sollte passen.
+
+feedback:
+das führt zu der in exp 1 verwendeten formel...
+In der berechnen wir P(Y|X,Z) mit der erwähnten likelihood und der Prior ist nun nicht P(Y), sondern P(Y|Z).
+das sollte auch passen.
+% \begin{equation}
+%\label{eqn:pYvorausgesetztXUndZ}
+%P(Y = i|X = x, Z = j) = \frac{P(X=x|Y=i)P(Y = i|Z = %j)}{\Sigma_{k}P(X=x,Y=k)P(Y=k|Z=j)}.
+%\end{equation}
+%\begin{equation}
+%\label{eqn:bayesianInferenceExpanded}
+%P(H|E_2) = \frac{P(E_2|E)P(E|H)P(H)}{P(E_2)}.
+ P(Y|X,Z) = \frac{P(Z  |X)P(X|Y)P(Y)}{P(X,Z)
+%\end{equation}
+
+
+\begin{equation}
+ p( = log(p(x_i = 1 | y_k = 1))
+\end{equation}
+
+  By combining the firing rate of ... conditional firing prob... bayes... mei zeugs halt!!!
 
 TODO:
 1.!!!! ich muss alle formeln jeweils erweitern für die experimente mit feedback!!! Normal muss ich das in einem der neueren experimente bereits gemacht habne, hierher kopieren (bzg drüber) 
