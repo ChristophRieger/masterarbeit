@@ -16,12 +16,14 @@ Bayesian inference is a process of data analysis to calculate the probability of
 P(H|E) = \frac{P(E|H)P(H)}{P(E)},
 \end{equation}
 where H represents a hypothesis and E some related evidence. P(H|E) is the posterior probability which signifies the probability of the hypothesis after the evidence was observed. P(E|H) is called likelihood and it is the probability of observing the evidence 	given the hypothesis. It is a measure of the compatibility of the observed evidence with the given hypothesis. P(H) is the prior probability which is the probability of the hypothesis before any evidence is considered or obtained. P(E) is called marginal likelihood that represents the probability of the evidence being observed. However it is the same independent of the chosen hypothesis. Thus, it is not factored in when comparing different hypotheses.
-Bayesian inference could be applied to the "face in shadow" example of Section \ref{section:feedbackInVisualCortex}. There a neuron sees a small part of the visual field and signals if it sees an edge or not. At first it has the evidence of the observed pixels available and from it can calculate the likelihood that an edge is present. Together with the prior knowledge of how probable an edge being present is, it can conclude the posterior probability for the hypothesis "there is an edge". Later when the related evidence that there is a face in the picture is being fed back from the inferior temporal cortex this additional information updates the posterior probability. The additional evidence $E_2$ that is being fed back can be added to the calculation by
+Bayesian inference can be applied to the "face in shadow" example of Section \ref{section:feedbackInVisualCortex}. There a neuron in V1 sees a small part of the visual field and signals if it sees an edge or not. At first it has the evidence of the observed pixels available and from it can calculate the likelihood that an edge is present. At first it has no prior knowledge of how probable an edge being present is, meaning that the prior probabilities for there being an edge or no edge are equal. With that likelihood and the prior probabilities it can conclude the posterior probability for the hypothesis "there is an edge" and decides that there is no edge.
+Later the inferior temporal cortex determines that there is a face in the picture and feeds this information back to V1. This influences the prior probabilities and changes the posterior probability in a way that the V1 neuron starts to see the hypothesis that there is an edge as more likely, in order to complete the contour of the face. 
+We now define X as a multinomial variable of the visual input, Y as a multinomial variable of the output of V1 and Z as a binary vector of the feedback of the inferior temporal cortex.
+When plugging these variables into Equation \ref{eqn:bayesianInference} with the posterior given by $P(Y|X,Z)$, the likelihood given by $P(X|Y)$ and the prior given by $P(Y|Z)$ we get
 \begin{equation}
-\label{eqn:bayesianInferenceExpanded}
-P(H|E_2) = \frac{P(E_2|E)P(E|H)P(H)}{P(E_2)}.
+\label{eqn:pYvorausgesetztXUndZ}
+P(Y = i|X = x, Z = j) = \frac{P(X=x|Y=i)P(Y = i|Z = j)}{\Sigma_{k}P(X=x,Y=k)P(Y=k|Z=j)}.
 \end{equation}
-\citep{bayesInferenceBook}
 
 \section{Network model}
 
@@ -65,11 +67,14 @@ q_k(t) = \frac{r_k(t) \delta t}{R(t) \delta t} = \frac{e^{U_k(t)}}{\sum_{k'=1}^K
 \end{equation}
 
 \paragraph{Network architecture}
-Each pixel of an input image was connected to two neurons. The first of these neurons is in an active state when the pixel is black and in an inactive state otherwise. The second neuron expresses the opposite behaviour. As a consequence the network needs ($width \cdot height \cdot 2$) excitatory input neurons $x_1,...,x_N$. These input neurons are fully connected to the excitatory output neurons $y_1,...,y_k$. This means that that every input neuron $x_i$ is connected to each output neuron $y_k$. The membrane potential $u_k$ of each output neuron is calculated by multiplying the EPSP of each input neuron times the weight of the connection between them
+Each pixel of an input image was connected to two neurons. The first of these neurons is in an active state when the pixel is black and in an inactive state otherwise. The second neuron expresses the opposite behaviour. As a consequence the network needs ($width \cdot height \cdot 2$) excitatory input neurons $x_1,...,x_N$. These input neurons are fully connected to the excitatory output neurons $y_1,...,y_K$. This means that that every input neuron $x_i$ is connected to each output neuron $y_k$. 
+To simulate the feedback from the inferior temporal cortex prior neurons $z_1,...,z_J$ were added to the network. Each prior neuron was connected only to the one  output neuron that represents the same class as the prior. As there are fewer prior neurons than input neurons influencing each output neuron, a way to amplify the prior signal was needed, otherwise their impact would not be distinctive enough. Thus the EPSPs $z_j(t)$ are multiplied by the factor $Z_{factor}$.
+The membrane potential $u_k$ of each output neuron is calculated by multiplying the EPSP of each input neuron times the weight of the connection between them plus the same for the prior neurons
 \begin{equation}
 \label{eqn:uk}
-u_k(t) = \sum_{i=1}^N w_{ki} \cdot x_i(t).
+u_k(t) = \sum_{i=1}^N w_{ki} \cdot x_i(t) + \sum_{j=1}^J w_{kj} \cdot Z_{factor} \cdot z_j(t).
 \end{equation}
+
 In \citet{nessler} each output neuron $y_k$ also had an intrinsic excitability $w_{k0}$ which was learned for each neuron. For the experiments of this thesis however it was omitted, as the different classes of  input images were equally likely, thus the intrinsic excitability of each output neuron would end up being the same.
 The output neurons are modelled in a winner-takes-all (WTA) circuit. The WTA behaviour was implemented via an adaptive inhibition signal. The adaptive inhibition is used to regulate
 the membrane potentials of the output neurons so that all of them together fire with a total firing rate $R(t) = 200 Hz$ on average. Due to that there never is a time window in which no output neuron may fire. However, it is unlikely for an output neuron to fire right after another output neuron has fired.
@@ -97,58 +102,35 @@ I(t) =  - \ln{R(t)} + \ln{  \sum_{k=1}^K e^{u_k(t)}}.
 At every timestep of the simulation in Equation in Equation \ref{eqn:rk} the inhibition signal I(t) is subtracted from the membrane potential $u_k(t)$ of every output neuron. Due to that the membrane potentials are altered to always yield a spiking frequency of 200 Hz, regardless if it would be too low or too high without it. This means that the adaptive inhibition signal can also function as an excitatory signal. 
 
 \paragraph{Spike timing dependent plasticity}
-The weights $w_{ki}$ between neurons $x_i$ and $y_k$ are updated whenever an output neuron fires. The time window $\sigma$, after which spikes are no longer considered, was set to 10 ms according to \citet{nessler}. If $y_k$ produces a spike all its weights are updated as
+The weights $w_{ki}$ between neurons $x_i$ and $y_k$ are updated whenever an output neuron fires. $\sigma$ indicates the time window, after which spikes are no longer considered. If $y_k$ produces a spike all its weights to the input neurons are updated as
 \begin{equation}
 \label{deltawki}
 \Delta w_{ki} = \begin{dcases*} \lambda \cdot (ce^{-w_{ki}} - 1) & if $x_{i}$ fired in $ [t^f - \sigma, t^f] $ \\
 \lambda \cdot (-1) & \text{if $ x_i $ did not fire in $ [t^f - \sigma, t^f] $, } \end{dcases*}
 \end{equation}
-where $\lambda$ is the learning rate, the parameter c shifts the weight values, $t^f$ is the time when $y_k$ spiked and $\sigma$ is the time window in which input spikes are considered as "before" an output spike. As the membrane potentials $u_k$ of the output neurons result from the addition of the EPSPs of the input neurons times the corresponding weight, a way to control the average size of u is needed. If u is too small the output neurons will fire too sparsely and if u is too big it will impair the learning process. So to limit u, the size of the weights is controlled via the parameter c. The learning rate $\lambda$ is needed to control the size of each weight update. If it is too big few output neurons will respond to multiple input classes and others will only respond too little or not at all. On the other hand if $\lambda$ is too small the network will learn very slowly and may never converge. 
+where $\lambda$ is the learning rate, the parameter c shifts the weight values, $t^f$ is the time when $y_k$ spiked and $\sigma$ is the time window in which input spikes are considered as "before" an output spike. As the membrane potentials $u_k$ of the output neurons result from the addition of the EPSPs of the input neurons times the corresponding weight, a way to control the average size of u is needed. If u is too small the output neurons will fire too sparsely and if u is too big it will impair the learning process. So to limit u, the size of the weights is controlled via the parameter c. The learning rate $\lambda$ is needed to control the size of each weight update. If it is too big few output neurons will respond to multiple input classes and others will only respond too little or not at all. On the other hand if $\lambda$ is too small the network will learn very slowly and may never converge.
+
+TODO "prior weights are updated same as explained above" but "c_prior"...
 
 \section{Mathematical link between the spiking Winner-Take-All network model and Bayesian inference}
 \label{linkNetworkBayes}
 
-\citet{nessler} hypothesized that the ensemble of weights of a neuron can be understood as a generative model. They further claimed that every synaptic weight, due to STDP-induced changes,  converges stochastically to the log of the conditional probability that the presynaptic neuron has fired just before the postsynaptic neuron,given that the postsynaptic neuron fires. This connection is given by
+\citet{nessler} hypothesized that the ensemble of weights of a neuron can be understood as a generative model. They further claimed that every synaptic weight, due to STDP-induced changes,  converges stochastically to the log of the conditional probability that the presynaptic neuron has fired just before the postsynaptic neuron, given that the postsynaptic neuron fires. This connection is given by
 \begin{equation}
  w_{ki} = log(p(x_i = 1 | y_k = 1))
 \end{equation}
-an will be analysed in Experiment \ref{section:1D}.
+an will be analysed in Section \ref{section:1D}.
 Furthermore they claimed that in a Bayesian inference context every input spike provides evidence for an observed variable and every output spike represents one stochastic sample from the posterior distribution over hidden causes, which are encoded in the circuit. 
 
+To show the connection between the spiking Winner-Take-All network model and Bayesian inference it will be shown that the relative firing probability $q_k(t)$, given in Equation \ref{eqn:qk}, is equal to the posterior probability of Bayesian inference given in Equation \ref{eqn:pYvorausgesetztXUndZ}.
 
-To show the connection between the spiking Winner-Take-All network model and Bayesian inference it will be shown that the relative firing probability $q_k(t)$, given in Equation \ref{eqn:qk}, is equal to the posterior probability. Replacing the evidence and hypothesis variables in Equation  \ref{eqn:bayesianInferenceExpanded} for E1 = X, H = Y and E2 = Z
-
-
-AAAAALLSSOOOO
-
-bayes und spiking:
-bayes inference zeigen und erklären dass P(X|Y) likelihood ist und P(Y) der prior. 
-das sollte passen.
-
-feedback:
-das führt zu der in exp 1 verwendeten formel...
-In der berechnen wir P(Y|X,Z) mit der erwähnten likelihood und der Prior ist nun nicht P(Y), sondern P(Y|Z).
-das sollte auch passen.
-% \begin{equation}
-%\label{eqn:pYvorausgesetztXUndZ}
-%P(Y = i|X = x, Z = j) = \frac{P(X=x|Y=i)P(Y = i|Z = %j)}{\Sigma_{k}P(X=x,Y=k)P(Y=k|Z=j)}.
-%\end{equation}
-%\begin{equation}
-%\label{eqn:bayesianInferenceExpanded}
-%P(H|E_2) = \frac{P(E_2|E)P(E|H)P(H)}{P(E_2)}.
- P(Y|X,Z) = \frac{P(Z  |X)P(X|Y)P(Y)}{P(X,Z)
-%\end{equation}
-
-
-\begin{equation}
- p( = log(p(x_i = 1 | y_k = 1))
-\end{equation}
-
-  By combining the firing rate of ... conditional firing prob... bayes... mei zeugs halt!!!
+TODO Zusammenhang zeigen ( zuerst qk und so erweitern für Z)
 
 TODO:
 1.!!!! ich muss alle formeln jeweils erweitern für die experimente mit feedback!!! Normal muss ich das in einem der neueren experimente bereits gemacht habne, hierher kopieren (bzg drüber) 
 !!! Da is es : Experiment 2: Horizontal and vertical bars
 2. checken ob alle indices passen wie im heft!
+
+3. im network model angeben wie y (output) berechnet wird!!!
 
 
