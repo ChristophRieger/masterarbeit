@@ -18,11 +18,11 @@ P(H|E) = \frac{P(E|H)P(H)}{P(E)},
 where H represents a hypothesis and E some related evidence. P(H|E) is the posterior probability which signifies the probability of the hypothesis after the evidence was observed. P(E|H) is called likelihood and it is the probability of observing the evidence 	given the hypothesis. It is a measure of the compatibility of the observed evidence with the given hypothesis. P(H) is the prior probability which is the probability of the hypothesis before any evidence is considered or obtained. P(E) is called marginal likelihood that represents the probability of the evidence being observed. However it is the same independent of the chosen hypothesis. Thus, it is not factored in when comparing different hypotheses.
 Bayesian inference can be applied to the "face in shadow" example of Section \ref{section:feedbackInVisualCortex}. There a neuron in V1 sees a small part of the visual field and signals if it sees an edge or not. At first it has the evidence of the observed pixels available and from it can calculate the likelihood that an edge is present. At first it has no prior knowledge of how probable an edge being present is, meaning that the prior probabilities for there being an edge or no edge are equal. With that likelihood and the prior probabilities it can conclude the posterior probability for the hypothesis "there is an edge" and decides that there is no edge.
 Later the inferior temporal cortex determines that there is a face in the picture and feeds this information back to V1. This influences the prior probabilities and changes the posterior probability in a way that the V1 neuron starts to see the hypothesis that there is an edge as more likely, in order to complete the contour of the face. 
-We now define X as a multinomial variable of the visual input, Y as a multinomial variable of the output of V1 and Z as a binary vector of the feedback of the inferior temporal cortex.
+We now define X as a binary random vector of the visual input, Y as a multinomial variable of the output of V1 and Z as a multinomial variable of the feedback of the inferior temporal cortex.
 When plugging these variables into Equation \ref{eqn:bayesianInference} with the posterior given by $P(Y|X,Z)$, the likelihood given by $P(X|Y)$ and the prior given by $P(Y|Z)$ we get
 \begin{equation}
 \label{eqn:pYvorausgesetztXUndZ}
-P(Y = i|X = x, Z = j) = \frac{P(X=x|Y=i)P(Y = i|Z = j)}{\Sigma_{k}P(X=x,Y=k)P(Y=k|Z=j)}.
+P(Y = i|X = x, Z = j) = \frac{P(X=x|Y=i)P(Y = i|Z = j)}{\Sigma_{k}P(X=x|Y=k)P(Y=k|Z=j)}.
 \end{equation}
 
 \section{Network model}
@@ -30,10 +30,15 @@ P(Y = i|X = x, Z = j) = \frac{P(X=x|Y=i)P(Y = i|Z = j)}{\Sigma_{k}P(X=x,Y=k)P(Y=
 The network model used for the experiments in this thesis was taken from \citet{nessler} and expanded by an additional layer to include some hierarchical feedback information.
 
 \paragraph{Neuron model}
-As in \citet{nessler} the input neurons X are firing according to a poisson process with an average firing rate $f_{input}$ when active and with 0 Hz when in an inactive state. The input neurons receive a binary input, for example a black or white pixel of an image. The excitatory post synaptic potentials (EPSPs) $x_i(t)$ that these neurons produce can be seen in Figure \ref{fig:XSpike}. A double exponential kernel was used to generate the EPSP. The kernel has a time constant for the rise of the signal $\tau_{rise}$  and a time constant for the decay of the signal $\tau_{decay}$. The addition of the time step size $\delta t$ was necessary to get the time t at the end of the current simulation step. $t_f$ is the time at which the spike of $x_i$ occurred
+As in \citet{nessler} the input neurons $x_1,...,x_n$ are firing according to a poisson process with an average firing rate $f_{input}$ when active and with 0 Hz when in an inactive state. The input neurons receive a binary input, for example a black or white pixel of an image. The excitatory post synaptic potentials (EPSPs) $x_i(t)$ that these neurons produce can be seen in Figure \ref{fig:XSpike}. A double exponential kernel was used to generate the EPSP. The kernel has a time constant for the rise of the signal $\tau_{rise}$  and a time constant for the decay of the signal $\tau_{decay}$. The addition of the time step size $\delta t$ was necessary to get the time t at the end of the current simulation step. $t_f$ is the time at which the spike of $x_i$ occurred
 \begin{equation}
 \label{eqn:EPSP}
 x_i(t) = e^{-(t + \delta t - t_f) / \tau_{decay}} - e^{-(t + \delta t - t_f) / \tau_{rise}}.
+\end{equation}
+Analogously the EPSP of the prior neurons $z_j(t)$ are given by
+\begin{equation}
+\label{eqn:EPSPPrior}
+z_j(t) = e^{-(t + \delta t - t_f) / \tau_{decay}} - e^{-(t + \delta t - t_f) / \tau_{rise}}.
 \end{equation}
 
 \begin{figure}
@@ -41,6 +46,37 @@ x_i(t) = e^{-(t + \delta t - t_f) / \tau_{decay}} - e^{-(t + \delta t - t_f) / \
   \caption{Form of an excitatory post synaptic potential generated by an input neuron over time. A double exponential kernel was used to generate this signal. These signals are fed to the next layer of the network. }
   \label{fig:XSpike}
 \end{figure}
+
+The membrane potential $u_k$ of each output neuron is calculated by multiplying the EPSP of each input neuron times the weight of the connection between them, plus the same for the prior neurons
+\begin{equation}
+\label{eqn:uk}
+u_k(t) = \sum_{i=1}^N w_{ki} \cdot x_i(t) + \sum_{j=1}^J w_{kj} \cdot z_j(t).
+\end{equation}
+
+In \citet{nessler} each output neuron $y_k$ also had an intrinsic excitability $w_{k0}$ which was learned for each neuron. For the experiments of this thesis however it was omitted, as the different classes of  input images were equally likely, thus the intrinsic excitability of each output neuron would end up being the same.
+The output neurons are modelled in a winner-takes-all (WTA) circuit. The WTA behaviour was implemented via an adaptive inhibition signal. The adaptive inhibition is used to regulate
+the membrane potentials of the output neurons so that all of them together fire with a total firing rate $R(t) = 200 Hz$ on average. Due to that there never is a time window in which no output neuron may fire. However, it is unlikely for an output neuron to fire right after another output neuron has fired.
+
+The inhibition signal was chosen to depend on the current membrane potential of the output neurons. 
+Solving Equation \ref{eqn:R} for I(t) yields
+\begin{equation}
+\label{}
+R(t) = \frac{ \sum_{k=1}^K e^{u_k(t)}}{e^{I(t)}}
+\end{equation}
+\begin{equation}
+\label{}
+e^{I(t)} = \frac{\sum_{k=1}^K e^{u_k(t)}}{R(t)}
+\end{equation}
+\begin{equation}
+\label{}
+I(t) = \ln{ \frac{ \sum_{k=1}^K e^{u_k(t)}}{R(t)}}
+\end{equation}
+\begin{equation}
+\label{eqn:I(t)}
+I(t) =  - \ln{R(t)} + \ln{  \sum_{k=1}^K e^{u_k(t)}}.
+\end{equation}
+
+At every timestep of the simulation in Equation in Equation \ref{eqn:rk} the inhibition signal I(t) is subtracted from the membrane potential $u_k(t)$ of every output neuron. Due to that the membrane potentials are altered to always yield a spiking frequency of 200 Hz, regardless if it would be too low or too high without it. This means that the adaptive inhibition signal can also function as an excitatory signal. 
 
 The firing rate of an output neuron $y_k$ is given by
 \begin{equation}
@@ -63,43 +99,8 @@ r_k(t) \delta t.
 The conditional probability $q_k(t)$ that a spike originated from the output neuron $y_k$ is given by
 \begin{equation}
 \label{eqn:qk}
-q_k(t) = \frac{r_k(t) \delta t}{R(t) \delta t} = \frac{e^{U_k(t)}}{\sum_{k'=1}^K e^{U_{k'}(t)}}.
+q_k(t) = \frac{r_k(t) \delta t}{R(t) \delta t} = \frac{e^{u_k(t) - I(t)}}{\sum_{k'=1}^K e^{u_{k'}(t) - I(t)}}.
 \end{equation}
-
-\paragraph{Network architecture}
-Each pixel of an input image was connected to two neurons. The first of these neurons is in an active state when the pixel is black and in an inactive state otherwise. The second neuron expresses the opposite behaviour. As a consequence the network needs ($width \cdot height \cdot 2$) excitatory input neurons $x_1,...,x_N$. These input neurons are fully connected to the excitatory output neurons $y_1,...,y_K$. This means that that every input neuron $x_i$ is connected to each output neuron $y_k$. 
-To simulate the feedback from the inferior temporal cortex prior neurons $z_1,...,z_J$ were added to the network. Each prior neuron was connected only to the one  output neuron that represents the same class as the prior. As there are fewer prior neurons than input neurons influencing each output neuron, a way to amplify the prior signal was needed, otherwise their impact would not be distinctive enough. Thus the EPSPs $z_j(t)$ are multiplied by the factor $Z_{factor}$.
-The membrane potential $u_k$ of each output neuron is calculated by multiplying the EPSP of each input neuron times the weight of the connection between them plus the same for the prior neurons
-\begin{equation}
-\label{eqn:uk}
-u_k(t) = \sum_{i=1}^N w_{ki} \cdot x_i(t) + \sum_{j=1}^J w_{kj} \cdot Z_{factor} \cdot z_j(t).
-\end{equation}
-
-In \citet{nessler} each output neuron $y_k$ also had an intrinsic excitability $w_{k0}$ which was learned for each neuron. For the experiments of this thesis however it was omitted, as the different classes of  input images were equally likely, thus the intrinsic excitability of each output neuron would end up being the same.
-The output neurons are modelled in a winner-takes-all (WTA) circuit. The WTA behaviour was implemented via an adaptive inhibition signal. The adaptive inhibition is used to regulate
-the membrane potentials of the output neurons so that all of them together fire with a total firing rate $R(t) = 200 Hz$ on average. Due to that there never is a time window in which no output neuron may fire. However, it is unlikely for an output neuron to fire right after another output neuron has fired.
-
-\paragraph{Inhibition}
-The inhibition signal was chosen to depend on the current membrane potential of the output neurons. 
-Solving Equation \ref{eqn:R} for I(t) yields
-\begin{equation}
-\label{}
-R(t) = \frac{ \sum_{k=1}^K e^{u_k(t)}}{e^{I(t)}}
-\end{equation}
-\begin{equation}
-\label{}
-e^{I(t)} = \frac{\sum_{k=1}^K e^{u_k(t)}}{R(t)}
-\end{equation}
-\begin{equation}
-\label{}
-I(t) = \ln{ \frac{ \sum_{k=1}^K e^{u_k(t)}}{R(t)}}
-\end{equation}
-\begin{equation}
-\label{eqn:I(t)}
-I(t) =  - \ln{R(t)} + \ln{  \sum_{k=1}^K e^{u_k(t)}}.
-\end{equation}
-
-At every timestep of the simulation in Equation in Equation \ref{eqn:rk} the inhibition signal I(t) is subtracted from the membrane potential $u_k(t)$ of every output neuron. Due to that the membrane potentials are altered to always yield a spiking frequency of 200 Hz, regardless if it would be too low or too high without it. This means that the adaptive inhibition signal can also function as an excitatory signal. 
 
 \paragraph{Spike timing dependent plasticity}
 The weights $w_{ki}$ between neurons $x_i$ and $y_k$ are updated whenever an output neuron fires. $\sigma$ indicates the time window, after which spikes are no longer considered. If $y_k$ produces a spike all its weights to the input neurons are updated as
@@ -109,8 +110,16 @@ The weights $w_{ki}$ between neurons $x_i$ and $y_k$ are updated whenever an out
 \lambda \cdot (-1) & \text{if $ x_i $ did not fire in $ [t^f - \sigma, t^f] $, } \end{dcases*}
 \end{equation}
 where $\lambda$ is the learning rate, the parameter c shifts the weight values, $t^f$ is the time when $y_k$ spiked and $\sigma$ is the time window in which input spikes are considered as "before" an output spike. As the membrane potentials $u_k$ of the output neurons result from the addition of the EPSPs of the input neurons times the corresponding weight, a way to control the average size of u is needed. If u is too small the output neurons will fire too sparsely and if u is too big it will impair the learning process. So to limit u, the size of the weights is controlled via the parameter c. The learning rate $\lambda$ is needed to control the size of each weight update. If it is too big few output neurons will respond to multiple input classes and others will only respond too little or not at all. On the other hand if $\lambda$ is too small the network will learn very slowly and may never converge.
+The prior weights $w_kj$ are also updated whenever an output neuron fires, in the same way as $w_ki$
+\begin{equation}
+\label{deltawki}
+\Delta w_{kj} = \begin{dcases*} \lambda \cdot (ce^{-w_{kj}} - 1) & if $z_{j}$ fired in $ [t^f - \sigma, t^f] $ \\
+\lambda \cdot (-1) & \text{if $ z_j $ did not fire in $ [t^f - \sigma, t^f] $, } \end{dcases*}
+\end{equation}
 
-TODO "prior weights are updated same as explained above" but "cPrior"...
+\paragraph{Network architecture}
+Each pixel of an input image was connected to two neurons. The first of these neurons is in an active state when the pixel is black and in an inactive state otherwise. The second neuron expresses the opposite behaviour. As a consequence the network needs ($width \cdot height \cdot 2$) excitatory input neurons $x_1,...,x_N$. These input neurons are fully connected to the excitatory output neurons $y_1,...,y_K$. This means that that every input neuron $x_i$ is connected to each output neuron $y_k$. 
+To simulate the feedback from the inferior temporal cortex prior neurons $z_1,...,z_J$ were added to the network. Each prior neuron was connected only to the one  output neuron that represents the same class as the prior. As there are fewer prior neurons than input neurons influencing each output neuron, they have higher firing frequencies. Other than that the prior neurons behave the same as the input neurons and their EPSPs are handled the same way.
 
 \section{Mathematical link between the spiking Winner-Take-All network model and Bayesian inference}
 \label{linkNetworkBayes}
@@ -124,13 +133,14 @@ Furthermore they claimed that in a Bayesian inference context every input spike 
 
 To show the connection between the spiking Winner-Take-All network model and Bayesian inference it will be shown that the relative firing probability $q_k(t)$, given in Equation \ref{eqn:qk}, is equal to the posterior probability of Bayesian inference given in Equation \ref{eqn:pYvorausgesetztXUndZ}.
 
-TODO Zusammenhang zeigen ( zuerst qk und so erweitern für Z)
+
+
+
+
+
 
 TODO:
-1.!!!! ich muss alle formeln jeweils erweitern für die experimente mit feedback!!! Normal muss ich das in einem der neueren experimente bereits gemacht habne, hierher kopieren (bzg drüber) 
-!!! Da is es : Experiment 2: Horizontal and vertical bars
-2. checken ob alle indices passen wie im heft!
 
-3. im network model angeben wie y (output) berechnet wird!!!
+1. im network model angeben wie y (output) berechnet wird!!!
 
 
