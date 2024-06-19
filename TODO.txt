@@ -1,4 +1,0 @@
-- bei allen figures müssen variablen erklärt sein was sie heißen.
-- bei I(t) = ln(sum(e hoch uk)) ... hat legi dazu gefragt warum diese inhib gewählt wurde.. i hab keine 
-ahnung mehr, herausfinden. das war von experiment 1: Rotated lines. i vermut, dass i da noch a andere inhib 
-verwend als später dann.
