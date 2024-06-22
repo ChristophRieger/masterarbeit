@@ -54,10 +54,9 @@ u_k(t) = \sum_{i=1}^N w_{ki} \cdot x_i(t) + \sum_{j=1}^J w_{kj} \cdot z_j(t).
 \end{equation}
 
 In \citet{nessler} each output neuron $y_k$ also had an intrinsic excitability $w_{k0}$ which was learned for each neuron. For the experiments of this thesis however it was omitted, as the different classes of  input images were equally likely, thus the intrinsic excitability of each output neuron would end up being the same.
+
 The output neurons are modelled in a winner-takes-all (WTA) circuit. The WTA behaviour was implemented via an adaptive inhibition signal. The adaptive inhibition is used to regulate
 the membrane potentials of the output neurons so that all of them together fire with a total firing rate $R(t) = 200 Hz$ on average. Due to that there never is a time window in which no output neuron may fire. However, it is unlikely for an output neuron to fire right after another output neuron has fired.
-
-TODO!!! Move this below definitions of R(t)
 
 The inhibition signal was chosen to depend on the current membrane potential of the output neurons. 
 Solving Equation \ref{eqn:R} for I(t) yields
