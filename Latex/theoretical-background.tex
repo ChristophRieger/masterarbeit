@@ -57,6 +57,8 @@ In \citet{nessler} each output neuron $y_k$ also had an intrinsic excitability $
 The output neurons are modelled in a winner-takes-all (WTA) circuit. The WTA behaviour was implemented via an adaptive inhibition signal. The adaptive inhibition is used to regulate
 the membrane potentials of the output neurons so that all of them together fire with a total firing rate $R(t) = 200 Hz$ on average. Due to that there never is a time window in which no output neuron may fire. However, it is unlikely for an output neuron to fire right after another output neuron has fired.
 
+TODO!!! Move this below definitions of R(t)
+
 The inhibition signal was chosen to depend on the current membrane potential of the output neurons. 
 Solving Equation \ref{eqn:R} for I(t) yields
 \begin{equation}
@@ -76,13 +78,17 @@ I(t) = \ln{ \frac{ \sum_{k=1}^K e^{u_k(t)}}{R(t)}}
 I(t) =  - \ln{R(t)} + \ln{  \sum_{k=1}^K e^{u_k(t)}}.
 \end{equation}
 
-At every timestep of the simulation in Equation in Equation \ref{eqn:rk} the inhibition signal I(t) is subtracted from the membrane potential $u_k(t)$ of every output neuron. Due to that the membrane potentials are altered to always yield a spiking frequency of 200 Hz, regardless if it would be too low or too high without it. This means that the adaptive inhibition signal can also function as an excitatory signal. 
-
-The firing rate of an output neuron $y_k$ is given by
+\citet{nessler} defined that the firing probability of an output neuron  $y_k$ is exponentially proportional to its membrane potential $u_k$ minus the received inhibition $I(t)$
+\begin{equation}
+\label{eqn:pVonY}
+p(y_k fires at time t) \propto e^{u_k(t) - I(t)}.
+\end{equation}
+This stochastic firing model is supported by experimental biological evidence \citep{woDasEHerkommt}. Through this definition the firing rate $r_k(t)$ of an output neuron is then modelled by an inhomogeneous Poisson process as
 \begin{equation}
 \label{eqn:rk}
 r_k(t) = e^{u_k(t) - I(t)}.
 \end{equation}
+At every timestep of the simulation the inhibition signal I(t) is subtracted from the membrane potential $u_k(t)$ of every output neuron. By that the membrane potentials are altered to always yield a spiking frequency of 200 Hz, regardless if it would be lower or higher without it. This means that the adaptive inhibition signal can also function as an excitatory signal. 
 
 The total firing rate of the output neurons is obtained when summing up the firing rates of all output neurons, yielding 
 \begin{equation}
