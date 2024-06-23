@@ -80,7 +80,7 @@ I(t) =  - \ln{R(t)} + \ln{  \sum_{k=1}^K e^{u_k(t)}}.
 \citet{nessler} defined that the firing probability of an output neuron  $y_k$ is exponentially proportional to its membrane potential $u_k$ minus the received inhibition $I(t)$
 \begin{equation}
 \label{eqn:pVonY}
-p(y_k fires at time t) \propto e^{u_k(t) - I(t)}.
+p(y_k \text{ fires at time t}) \propto e^{u_k(t) - I(t)}.
 \end{equation}
 This stochastic firing model is supported by experimental biological evidence \citep{woDasEHerkommt}. Through this definition the firing rate $r_k(t)$ of an output neuron is then modelled by an inhomogeneous Poisson process as
 \begin{equation}
@@ -136,11 +136,29 @@ To simulate the feedback from the inferior temporal cortex prior neurons $z_1,..
 an will be analysed in Section \ref{section:1D}.
 Furthermore they claimed that in a Bayesian inference context every input spike provides evidence for an observed variable and every output spike represents one stochastic sample from the posterior distribution over hidden causes, which are encoded in the circuit. 
 
-To show the connection between the spiking Winner-Take-All network model and Bayesian inference it will be shown that the relative firing probability $q_k(t)$, given in Equation \ref{eqn:qk}, is equal to the posterior probability of Bayesian inference given in Equation \ref{eqn:pYvorausgesetztXUndZ}.
+To show the connection between the spiking Winner-Take-All network model and Bayesian inference it will be shown that the posterior probability of Bayesian inference given in Equation \ref{eqn:pYvorausgesetztXUndZ} is equal to the relative firing probability $q_k(t)$, given in Equation \ref{eqn:qk}.
+
+die frage ist nun, wie befüllt man eqn:pYvorausgesetztXUndZ mit werten vom SNN?
+
+As defined in Equation \ref{eqn:pVonY} the firing probability of a neuron is proportional to its membrane potential minus the inhibition. Thus we can define the Bayesian likelihood P(X|Y) as
+\begin{equation}
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO i glaub dass I(t) in beide formeln net reingehört... weil ja nur Y inhibiert wird,
+oder?? daher kann ichs I(t) rausstreichen..... wenn das stimmt, dann sollten aber die feuerraten eigentlich keinen
+Unterschied machen, oder? Weil I(t) ja die Feuerrate begrenzt? So wies aussieht sollte es nur um das Verhältnis 
+der Feuerraten gehen.
+! JA FIX, INHIBITION geht nur auf OUTPUT NEURONS.
+P(X=x|Y=k) = e^{U_x - I(t)} = e^{\sum_{i=1}^N w_{ki} \cdot x_i(t) - I(t) }
+\end{equation}
+and the prior P(Y|Z) as
+\begin{equation}
+P(Y=k|Z=j) = e^{\sum_{j=1}^J w_{kj} \cdot z_j(t) - I(t) }
+\end{equation}
 
 
-
-
+\begin{equation}
+\label{eqn:uk}
+u_k(t) = \sum_{i=1}^N w_{ki} \cdot x_i(t) + \sum_{j=1}^J w_{kj} \cdot z_j(t).
+\end{equation}
 
 
 
