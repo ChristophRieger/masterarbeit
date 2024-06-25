@@ -104,8 +104,9 @@ r_k(t) \delta t.
 The conditional probability $q_k(t)$ that a spike originated from the output neuron $y_k$ is given by
 \begin{equation}
 \label{eqn:qk}
-q_k(t) = \frac{r_k(t) \delta t}{R(t) \delta t} = \frac{e^{u_k(t) - I(t)}}{\sum_{k'=1}^K e^{u_{k'}(t) - I(t)}}.
+q_k(t) = \frac{r_k(t) \delta t}{R(t) \delta t} = \frac{e^{u_k(t) - I(t)}}{\sum_{k'=1}^K e^{u_{k'}(t) - I(t)}} = \frac{e^{u_k(t)}}{\sum_{k'=1}^K e^{u_{k'}(t)}}.
 \end{equation}
+The inhibition term cancels out because all output neurons receive the same inhibition, meaning that it is independent of k.
 
 \paragraph{Spike timing dependent plasticity}
 The weights $w_{ki}$ between neurons $x_i$ and $y_k$ are updated whenever an output neuron fires. $\sigma$ indicates the time window, after which spikes are no longer considered. If $y_k$ produces a spike all its weights to the input neurons are updated as
@@ -140,24 +141,22 @@ To show the connection between the spiking Winner-Take-All network model and Bay
 
 die frage ist nun, wie befüllt man eqn:pYvorausgesetztXUndZ mit werten vom SNN?
 
-As defined in Equation \ref{eqn:pVonY} the firing probability of a neuron is proportional to its membrane potential minus the inhibition. Thus we can define the Bayesian likelihood P(X|Y) as
+As defined in Equation \ref{eqn:pVonY} the firing probability of an output neuron is proportional to its membrane potential minus the inhibition. The input and prior neurons however, have fixed firing rates and do not receive inhibition. Thus we can define the Bayesian likelihood P(X|Y) as
 \begin{equation}
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO i glaub dass I(t) in beide formeln net reingehört... weil ja nur Y inhibiert wird,
-oder?? daher kann ichs I(t) rausstreichen..... wenn das stimmt, dann sollten aber die feuerraten eigentlich keinen
-Unterschied machen, oder? Weil I(t) ja die Feuerrate begrenzt? So wies aussieht sollte es nur um das Verhältnis 
-der Feuerraten gehen.
-! JA FIX, INHIBITION geht nur auf OUTPUT NEURONS.
-P(X=x|Y=k) = e^{U_x - I(t)} = e^{\sum_{i=1}^N w_{ki} \cdot x_i(t) - I(t) }
+P(X=x|Y=k) = e^{u_x} = e^{\sum_{i=1}^N w_{ki} \cdot x_i(t)}
 \end{equation}
 and the prior P(Y|Z) as
 \begin{equation}
-P(Y=k|Z=j) = e^{\sum_{j=1}^J w_{kj} \cdot z_j(t) - I(t) }
+P(Y=k|Z=j) = e^{u_z} = e^{\sum_{j=1}^J w_{kj} \cdot z_j(t)}.
 \end{equation}
-
-
+When inserting the likelihood and the prior into Equation \ref{eqn:pYvorausgesetztXUndZ} we get
 \begin{equation}
-\label{eqn:uk}
-u_k(t) = \sum_{i=1}^N w_{ki} \cdot x_i(t) + \sum_{j=1}^J w_{kj} \cdot z_j(t).
+\begin{split}
+P(Y=k|X=x,Z=j) &= \frac{e^{\sum_{i=1}^N w_{ki} \cdot x_i(t)} \cdot e^{\sum_{j=1}^J w_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w_{k'i} \cdot x_i(t)} \cdot e^{\sum_{j=1}^J w_{k'j} \cdot z_j(t)}}\\
+&= \frac{e^{\sum_{i=1}^N w_{ki} \cdot x_i(t) + \sum_{j=1}^J w_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w_{k'i} \cdot x_i(t) + \sum_{j=1}^J w_{k'j} \cdot z_j(t)}}\\
+&= \frac{e^{U_k(t)}}{\sum_{k'=1}^K e^{U_k'(t)}}\\
+&= q_k(t)
+\end{split}
 \end{equation}
 
 
