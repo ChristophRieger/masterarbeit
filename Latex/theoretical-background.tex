@@ -139,26 +139,38 @@ Furthermore they claimed that in a Bayesian inference context every input spike 
 
 To show the connection between the spiking Winner-Take-All network model and Bayesian inference it will be shown that the posterior probability of Bayesian inference given in Equation \ref{eqn:pYvorausgesetztXUndZ} is equal to the relative firing probability $q_k(t)$, given in Equation \ref{eqn:qk}.
 
-die frage ist nun, wie befüllt man eqn:pYvorausgesetztXUndZ mit werten vom SNN?
+As explained in Section \ref{section:bayesianInference} the visual input, modelled by the input neurons can be thought of as the Bayesian likelihood and the feedback, modelled by the prior neurons, as the Bayesian prior. As defined in Equation \ref{eqn:pVonY} the firing probability of an output neuron is proportional to the exponent of its membrane potential minus the inhibition. To obtain the Bayesian likelihood and prior we first split the membrane potential into the contributions of the input and prior neurons. The first part that signifies the contribution of the input neurons is given by
+\begin{equation}
+e^{u_x} = e^{\sum_{i=1}^N w_{ki} \cdot x_i(t)}.
+\end{equation}
+The second part gives the contribution of the prior neurons as
+\begin{equation}
+e^{u_z} = e^{\sum_{j=1}^J w_{kj} \cdot z_j(t)}.
+\end{equation}
 
-As defined in Equation \ref{eqn:pVonY} the firing probability of an output neuron is proportional to its membrane potential minus the inhibition. The input and prior neurons however, have fixed firing rates and do not receive inhibition. Thus we can define the Bayesian likelihood P(X|Y) as
+These two parts can be seen as two partial membrane potentials. By inserting each of them into Equation \ref{eqn:pVonY} we get the likelihood
 \begin{equation}
-P(X=x|Y=k) = e^{u_x} = e^{\sum_{i=1}^N w_{ki} \cdot x_i(t)}
+P(X|Y) = e^{u_x - I(t)}.
 \end{equation}
-and the prior P(Y|Z) as
+and the prior
 \begin{equation}
-P(Y=k|Z=j) = e^{u_z} = e^{\sum_{j=1}^J w_{kj} \cdot z_j(t)}.
+P(Y|Z) = e^{u_z - I(t)}.
 \end{equation}
+
 When inserting the likelihood and the prior into Equation \ref{eqn:pYvorausgesetztXUndZ} we get
 \begin{equation}
 \begin{split}
-P(Y=k|X=x,Z=j) &= \frac{e^{\sum_{i=1}^N w_{ki} \cdot x_i(t)} \cdot e^{\sum_{j=1}^J w_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w_{k'i} \cdot x_i(t)} \cdot e^{\sum_{j=1}^J w_{k'j} \cdot z_j(t)}}\\
+P(Y=k|X=x,Z=j) &= \frac{e^{\sum_{i=1}^N w_{ki} \cdot x_i(t) - I(t)} \cdot e^{\sum_{j=1}^J w_{kj} \cdot z_j(t) - I(t)}}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w_{k'i} \cdot x_i(t) - I(t)} \cdot e^{\sum_{j=1}^J w_{k'j} \cdot z_j(t) - I(t)}}\\
+
+&= \frac{e^{-I(t) \cdot N + \sum_{i=1}^N w_{ki} \cdot x_i(t)} \cdot e^{-I(t) \cdot J + \sum_{j=1}^J w_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K  e^{-I(t) \cdot N + \sum_{i=1}^N w_{k'i} \cdot x_i(t)} \cdot e^{-I(t) \cdot J + \sum_{j=1}^J w_{k'j} \cdot z_j(t)}}\\
+
+&= \frac{e^{-I(t) \cdot N} \cdot e^{\sum_{i=1}^N w_{ki} \cdot x_i(t)} \cdot e^{-I(t) \cdot J} \cdot e^{\sum_{j=1}^J w_{kj} \cdot z_j(t)}}{e^{-I(t) \cdot N} \cdot e^{-I(t) \cdot J} \cdot \sum_{k'=1}^K  e^{\sum_{i=1}^N w_{k'i} \cdot x_i(t)} \cdot e^{\sum_{j=1}^J w_{k'j} \cdot z_j(t)}}\\
+
 &= \frac{e^{\sum_{i=1}^N w_{ki} \cdot x_i(t) + \sum_{j=1}^J w_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w_{k'i} \cdot x_i(t) + \sum_{j=1}^J w_{k'j} \cdot z_j(t)}}\\
 &= \frac{e^{U_k(t)}}{\sum_{k'=1}^K e^{U_k'(t)}}\\
 &= q_k(t)
 \end{split}
 \end{equation}
-
 
 
 TODO:
