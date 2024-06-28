@@ -1,8 +1,129 @@
+\section{Experiment 1: Horizontal and vertical bars}
+\label{section:horvertAdaptiveInhibition}
+
+\subsection{Introduction}
+
+% TODO, copy introduction from horvert with stupid inhibition
+For this experiment the impact of a neuron layer that encodes a-priori information should be analysed.
+% IT sucks, TODO improve
+
+\subsection{Methods}
+ % TODO everything copied until "old stuff", look through and adapt
+\paragraph{Input data}
+29 x 29 black and white images with either horizontal or vertical oriented bars on them were used, as it was more straightforward to express a-priori information. The orientation of the training images was chosen randomly via a uniform distribution. Also the positions of the bars in the images were uniformly distributed. The rest of the image generation process is analogous to experiment 1, except no circular mask was used. Examples of the input data can be seen in Figure \ref{fig:horvertImages}. To show the value of the a-priori information validation images with two bars forming a cross were also generated, seen in Figure \ref{fig:horvertTrainingCrossImage}. When shown to the network in the validation process the prior neurons were given the information that a cross is either in horizontal or vertical orientation.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/horvert/horvertTrainingImages.png}
+  \caption{Training images generated for experiment 2. One image of each possible orientation at a random position.}
+  \label{fig:horvertImages}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=0.6\linewidth]{figures/horvert/horvertTrainingCrossImage.png}
+  \caption{Generated cross image which can represent either horizontal or vertical orientation.}
+  \label{fig:horvertTrainingCrossImage}
+\end{figure}
+
+
+\paragraph{Network architecture}
+
+This experiment used a expanded version of the network used in experiment 1. An additional layer of prior neurons $z_1,z_2$ was added. Whenever an image was oriented vertically $z_1$ was active and $z_2$ was inactive. For horizontal orientations $z_2$ was active and $z_1$ was inactive. Prior neurons in an active state had a firing frequency of 50 Hz and fired with 0 Hz when inactive.
+
+\paragraph{Neuron model}
+The input and output neurons functioned the same way as in the previous experiment. The prior neurons fire according to a poisson process with their firing rate. Each prior neuron $Z_l$ is connected to every output neuron $Y_k$ and thus has weights $w_{kl}$ that were learned by the network. 
+
+\paragraph{Parameters}
+As the amount of input neurons and the average number of black pixels in an input image stayed roughly the same in this experiment, the same parameters $c=  20$ and $\lambda = 10^{-3}$ could be used.
+
+%% TODO START
+%% this block was copied to Theoretical Background, cut this accordingly
+%% Zfactor does not exist, remove!!!
+ However as there are only two prior neurons, a way to amplify their produced signals was needed, otherwise their impact on the membrane potential of the output neurons would not be distinctive enough. So the EPSPs $z_l(t)$ were multiplied by the factor $Z_{factor}$. This factor was determined via grid search. The additional prior layer resulted in an expanded version of the membrane potential $u_k(t)$
+
+\begin{equation}
+\label{eqn:ukHorvert}
+u_k(t) = \sum_{i=1}^n w_{ki} \cdot x_i(t) + \sum_{j=1}^n w_{kj} \cdot Z_{factor} \cdot z_j(t).
+\end{equation}
+
+% the old stuff, needed
+The firing rate of the output neurons was set to 200 Hz. As there are fewer prior neurons (keine ahung wie viele) to increase the influence of the prior neurons the firing rate of the prior neurons was set to 200 Hz. This change alone did not increase the impact of the prior neurons enough to help the network correctly detect a "cross-bar image" as either horizontal or vertical. It was also tried to increase the parameter $c_{prior}$ for the learning of the prior weights to shift the weight values towards bigger values. This did not increase the values of the weights, they stayed at a maximum of four. Thus the number of prior neurons had to be increased. Via grid search different numbers of prior neurons were tried.
+% the old stuff END
+
+\subsection{Results}
+
+The tried parameters were as follows:
+\begin{itemize}
+  \item $c = c_{prior} = 20$
+  \item $\lambda = 10^{-3}$
+  \item number of prior neurons $ = 10, 20, 50, 100, 200$
+\end{itemize}
+
+For 50, 100 and 200 prior neurons the training process was impaired by the activity of the prior neurons. This arose as some output neurons responding to too large areas, while other prior neurons not responding to any specific areas. For 50 prior neurons four output neurons responded to horizontal bars, while six output neurons responded to vertical bars. This was unexpected and might be due to the stochastic nature of the training image generation. This was not yet analysed further and the validation of the network was performed with 20 prior neurons, as it was the largest amount of prior neurons that resulted in a properly trained network. The results of the training process can be seen in Figures \ref{fig:horvertAdaptiveInhibitionTraining} and \ref{fig:horvertAdaptiveInhibitionpriorWeights}.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/trainingPlot.png}
+  \caption{\textbf{Training with 20 prior neurons.} \textbf{A} Examples of 35 x 35-pixel input images of horizontal and vertical bars with background noise. \textbf{B} Learned weights of the connections between input and output neurons. \textbf{C, D} Spike activity expressed by the output neurons before and after the training of the network. \textbf{E} Number of distinct output neurons active during the presentation duration of each training image. \textbf{F} Proportion of most active output neuron  to activity of all other output neurons during the presentation duration of each training image.}
+  \label{fig:horvertAdaptiveInhibitionTraining}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/priorWeights.png}
+  \caption{ Learned weights of the connections between prior and output neurons. }
+  \label{fig:horvertAdaptiveInhibitionpriorWeights}
+\end{figure}
+
+Next the impact of the prior was checked. To do this an image with one horizontal (at pixel 12) and one vertical bar (at pixel 5) on it was generated. Then the prior was set once to 0 (vertical) and once to 1 (horizontal). The image and the prior was then fed to the network. The cross image can be seen in Figure \ref{fig:horvertAdaptiveInhibitionPriorValImage}. The spiking activity depending on the prior can be seen in Figures \ref{fig:horvertAdaptiveInhibitionPriorValSpikes0} and \ref{fig:horvertAdaptiveInhibitionPriorValSpikes1}.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/20priors_pos5and12/crossImage.png}
+  \caption{ Cross image fed to the network. }
+  \label{fig:horvertAdaptiveInhibitionPriorValImage}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/20priors_pos5and12/crossZSpikes0.png}
+  \caption{ Spiking activity of the output neurons with prior = 0. }
+  \label{fig:horvertAdaptiveInhibitionPriorValSpikes0}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/20priors_pos5and12/crossZSpikes1.png}
+  \caption{ Spiking activity of the output neurons with prior = 1. }
+  \label{fig:horvertAdaptiveInhibitionPriorValSpikes1}
+\end{figure}
+
+To better show the impact of the prior it was gradually changed from horizontal to vertical. The starting firing frequency of the horizontal prior neurons was 200 Hz and 0 Hz for the vertical prior neurons. A cross image was shown to the network for 200 ms. After each image presentation duration the firing frequency of the horizontal prior neurons was decreased by 1 Hz and increased by 1 Hz for the vertical prior neurons. The used cross image can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorValImage}. The firing frequency of the 2 most active output neurons depending on the firing frequency of the vertical prior neurons can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorValFrequency}. As expected the correct horizontal output neuron is active in the beginning with about 200 Hz and the correct vertical output neuron is almost inactive. With rising firing frequency of the vertical prior neurons the activity of the horizontal output neurons decreases and the activity of the vertical output neurons increases. The membrane potentials of all output neurons for vertical prior neurons spiking with 200 Hz and horizontal prior neurons spiking with 0 Hz can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorValMembranePotentials}.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/crossImageForVariablePrior.png}
+  \caption{ Cross image fed to the network. }
+  \label{fig:horvertAdaptiveInhibitionVariablePriorValImage}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/YFrequency_prior199.png}
+  \caption{ Firing frequency of the 2 most active output neurons depending on prior firing frequency. }
+  \label{fig:horvertAdaptiveInhibitionVariablePriorValFrequency}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/membranePotentials0.png}
+  \caption{ Membrane potentials of output neurons for vertical prior neurons spiking with 200 Hz and horizontal prior neurons spiking with 0 Hz. }
+  \label{fig:horvertAdaptiveInhibitionVariablePriorValMembranePotentials}
+\end{figure}
+
+
+
+
+
+
+
+
+% unused exp, kept for looking up stuff
+
+\iffalse
 \section{Experiment 2: Horizontal and vertical bars}
 \label{section:horvert}
-
-%% TODO this whole experiment seems shitty, as no active inhibition was used!
-
 
  \subsection{Introduction}
 
@@ -134,80 +255,4 @@ To show the impact of the prior neurons an image with two bars on it forming a c
   \label{fig:horvert_c20_3_Zfactor5_crossZSpikes}
 \end{figure}
 
-
-
-
-
-\section{Experiment 4: Horizontal and vertical bars with adaptive inhibition}
-\label{section:horvertAdaptiveInhibition}
-
-\subsection{Introduction}
-
-This experiment applies the adaptive inhibition already analysed in Experiment \ref{section:rotatedLinesAdaptiveInhibition} to Experiment \ref{section:horvert}. In Experiment \ref{section:horvert} the impact of the prior neurons was too small to influence the spiking activity of the output neurons. The newly implemented adaptive inhibition simplifies the process of changing the prior neurons, as it keeps the output firing frequency constant, thus preventing the need to perform a new parameter search upon each change to the prior neurons.
-
-\subsection{Methods}
-
-As in Experiment \ref{section:rotatedLinesAdaptiveInhibition} the firing rate of the output neurons was set to 200 Hz. To increase the influence of the prior neurons the firing rate of the prior neurons was increased from  50 Hz to 200 Hz. This change alone this not increase the impact of the prior neurons enough to help the network correctly detect a "cross-bar image" as either horizontal or vertical. It was also tried to increase the parameter $c_{prior}$ for the learning of the prior weights to shift the weight values towards bigger values. This did not increase the values of the weights, they stayed at a maximum of four. Thus the number of prior neurons had to be increased. Via grid search different numbers of prior neurons were tried.
-
-\subsection{Results}
-
-The tried parameters were as follows:
-\begin{itemize}
-  \item $c = c_{prior} = 20$
-  \item $\lambda = 10^{-3}$
-  \item number of prior neurons $ = 10, 20, 50, 100, 200$
-\end{itemize}
-
-For 50, 100 and 200 prior neurons the training process was impaired by the activity of the prior neurons. This arose as some output neurons responding to too large areas, while other prior neurons not responding to any specific areas. For 50 prior neurons four output neurons responded to horizontal bars, while six output neurons responded to vertical bars. This was unexpected and might be due to the stochastic nature of the training image generation. This was not yet analysed further and the validation of the network was performed with 20 prior neurons, as it was the largest amount of prior neurons that resulted in a properly trained network. The results of the training process can be seen in Figures \ref{fig:horvertAdaptiveInhibitionTraining} and \ref{fig:horvertAdaptiveInhibitionpriorWeights}.
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/trainingPlot.png}
-  \caption{\textbf{Training with 20 prior neurons.} \textbf{A} Examples of 35 x 35-pixel input images of horizontal and vertical bars with background noise. \textbf{B} Learned weights of the connections between input and output neurons. \textbf{C, D} Spike activity expressed by the output neurons before and after the training of the network. \textbf{E} Number of distinct output neurons active during the presentation duration of each training image. \textbf{F} Proportion of most active output neuron  to activity of all other output neurons during the presentation duration of each training image.}
-  \label{fig:horvertAdaptiveInhibitionTraining}
-\end{figure}
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/priorWeights.png}
-  \caption{ Learned weights of the connections between prior and output neurons. }
-  \label{fig:horvertAdaptiveInhibitionpriorWeights}
-\end{figure}
-
-Next the impact of the prior was checked. To do this an image with one horizontal (at pixel 12) and one vertical bar (at pixel 5) on it was generated. Then the prior was set once to 0 (vertical) and once to 1 (horizontal). The image and the prior was then fed to the network. The cross image can be seen in Figure \ref{fig:horvertAdaptiveInhibitionPriorValImage}. The spiking activity depending on the prior can be seen in Figures \ref{fig:horvertAdaptiveInhibitionPriorValSpikes0} and \ref{fig:horvertAdaptiveInhibitionPriorValSpikes1}.
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/20priors_pos5and12/crossImage.png}
-  \caption{ Cross image fed to the network. }
-  \label{fig:horvertAdaptiveInhibitionPriorValImage}
-\end{figure}
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/20priors_pos5and12/crossZSpikes0.png}
-  \caption{ Spiking activity of the output neurons with prior = 0. }
-  \label{fig:horvertAdaptiveInhibitionPriorValSpikes0}
-\end{figure}
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/20priors_pos5and12/crossZSpikes1.png}
-  \caption{ Spiking activity of the output neurons with prior = 1. }
-  \label{fig:horvertAdaptiveInhibitionPriorValSpikes1}
-\end{figure}
-
-To better show the impact of the prior it was gradually changed from horizontal to vertical. The starting firing frequency of the horizontal prior neurons was 200 Hz and 0 Hz for the vertical prior neurons. A cross image was shown to the network for 200 ms. After each image presentation duration the firing frequency of the horizontal prior neurons was decreased by 1 Hz and increased by 1 Hz for the vertical prior neurons. The used cross image can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorValImage}. The firing frequency of the 2 most active output neurons depending on the firing frequency of the vertical prior neurons can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorValFrequency}. As expected the correct horizontal output neuron is active in the beginning with about 200 Hz and the correct vertical output neuron is almost inactive. With rising firing frequency of the vertical prior neurons the activity of the horizontal output neurons decreases and the activity of the vertical output neurons increases. The membrane potentials of all output neurons for vertical prior neurons spiking with 200 Hz and horizontal prior neurons spiking with 0 Hz can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorValMembranePotentials}.
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/crossImageForVariablePrior.png}
-  \caption{ Cross image fed to the network. }
-  \label{fig:horvertAdaptiveInhibitionVariablePriorValImage}
-\end{figure}
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/YFrequency_prior199.png}
-  \caption{ Firing frequency of the 2 most active output neurons depending on prior firing frequency. }
-  \label{fig:horvertAdaptiveInhibitionVariablePriorValFrequency}
-\end{figure}
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/membranePotentials0.png}
-  \caption{ Membrane potentials of output neurons for vertical prior neurons spiking with 200 Hz and horizontal prior neurons spiking with 0 Hz. }
-  \label{fig:horvertAdaptiveInhibitionVariablePriorValMembranePotentials}
-\end{figure}
+\fi
