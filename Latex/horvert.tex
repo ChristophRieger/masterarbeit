@@ -3,17 +3,18 @@
 
 \subsection{Introduction}
 
-For this experiment the WTA network will be shown images of either horizontal or vertical lines. Through unsupervised learning the output neurons shall learn to group the images together, depending on the orientation and position of the lines. 
-The effect of the prior neurons will be demonstrated by generating ambiguous images which show a horizontal and a vertical line at the same time. Depending on the activity of the prior neurons the output neurons will respond more to the horizontal, or to the vertical line of the image. 
+For this experiment the WTA network will be shown images of either horizontal or vertical bars. Through unsupervised learning the output neurons shall learn to cluster the images together, depending on the orientation and position of the bars. 
+The effect of the prior neurons will be demonstrated by generating ambiguous images which show a horizontal and a vertical bar at the same time. Depending on the activity of the prior neurons the output neurons will respond more to the horizontal, or to the vertical bar of the image. 
 
 \subsection{Methods}
  % TODO everything copied until "old stuff", look through and adapt
 \paragraph{Input data}
-29 x 29 black and white images with either horizontal or vertical oriented bars on them were used, as it was more straightforward to express a-priori information. The orientation of the training images was chosen randomly via a uniform distribution. Also the positions of the bars in the images were uniformly distributed. The rest of the image generation process is analogous to experiment 1, except no circular mask was used. Examples of the input data can be seen in Figure \ref{fig:horvertImages}. To show the value of the a-priori information validation images with two bars forming a cross were also generated, seen in Figure \ref{fig:horvertTrainingCrossImage}. When shown to the network in the validation process the prior neurons were given the information that a cross is either in horizontal or vertical orientation.
+Black bars with a width of 7 pixels were drawn onto a white background with a size of 29 x 29  pixels. The bars could be oriented either horizontally or vertically. The orientation of the training images was chosen randomly via a uniform distribution. The positions of the bars in the images were uniformly distributed along the 29 pixels of either axis. To simulate noise each pixel of an image had a chance of ten percent to have its color flipped after the generation.
+During the training of the network random images were generated were shown for 200 ms. As the simulation had a duration of 800 seconds this resulted in 4000 images shown to the network. Examples of the input data can be seen in Figure \ref{fig:horvertImages}. To show the value of the a-priori information, validation images with two bars forming a cross were also generated, seen in Figure \ref{fig:horvertTrainingCrossImage}. When shown to the network in the validation process the prior neurons were given the information that a cross is either of horizontal or vertical orientation.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvert/horvertTrainingImages.png}
-  \caption{Training images generated for experiment 2. One image of each possible orientation at a random position.}
+  \caption{Training images generated for experiment 1. One image of each possible orientation at a random position.}
   \label{fig:horvertImages}
 \end{figure}
 
@@ -23,6 +24,7 @@ The effect of the prior neurons will be demonstrated by generating ambiguous ima
   \label{fig:horvertTrainingCrossImage}
 \end{figure}
 
+%TODO should be fine until here. Keep checking experiment 1, if i need to copy something to here.
 
 \paragraph{Network architecture}
 
