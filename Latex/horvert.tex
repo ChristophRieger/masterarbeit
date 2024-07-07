@@ -7,10 +7,10 @@ For this experiment the WTA network will be shown images of either horizontal or
 The effect of the prior neurons will be demonstrated by generating ambiguous images which show a horizontal and a vertical bar at the same time. Depending on the activity of the prior neurons the output neurons will respond more to the horizontal, or to the vertical bar of the image. 
 
 \subsection{Methods}
- % TODO everything copied until "old stuff", look through and adapt
+ %TODO everything copied until "old stuff", look through and adapt
 \paragraph{Input data}
-Black bars with a width of 7 pixels were drawn onto a white background with a size of 29 x 29  pixels. The bars could be oriented either horizontally or vertically. The orientation of the training images was chosen randomly via a uniform distribution. The positions of the bars in the images were uniformly distributed along the 29 pixels of either axis. To simulate noise each pixel of an image had a chance of ten percent to have its color flipped after the generation.
-During the training of the network random images were generated were shown for 200 ms. As the simulation had a duration of 800 seconds this resulted in 4000 images shown to the network. Examples of the input data can be seen in Figure \ref{fig:horvertImages}. To show the value of the a-priori information, validation images with two bars forming a cross were also generated, seen in Figure \ref{fig:horvertTrainingCrossImage}. When shown to the network in the validation process the prior neurons were given the information that a cross is either of horizontal or vertical orientation.
+Black bars with a width of seven pixels were drawn onto a white background with a size of 35 x 35 pixels. The bars could be oriented either horizontally or vertically. The network is supposed to cluster ten different groups within these images, five horizontally and five vertically. With a given bar width of seven pixels, and five groups in each direction the image height and width were determined as 35 pixels, to yield equally sized groups. The orientation of the training images was chosen randomly via a uniform distribution. The position of the bars in the images were uniformly distributed along the 35 pixels of either axis. To simulate noise each pixel of an image had a chance of ten percent to have its color flipped after the generation.
+During the training of the network random images were generated and presented for 200 ms. As the simulation had a duration of 800 seconds this resulted in 4000 images shown to the network. Examples of the input data can be seen in Figure \ref{fig:horvertImages}. To show the value of the added a-priori information, validation images with two bars forming a cross were also generated, seen in Figure \ref{fig:horvertTrainingCrossImage}. When shown to the network in the validation process the prior neurons were given the information that a cross is either of horizontal or vertical orientation.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvert/horvertTrainingImages.png}
@@ -24,37 +24,33 @@ During the training of the network random images were generated were shown for 2
   \label{fig:horvertTrainingCrossImage}
 \end{figure}
 
-%TODO should be fine until here. Keep checking experiment 1, if i need to copy something to here.
-
 \paragraph{Network architecture}
 
-This experiment used a expanded version of the network used in experiment 1. An additional layer of prior neurons $z_1,z_2$ was added. Whenever an image was oriented vertically $z_1$ was active and $z_2$ was inactive. For horizontal orientations $z_2$ was active and $z_1$ was inactive. Prior neurons in an active state had a firing frequency of 50 Hz and fired with 0 Hz when inactive.
+As every pixel of the shown images was connected to two input neurons the network had 1682 input neurons. Each of these neurons had a firing frequency of 20 Hz, when in the active state. Then there were ten output neurons, one for each possible group. There were two different groups of prior neurons, one of them being active when the image is of horizontal orientation and the other one being active for vertical orientation. The number of prior neurons and their firing frequency had to be determined via grid search, as they needed to be set at values where the impact of the a-priori information is neither to strong nor to weak.
 
-\paragraph{Neuron model}
-The input and output neurons functioned the same way as in the previous experiment. The prior neurons fire according to a poisson process with their firing rate. Each prior neuron $Z_l$ is connected to every output neuron $Y_k$ and thus has weights $w_{kl}$ that were learned by the network. 
+\paragraph{Network parameters}
 
-\paragraph{Parameters}
+%TODO whole subsection
+dt = 0.001 # seconds  (chosen by me)
+sigma = 0.01 (acc to nessler)
+
+c = 20   .... already determined in rotated bars...
+lambda = 10^-3  ... already determined in rotated bars...
+Before doing this experiment as a proof of concept Experiment 2 of \citet{nessler} was reproduced. Within this experiment the parameters $c = 20$ and $\lambda = 10^{-3}$ were determined via grid search.
+
+The time constant for the rise of the signal $\tau_{rise}$ was 1 ms and the time constant for the decay of the signal $\tau_{decay}$ was 15 ms. (acc to nessler)
+tauRise = 0.001
+tauDecay = 0.015
+
+
+
 As the amount of input neurons and the average number of black pixels in an input image stayed roughly the same in this experiment, the same parameters $c=  20$ and $\lambda = 10^{-3}$ could be used.
-
-%% TODO START
-%% this block was copied to Theoretical Background, cut this accordingly
-%% Zfactor does not exist, remove!!!
- However as there are only two prior neurons, a way to amplify their produced signals was needed, otherwise their impact on the membrane potential of the output neurons would not be distinctive enough. So the EPSPs $z_l(t)$ were multiplied by the factor $Z_{factor}$. This factor was determined via grid search. The additional prior layer resulted in an expanded version of the membrane potential $u_k(t)$
-
-\begin{equation}
-\label{eqn:ukHorvert}
-u_k(t) = \sum_{i=1}^n w_{ki} \cdot x_i(t) + \sum_{j=1}^n w_{kj} \cdot Z_{factor} \cdot z_j(t).
-\end{equation}
-
-% the old stuff, needed
-The firing rate of the output neurons was set to 200 Hz. As there are fewer prior neurons (keine ahung wie viele) to increase the influence of the prior neurons the firing rate of the prior neurons was set to 200 Hz. This change alone did not increase the impact of the prior neurons enough to help the network correctly detect a "cross-bar image" as either horizontal or vertical. It was also tried to increase the parameter $c_{prior}$ for the learning of the prior weights to shift the weight values towards bigger values. This did not increase the values of the weights, they stayed at a maximum of four. Thus the number of prior neurons had to be increased. Via grid search different numbers of prior neurons were tried.
-% the old stuff END
 
 \subsection{Results}
 
 The tried parameters were as follows:
 \begin{itemize}
-  \item $c = c_{prior} = 20$
+  \item $c = 20$
   \item $\lambda = 10^{-3}$
   \item number of prior neurons $ = 10, 20, 50, 100, 200$
 \end{itemize}
