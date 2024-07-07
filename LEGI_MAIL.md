@@ -1,0 +1,1 @@
+1. HORVERT: c and lambda were determined in gridsearch in `rotated bars` experiment and used for horvert. I said it like that in horvert. Is this okay? Should I add `rotated bars` to Appendix?
