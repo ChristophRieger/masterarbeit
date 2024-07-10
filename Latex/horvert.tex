@@ -28,38 +28,20 @@ During the training of the network random images were generated and presented fo
 
 As every pixel of the shown images was connected to two input neurons the network had 1682 input neurons. Each of these neurons had a firing frequency of 20 Hz, when in the active state. Then there were ten output neurons, one for each possible group. There were two different groups of prior neurons, one of them being active when the image is of horizontal orientation and the other one being active for vertical orientation. The number of prior neurons and their firing frequency had to be determined via grid search, as they needed to be set at values where the impact of the a-priori information is neither to strong nor to weak.
 
-\paragraph{Network parameters}
+\paragraph{Network and simulation parameters}
 
-%TODO whole subsection
-dt = 0.001 # seconds  (chosen by me)
-sigma = 0.01 (acc to nessler)
-
-c = 20   .... already determined in rotated bars...
-lambda = 10^-3  ... already determined in rotated bars...
-Before doing this experiment as a proof of concept Experiment 2 of \citet{nessler} was reproduced. Within this experiment the parameters $c = 20$ and $\lambda = 10^{-3}$ were determined via grid search.
-
-The time constant for the rise of the signal $\tau_{rise}$ was 1 ms and the time constant for the decay of the signal $\tau_{decay}$ was 15 ms. (acc to nessler)
-tauRise = 0.001
-tauDecay = 0.015
-
-
-
-As the amount of input neurons and the average number of black pixels in an input image stayed roughly the same in this experiment, the same parameters $c=  20$ and $\lambda = 10^{-3}$ could be used.
+The simulation of the experiment was performed in time steps of 1 ms. This step size was used for all experiments. As given by \citet{nessler} the time window $\sigma$ was 10 ms, the time constant for the rise of the EPSPs $\tau_{rise}$ was 1 ms and the time constant for the decay of the EPSPs $\tau_{decay}$ was 15 ms. Before performing this experiment, Experiment 2 of \citet{nessler} was reproduced to validate that the implementation of the simulation was correct. This proof of concept was omitted in this work, however within it the weight shift parameter $c = 20$ and the learning rate $\lambda = 10^-3$ were determined via grid search. These parameter values were reused for this experiment, as the input data, as well as the network architecture, were similar.
 
 \subsection{Results}
 
-The tried parameters were as follows:
-\begin{itemize}
-  \item $c = 20$
-  \item $\lambda = 10^{-3}$
-  \item number of prior neurons $ = 10, 20, 50, 100, 200$
-\end{itemize}
+%TODO add horizontal/vertical_validation plots
+%TODO Combine plots of 1st cross validation into one superplot each. Done for cross, maybe also needed for variable cross.
 
-For 50, 100 and 200 prior neurons the training process was impaired by the activity of the prior neurons. This arose as some output neurons responding to too large areas, while other prior neurons not responding to any specific areas. For 50 prior neurons four output neurons responded to horizontal bars, while six output neurons responded to vertical bars. This was unexpected and might be due to the stochastic nature of the training image generation. This was not yet analysed further and the validation of the network was performed with 20 prior neurons, as it was the largest amount of prior neurons that resulted in a properly trained network. The results of the training process can be seen in Figures \ref{fig:horvertAdaptiveInhibitionTraining} and \ref{fig:horvertAdaptiveInhibitionpriorWeights}.
+First different numbers of prior neurons were tried. Simulations with 10, 20, 50, 100 and 200 prior neurons were performed. For 50, 100 and 200 prior neurons the training process was impaired by the activity of the prior neurons. Some output neurons were responding to too large areas, while other prior neurons were not responding to any specific areas at all. With a number of 10 and 20 prior neurons each of the prior neurons learned to respond to either horizontal or vertical images. To maximize the impact of the a-priori information the validation of the network was performed with 20 prior neurons, as it was the largest number that resulted in a properly trained network. The results of the training process can be seen in Figures \ref{fig:horvertAdaptiveInhibitionTraining} and \ref{fig:horvertAdaptiveInhibitionpriorWeights}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/trainingPlot.png}
-  \caption{\textbf{Training with 20 prior neurons.} \textbf{A} Examples of 35 x 35-pixel input images of horizontal and vertical bars with background noise. \textbf{B} Learned weights of the connections between input and output neurons. \textbf{C, D} Spike activity expressed by the output neurons before and after the training of the network. \textbf{E} Number of distinct output neurons active during the presentation duration of each training image. \textbf{F} Proportion of most active output neuron  to activity of all other output neurons during the presentation duration of each training image.}
+  \caption{\textbf{Training with 20 prior neurons.} \textbf{A} Examples of 35 x 35-pixel input images of horizontal and vertical bars with background noise. \textbf{B} Learned weights of the connections between input and output neurons. \textbf{C, D} Spike activity expressed by the output neurons before and after the training of the network. \textbf{E} Number of distinct output neurons active during the presentation duration of each training image. \textbf{F} Number of spikes of the most active output neuron divided by the number of spikes of all other output neurons during the presentation duration of every training image.}
   \label{fig:horvertAdaptiveInhibitionTraining}
 \end{figure}
 
@@ -108,6 +90,14 @@ To better show the impact of the prior it was gradually changed from horizontal 
   \caption{ Membrane potentials of output neurons for vertical prior neurons spiking with 200 Hz and horizontal prior neurons spiking with 0 Hz. }
   \label{fig:horvertAdaptiveInhibitionVariablePriorValMembranePotentials}
 \end{figure}
+
+
+
+
+
+
+
+
 
 
 

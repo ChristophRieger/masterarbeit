@@ -44,7 +44,7 @@ tauRise = 0.001
 tauDecay = 0.015
 RStar = 200 # Hz; total output firing rate
 
-directoryPath =  "TEST" + str(numberANeurons)
+directoryPath =  "newCrossValidation" + str(numberANeurons)
 if not os.path.exists(directoryPath):
   os.mkdir(directoryPath)
 
@@ -506,9 +506,12 @@ if validateCross:
   # image, position, prior = dataGenerator.generateRandomCrossLineImage()
   image, xPosition, yPosition, prior = dataGenerator.generateCrossLineImageAtPosition(1, 5, 12, imageSize = imageSize, noiseLevel = 0.1, lineThickness = 7)
 
-  plt.figure()
-  plt.imshow(image, origin='lower', cmap='gray')
-  plt.savefig(directoryPath + '/crossImage.png')
+  fig, ax1 = plt.subplots(1,1)
+  # plt.figure()
+  ax1.imshow(image, origin='lower', cmap='gray')
+  ax1.tick_params(axis="both", labelsize=12)
+  ax1.set_title('Input image', fontsize=14)
+  fig.savefig(directoryPath + '/crossImage.png')
   images[0].append(image)
   # images[1].append(position)
   images[2].append(prior)
@@ -627,9 +630,15 @@ if validateCross:
   fig_object = plt.figure()
   for i in range(0, len(ZSpikeHistory[0])):
     plt.vlines(ZSpikeHistory[1][i], ymin=ZSpikeHistory[0][i] + 1 - 0.5, ymax=ZSpikeHistory[0][i] + 1 + 0.5, color=colors[ZSpikeHistory[0][i]])
-  plt.title("Z Spikes for a cross image with prior = " + str(prior))
-  plt.ylabel("Z Neuron")
-  plt.xlabel("t [s]")
+    plt.ylim(0, 10)
+  if prior == 0:
+    priorString = "vertical"
+  else:
+    priorString = "horizontal"
+  plt.title("Y Spikes for a cross image with prior = '" + priorString + "'", fontsize = 14)
+  plt.ylabel("Y Neuron", fontsize=12)
+  plt.xlabel("t [s]", fontsize=12)
+  plt.tick_params(axis='both', which='major', labelsize=12)
   pickle.dump(fig_object, open(directoryPath + '/crossZSpikes.pickle','wb'))
   plt.savefig(directoryPath + '/crossZSpikes' + str(prior) + '.png')
 
