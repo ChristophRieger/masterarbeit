@@ -24,8 +24,8 @@ plt.close("all")
 
 # Command Center
 plotWeights = False
-validateVertical = False
-validateHorizontal = True
+validateVertical = True
+validateHorizontal = False
 validateCross = False
 showImpactOfVariablePriorOnCross = False
 ATildeFactor = 1
@@ -44,7 +44,7 @@ tauRise = 0.001
 tauDecay = 0.015
 RStar = 200 # Hz; total output firing rate
 
-directoryPath =  "newHorizontalValidation" + str(numberANeurons)
+directoryPath =  "newVerticalValidation" + str(numberANeurons)
 if not os.path.exists(directoryPath):
   os.mkdir(directoryPath)
 
@@ -232,54 +232,71 @@ if validateVertical:
       verticalLineColors.append(colors[winnerID])
     
     print("Finished simulation of vertical position " + str(positionIterator))
-    
-  fig = plt.figure(figsize=[10,8])
-  gs = fig.add_gridspec(2, 2, wspace=1, hspace=1)
+
+  fig = plt.figure(figsize=[10, 8])
+  # gs = fig.add_gridspec(2, 2, wspace=1, hspace=1)
+  gs = fig.add_gridspec(2, 2, wspace=0.6, hspace=0.6)
+
   
   ax1 = fig.add_subplot(gs[0, 0])
   ax2 = fig.add_subplot(gs[0, 1])
   ax3 = fig.add_subplot(gs[1, 0])
   ax4 = fig.add_subplot(gs[1, 1])
-  
+
   # plot vertical lines 
-  xPosition = np.arange(imageSize[0])
-  ax1.bar(xPosition, imageSize[0], align='edge', width=1.0, color=verticalLineColors)
-  ax1.set_title("Most active output neuron")
-  ax1.set_xlabel("width [px]")
-  ax1.set_ylabel("height [px]")
+  yPosition = np.arange(imageSize[1])
+  ax1.bar(yPosition, imageSize[1], align='center', width=1.0, color=verticalLineColors)
+  ax1.set_title("Most active output neuron", fontsize=14)
+  # ax1.set_xlabel("Width [px]", fontsize=12)
+  ax1.set_xlabel("Position [px]", fontsize=12)
+  ax1.tick_params(axis="x", labelsize=12)
+  ax1.tick_params(axis="y", which='both', left=False, right=False, labelleft=False)
+  # ax1.set_ylim([0,35])
+  ax1.xaxis.set_ticks(np.arange(0,36, 5))
   pieLegend1 = patches.Patch(color=colors[0], label='y1')
-  pieLegend2 = patches.Patch(color=colors[1], label='y2')
+  # pieLegend2 = patches.Patch(color=colors[1], label='y2')
   pieLegend3 = patches.Patch(color=colors[2], label='y3')
-  pieLegend4 = patches.Patch(color=colors[3], label='y4')
+  # pieLegend4 = patches.Patch(color=colors[3], label='y4')
   pieLegend5 = patches.Patch(color=colors[4], label='y5')
-  pieLegend6 = patches.Patch(color=colors[5], label='y6')
-  pieLegend7 = patches.Patch(color=colors[6], label='y7')
-  pieLegend8 = patches.Patch(color=colors[7], label='y8')
+  # pieLegend6 = patches.Patch(color=colors[5], label='y6')
+  # pieLegend7 = patches.Patch(color=colors[6], label='y7')
+  # pieLegend8 = patches.Patch(color=colors[7], label='y8')
   pieLegend9 = patches.Patch(color=colors[8], label='y9')
   pieLegend10 = patches.Patch(color=colors[9], label='y10')
-  ax1.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0))
+  ax1.legend(handles=[pieLegend1,pieLegend3,pieLegend5,pieLegend9,pieLegend10], loc=(1.02, 0.25), prop={'size': 12})
   
   # show training progress (how many distinct Z fired during each image presentation duration)
   # remove first empty entry
   distinctZFiredHistory.pop(0)
   ax3.plot(distinctZFiredHistory)
-  ax3.set_title("Distinct output neurons spiking")
-  ax3.set_ylabel("Number of distinct output neurons spiking")
-  ax3.set_xlabel("Image shown")
+  ax3.set_title("Active output neurons", fontsize=14)
+  ax3.set_ylabel("# of active output neurons", fontsize=12)
+  ax3.set_xlabel("Position [px]", fontsize=12)
+  ax3.set_ylim([0.8,2.2])
+  ax3.xaxis.set_ticks(np.arange(0,36, 5))
+  ax3.yaxis.set_ticks(np.arange(1,3, 1))
+  ax3.tick_params(axis="both", labelsize=12)
+
 
   for i in range(0, len(ZSpikeHistory[0])):
     ax2.vlines(ZSpikeHistory[1][i], ymin=ZSpikeHistory[0][i] + 1 - 0.5, ymax=ZSpikeHistory[0][i] + 1 + 0.5, color=colors[ZSpikeHistory[0][i]])
-  ax2.set_title("Output spikes")
-  ax2.set_ylabel("Output neuron")
-  ax2.set_xlabel("t [s]")
-        
+  ax2.set_title("Output spikes", fontsize=14)
+  ax2.set_ylabel("Output neuron", fontsize=12)
+  ax2.set_xlabel("t [s]", fontsize=12)
+  ax2.set_ylim([0,11])
+  ax2.yaxis.set_ticks(np.arange(1,11, 1))
+  ax2.tick_params(axis="both", labelsize=12)
+ 
   # show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
   ax4.plot(averageZFiredHistory)
-  ax4.set_title("Certainty of network")
-  ax4.set_ylabel("Homogeneity of output spikes")
-  ax4.set_xlabel("Image shown")
+  ax4.set_title("Relative activity of most active output neuron", fontsize=14)
+  ax4.set_ylabel("Relative activity", fontsize=12)
+  ax4.set_xlabel("Position [px]", fontsize=12)
+  ax4.xaxis.set_ticks(np.arange(0,36, 5))
+  ax4.tick_params(axis="both", labelsize=12)
+
   
-  plt.tight_layout()
+  # plt.tight_layout()
   pickle.dump(fig, open(directoryPath + '/vertical_validation.pickle','wb'))
   plt.savefig(directoryPath + "/vertical_validation.svg") 
   plt.show()
@@ -485,7 +502,7 @@ if validateHorizontal:
   ax2.set_title("Output spikes", fontsize=14)
   ax2.set_ylabel("Output neuron", fontsize=12)
   ax2.set_xlabel("t [s]", fontsize=12)
-  ax2.set_ylim([1,10])
+  ax2.set_ylim([0,11])
   ax2.yaxis.set_ticks(np.arange(1,11, 1))
   ax2.tick_params(axis="both", labelsize=12)
  
