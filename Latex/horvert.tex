@@ -35,8 +35,16 @@ The simulation of the experiment was performed in time steps of 1 ms. This step 
 \subsection{Results}
 
 %TODO Combine 2 plots (cross image and f) of variable prior cross.
+%TODO check ALL plots EVERYWHERE for correct weight nomenclature
 
-First different numbers of prior neurons were tried. Simulations with 10, 20, 50, 100 and 200 prior neurons were performed. For 50, 100 and 200 prior neurons the training process was impaired by the activity of the prior neurons. Some output neurons were responding to too large areas, while other prior neurons were not responding to any specific areas at all. With a number of 10 and 20 prior neurons each of the prior neurons learned to respond to either horizontal or vertical images. To maximize the impact of the a-priori information the validation of the network was performed with 20 prior neurons, as it was the largest number that resulted in a properly trained network. The results of the training process can be seen in Figures \ref{fig:horvertAdaptiveInhibitionTraining} and \ref{fig:horvertAdaptiveInhibitionpriorWeights}.
+First different numbers of prior neurons were tried. Simulations with 10, 20, 50, 100 and 200 prior neurons were performed. For 50, 100 and 200 prior neurons the training process was impaired by the activity of the prior neurons. Some output neurons were responding to too large areas, while other prior neurons were not responding to any specific areas at all. With a number of 10 and 20 prior neurons each of the prior neurons learned to respond to either horizontal or vertical images. To maximize the impact of the a-priori information the validation of the network was performed with 20 prior neurons, as it was the largest number that resulted in a properly trained network. The results of the training process can be seen in Figures \ref{fig:horvertAdaptiveInhibitionTraining} and
+%TODO above... horvertAdaptiveInhibitionTraining auch gleiche Qualität bringen wie die validation plots :/
+ \ref{fig:horvertAdaptiveInhibitionpriorWeights}.
+%TODO above... horvertAdaptiveInhibitionpriorWeights think if I want to leave this in and mby improve plot
+%1. color code instead of black white
+%2. check and fix subplot titles
+%3. ylabel
+
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/trainingPlot.png}
@@ -55,13 +63,14 @@ First different numbers of prior neurons were tried. Simulations with 10, 20, 50
 To validate the learning outcome of the training the network was shown horizontal bars at every possible position in the image for 200 ms each and the output neuron activity was recorded. To visualize which output neuron is the most active for each position a horizontal bar with a height was drawn into a 35 x 35 pixel image, color-coded to represent the respective output neuron. This can be seen in Figure  TODO
 
 
-%TODO add ABCD to png AND swap height and width of A for horizontal/vertical position AND C change x label to vertical position. AND completely rework D.. => relative frequency of most active output neuron.
+%TODO update description, as image was updated
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/horizontal_validation.png}
   \caption{\textbf{Horizontal validation.} \textbf{A} Most active output neuron, depending on the vertical position of a horizontal bar.  \textbf{B} Output spikes during the validation process. \textbf{C} The number of distinct output neurons spiking depending on the vertical position of a horizontal bar.  \textbf{D}  }
   \label{fig:horvertAdaptiveInhibitionPriorValResults}
 \end{figure}
 
+%TODO same for vertical
  The vertical was done analogously
  
 Every one of the ten output neurons responds primarily to one coherent area in one orientation.
@@ -110,10 +119,10 @@ To better show the impact of the prior it was gradually changed from horizontal 
 
 
 
-
-
-
-
+%%%
+%%%
+%%%
+%%%
 % unused exp, kept for looking up stuff
 
 \iffalse

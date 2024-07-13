@@ -50,20 +50,20 @@ P(Y=i|Z=j) = P^{Y|Z} \cdot z
 where z is given by a 4 x 1 one-hot encoded vector of the prior.
 
 \paragraph{Simulation}
-The input weights for the simulation were calculated as two separate sets. First weights $w_1$ for the input neurons that are active for active input pixels were determined by 
+The input weights for the simulation were calculated as two separate sets. First weights $w^{i1}$ for the input neurons that are active for active input pixels were determined by 
 \begin{equation}
 \label{eqn:1DWeights}
-w_1 = \ln(P^{X|Y}).
+w^{i1} = \ln(P^{X|Y}).
 \end{equation}
-Second complementary input weights $w_2$ were calculated for  input neurons representing non active input pixels with
+Second complementary input weights $w^{i2}$ were calculated for  input neurons representing non active input pixels with
 \begin{equation}
 \label{eqn:1DWeightsComplementary}
-w_2 = \ln(1 - P^{X|Y}).
+w^{i2} = \ln(1 - P^{X|Y}).
 \end{equation} 
-The prior weights $w_p$ were derived by 
+The prior weights $w^p$ were derived by 
 \begin{equation}
 \label{eqn:1DWeightsPrior}
-w_p = \ln(P^{Y|Z}).
+w^p = \ln(P^{Y|Z}).
 \end{equation}
 The network was simulated for six different input images for each parameter set. After the image presentation period of each input image the amount of the output spikes of different classes were counted and their proportions were calculated to yield the "simulation output probabilities" in later plots. The Kullback-Leibler divergence was chosen to compare the divergence of the analytic and the simulated results of the network. This metric indicates how much two probability distributions diverge from each other. The goal of the parameter search of the simulation was to minimize the Kullback-Leibler divergence. Upon completion of the simulation of an output image the Kullback-Leibler divergence was calculated for that image
 \begin{equation}

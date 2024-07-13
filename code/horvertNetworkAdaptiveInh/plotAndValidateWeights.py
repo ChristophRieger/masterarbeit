@@ -23,8 +23,8 @@ import random
 plt.close("all")
 
 # Command Center
-plotWeights = False
-validateVertical = True
+plotWeights = True
+validateVertical = False
 validateHorizontal = False
 validateCross = False
 showImpactOfVariablePriorOnCross = False
@@ -44,7 +44,7 @@ tauRise = 0.001
 tauDecay = 0.015
 RStar = 200 # Hz; total output firing rate
 
-directoryPath =  "newVerticalValidation" + str(numberANeurons)
+directoryPath =  "newPriorWeightPlot" + str(numberANeurons)
 if not os.path.exists(directoryPath):
   os.mkdir(directoryPath)
 
@@ -73,11 +73,19 @@ if plotWeights:
   
   priorWeightCounter = 0
   for ax in axs.flat:
-    ax.set_title("$w_p$" + str(priorWeightCounter+1) + "y")
+    priorWeightCounterString = str(priorWeightCounter+1) 
+    ax.set_title("$w^p$" + "$_k$" + r'$_{{{stringToAdd}}}$'.format(stringToAdd=priorWeightCounterString), fontsize = 14)
     wAZ = priorWeights[priorWeightCounter].reshape((10, 1))
     ax.set_yticks([0,1,2,3,4,5,6,7,8,9], labels=[1,2,3,4,5,6,7,8,9,10])
+    ax.tick_params(axis="y", labelsize=12)
+    ax.set_ylabel("Output neuron", fontsize=12)
+    ax.yaxis.set_label_coords(-0.63, 0.5)
+
     im = ax.imshow(wAZ, origin='lower', cmap='gray')
-    plt.colorbar(im)
+    cbar = plt.colorbar(im)
+    cbar.ax.tick_params(labelsize=12)
+
+
     priorWeightCounter += 1
   fig.suptitle('Prior weights', fontsize=16)
   # plt.savefig(directoryPath + '/priorWeight' + str(a+1) + '.png')
