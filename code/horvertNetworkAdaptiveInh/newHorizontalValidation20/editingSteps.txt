@@ -1,0 +1,27 @@
+adding letters:
+
+t click .... opens textfield
+shift ctrl t opens text options ... chose ARIAL
+if too fat... shift ctrl f .... click x for no paint.
+
+for A in pt:
+X: 85
+Y: 25
+H: 18 lock
+
+B:
+X: 430
+Y: 25
+
+C:
+X 85
+Y 290
+
+D:
+
+
+
+EXPORT:
+4000 px
+3200 px
+400 DPI
