@@ -471,9 +471,9 @@ if validateHorizontal:
   # remove first empty entry
   distinctZFiredHistory.pop(0)
   ax3.plot(distinctZFiredHistory)
-  ax3.set_title("Distinct output neurons spiking", fontsize=14)
-  ax3.set_ylabel("# of distinct output neurons spiking", fontsize=12)
-  ax3.set_xlabel("Position", fontsize=12)
+  ax3.set_title("Active output neurons", fontsize=14)
+  ax3.set_ylabel("# of active output neurons", fontsize=12)
+  ax3.set_xlabel("Position [px]", fontsize=12)
   ax3.set_ylim([0.8,2.2])
   ax3.xaxis.set_ticks(np.arange(0,36, 5))
   ax3.yaxis.set_ticks(np.arange(1,3, 1))
@@ -493,7 +493,7 @@ if validateHorizontal:
   ax4.plot(averageZFiredHistory)
   ax4.set_title("Relative activity of most active output neuron", fontsize=14)
   ax4.set_ylabel("Relative activity", fontsize=12)
-  ax4.set_xlabel("Position", fontsize=12)
+  ax4.set_xlabel("Position [px]", fontsize=12)
   ax4.xaxis.set_ticks(np.arange(0,36, 5))
   ax4.tick_params(axis="both", labelsize=12)
 
