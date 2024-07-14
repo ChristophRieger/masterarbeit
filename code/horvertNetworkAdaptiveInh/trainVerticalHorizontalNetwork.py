@@ -41,7 +41,7 @@ firingRate = 20 # Hz; Input neurons yn should spike with 20Hz => firingRate (Lam
 AfiringRate = 200
 numberYNeurons = imageSize[0] * imageSize[1] * 2 # 2 neurons per pixel (one for black, one for white)
 numberZNeurons = 10
-numberANeurons = 100
+numberANeurons = 20
 
 sigma = 0.01 # time frame in which spikes count as before output spike
 c = 20 # 10 seems good, scales weights to 0 ... 1
@@ -209,10 +209,10 @@ colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'pink'
 
 fig = plt.figure()
 gs = fig.add_gridspec(6, 10, hspace=1)
-gs2 = fig.add_gridspec(6, 2, wspace=0.4, hspace=25)
+gs2 = fig.add_gridspec(6, 2, wspace=0.4, hspace=0.7)
 # hspace seems to be capped and doesnt really influence the spacing anymore. 
 # but the .svg seems fine anyway, solve only if figure is not good enough.
-gs3 = fig.add_gridspec(6, 2, wspace=0.4, hspace=400)
+gs3 = fig.add_gridspec(6, 2, wspace=0.4, hspace=1.8)
 
 
 ax10 = fig.add_subplot(gs[0, 0])
@@ -245,6 +245,9 @@ ax42 = fig.add_subplot(gs3[4:6, 1])
 
 # Add ghost axes and titles
 ax_firstRow = fig.add_subplot(gs[0, :])
+# pos = ax_firstRow.get_position()
+# new_pos = [pos.x0, pos.y0-7, pos.width, pos.height]
+# ax_firstRow.set_position(new_pos)
 ax_firstRow.axis('off')
 ax_firstRow.set_title('A', loc="left", x=-0.04,y=0.5, fontsize=16.0, fontweight='semibold')
 
@@ -254,17 +257,17 @@ ax_secondRow.set_title('B', loc="left", x=-0.04,y=0.5, fontsize=16.0, fontweight
 
 ax_thirdRowFirstColumn = fig.add_subplot(gs2[2:4, 0])
 ax_thirdRowFirstColumn.axis('off')
-ax_thirdRowFirstColumn.set_title('C', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
+ax_thirdRowFirstColumn.set_title('C', loc="left", x=-0.1, y=1.1, fontsize=16.0, fontweight='semibold')
 ax_thirdRowSecondColumn = fig.add_subplot(gs2[2:4, 1])
 ax_thirdRowSecondColumn.axis('off')
-ax_thirdRowSecondColumn.set_title('D', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
+ax_thirdRowSecondColumn.set_title('D', loc="left", x=-0.1, y=1.1, fontsize=16.0, fontweight='semibold')
 
 ax_fourthRowFirstColumn = fig.add_subplot(gs3[4:6, 0])
 ax_fourthRowFirstColumn.axis('off')
-ax_fourthRowFirstColumn.set_title('E', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
+ax_fourthRowFirstColumn.set_title('E', loc="left", x=-0.1, y=1.1, fontsize=16.0, fontweight='semibold')
 ax_fourthRowSecondColumn = fig.add_subplot(gs3[4:6, 1])
 ax_fourthRowSecondColumn.axis('off')
-ax_fourthRowSecondColumn.set_title('F', loc="left", x=-0.1, fontsize=16.0, fontweight='semibold')
+ax_fourthRowSecondColumn.set_title('F', loc="left", x=-0.1, y=1.1, fontsize=16.0, fontweight='semibold')
 
 # plot training data examples and weights
 for z in range(int(numberZNeurons/2)):
@@ -276,7 +279,7 @@ for z in range(int(numberZNeurons/2)):
   w = weights[0::2, z]
   w = w.reshape((imageSize[0], imageSize[1]))
   eval("ax2" + str(z) + ".imshow(w, cmap='gray')")
-  eval("ax2" + str(z) + ".set_title('$w_{' + str(z+1) + 'n}$', pad=5)")
+  eval("ax2" + str(z) + ".set_title('$w^i_{' + str(z+1) + 'N}$', pad=5, fontsize=14)")
   eval("ax2" + str(z) + ".tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelright=False, labelleft=False)")
 
 for z in range(int(numberZNeurons / 2), int(numberZNeurons)):
@@ -288,7 +291,7 @@ for z in range(int(numberZNeurons / 2), int(numberZNeurons)):
   w = weights[0::2, z]
   w = w.reshape((imageSize[0], imageSize[1]))
   eval("ax2" + str(z) + ".imshow(w, cmap='gray')")
-  eval("ax2" + str(z) + ".set_title('$w_{' + str(z+1) + 'n}$', pad=5)")
+  eval("ax2" + str(z) + ".set_title('$w^i_{' + str(z+1) + 'N}$', pad=5, fontsize=14)")
   eval("ax2" + str(z) + ".tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelright=False, labelleft=False)")
 
 # plot the first 120 output spikes
@@ -298,9 +301,11 @@ ax31.axvline(x=0, color="red", linestyle="dashed")
 ax31.axvline(x=0.2, color="red", linestyle="dashed")
 ax31.axvline(x=0.4, color="red", linestyle="dashed")
 ax31.axvline(x=0.6, color="red", linestyle="dashed")
-ax31.set_title("Output before learning")
-ax31.set_ylabel("Output neuron")
-ax31.set_xlabel("Time [s]")
+ax31.set_title("Output neuron activity before learning", fontsize=14)
+ax31.set_ylabel("Output neuron", fontsize=12)
+ax31.set_xlabel("Time [s]", fontsize=12)
+ax31.yaxis.set_ticks(np.arange(1,11, 1))
+ax31.tick_params(axis="both", labelsize=12)
 
 # plot the last 120 Z spikes
 for i in range(len(ZSpikes[0]) - len(ZSpikes[0][-120:]), len(ZSpikes[0])):
@@ -309,34 +314,37 @@ ax32.axvline(x=simulationTime, color="red", linestyle="dashed")
 ax32.axvline(x=simulationTime - 0.2, color="red", linestyle="dashed")
 ax32.axvline(x=simulationTime - 0.4, color="red", linestyle="dashed")
 ax32.axvline(x=simulationTime - 0.6, color="red", linestyle="dashed")
-ax32.set_title("Output after learning")
-ax32.set_ylabel("Output neuron")
-ax32.set_xlabel("Time [s]")
+ax32.set_title("Output neuron activity after learning", fontsize=14)
+ax32.set_ylabel("Output neuron", fontsize=12)
+ax32.set_xlabel("Time [s]", fontsize=12)
+ax32.yaxis.set_ticks(np.arange(1,11, 1))
+ax32.tick_params(axis="both", labelsize=12)
 
 
 # show training progress (how many distinct Z fired during each image presentation duration)
 # remove first empty entry
 distinctZFiredHistory.pop(0)
 ax41.plot(distinctZFiredHistory)
-ax41.set_title("Training progress")
-ax41.set_ylabel("Output neurons spiking")
-ax41.set_xlabel("Image shown")
+ax41.set_title("Training progress", fontsize=14)
+ax41.set_ylabel("# of output neurons spiking", fontsize=12)
+ax41.set_xlabel("Image shown", fontsize=12)
+ax41.yaxis.set_ticks(np.arange(1,11, 1))
+ax41.tick_params(axis="both", labelsize=12)
+
 
 # show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
 ax42.plot(averageZFiredHistory)
-ax42.set_title("Certainty of the network")
-ax42.set_ylabel("Certainty")
-ax42.set_xlabel("Image shown")
+ax42.set_title("Relative activity of most active output neuron", fontsize=14)
+ax42.set_ylabel("Relative activity", fontsize=12)
+ax42.set_xlabel("Image shown", fontsize=12)
+ax42.tick_params(axis="both", labelsize=12)
+
 
 pickle.dump(fig, open(directoryPath + "/trainingPlot" + '.pickle','wb'))
 plt.savefig(directoryPath + "/trainingPlot.svg")  
 plt.savefig(directoryPath + "/trainingPlot.png")
 plt.savefig(directoryPath + "/trainingPlot.jpg") 
 plt.show()
-   
-
-
-
 
 
 
@@ -347,100 +355,100 @@ plt.show()
 #   plt.figure()
 #   plt.imshow(imageToPlot, cmap='gray')
 
-# calc which Z fired the most for horizontal position
-positionAndWhichZFiredHorizontally = np.zeros([imageSize[0], numberZNeurons])
-for i in range(len(images[0])):
-  # only take horizontal images
-  if images[3][i] == 1:
-    # check which position the image was
-    for position in range(imageSize[0]):
-      if images[1][i] > position and images[1][i] <= position + 1:
-        currentPosition = position
-    for j in range(len(ZSpikes[0])):
-      # get all spikes between t and t+imagePresentationDuration
-      # !!! maybe save last index to not always start from 0 like above for YNeuronspikes
-      if ZSpikes[1][j] > i * imagePresentationDuration and ZSpikes[1][j] < i * imagePresentationDuration + imagePresentationDuration:
-        positionAndWhichZFiredHorizontally[currentPosition, ZSpikes[0][j]] += 1
-# determine Z neuron that fired the most for each horizontal position
-horizontalLineColors = []
-for i in range(imageSize[0]):
-  winnerID = math.inf
-  maxSpikes = 0
-  for j in range(numberZNeurons):
-    if positionAndWhichZFiredHorizontally[i][j] > maxSpikes:
-      winnerID = j
-      maxSpikes = positionAndWhichZFiredHorizontally[i][j]
-  # code winnerID of Z neuron to its color used above
-  if winnerID == math.inf:
-    horizontalLineColors.append('white')
-  else:
-    horizontalLineColors.append(colors[winnerID])
-# plot horizontal lines 
-yPosition = np.arange(imageSize[1])
-plt.figure()
-plt.barh(yPosition, imageSize[1], align='edge', height=1.0, color=horizontalLineColors)
-plt.title("Most active output neuron depending on position and orientation ")
-plt.xlabel("width [px]")
-plt.ylabel("height [px]")
-pieLegend1 = patches.Patch(color=colors[0], label='Z1')
-pieLegend2 = patches.Patch(color=colors[1], label='Z2')
-pieLegend3 = patches.Patch(color=colors[2], label='Z3')
-pieLegend4 = patches.Patch(color=colors[3], label='Z4')
-pieLegend5 = patches.Patch(color=colors[4], label='Z5')
-pieLegend6 = patches.Patch(color=colors[5], label='Z6')
-pieLegend7 = patches.Patch(color=colors[6], label='Z7')
-pieLegend8 = patches.Patch(color=colors[7], label='Z8')
-pieLegend9 = patches.Patch(color=colors[8], label='Z9')
-pieLegend10 = patches.Patch(color=colors[9], label='Z10')
-plt.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
-plt.tight_layout()
-plt.savefig(directoryPath + "/horizontalLines.png")        
+# # calc which Z fired the most for horizontal position
+# positionAndWhichZFiredHorizontally = np.zeros([imageSize[0], numberZNeurons])
+# for i in range(len(images[0])):
+#   # only take horizontal images
+#   if images[3][i] == 1:
+#     # check which position the image was
+#     for position in range(imageSize[0]):
+#       if images[1][i] > position and images[1][i] <= position + 1:
+#         currentPosition = position
+#     for j in range(len(ZSpikes[0])):
+#       # get all spikes between t and t+imagePresentationDuration
+#       # !!! maybe save last index to not always start from 0 like above for YNeuronspikes
+#       if ZSpikes[1][j] > i * imagePresentationDuration and ZSpikes[1][j] < i * imagePresentationDuration + imagePresentationDuration:
+#         positionAndWhichZFiredHorizontally[currentPosition, ZSpikes[0][j]] += 1
+# # determine Z neuron that fired the most for each horizontal position
+# horizontalLineColors = []
+# for i in range(imageSize[0]):
+#   winnerID = math.inf
+#   maxSpikes = 0
+#   for j in range(numberZNeurons):
+#     if positionAndWhichZFiredHorizontally[i][j] > maxSpikes:
+#       winnerID = j
+#       maxSpikes = positionAndWhichZFiredHorizontally[i][j]
+#   # code winnerID of Z neuron to its color used above
+#   if winnerID == math.inf:
+#     horizontalLineColors.append('white')
+#   else:
+#     horizontalLineColors.append(colors[winnerID])
+# # plot horizontal lines 
+# yPosition = np.arange(imageSize[1])
+# plt.figure()
+# plt.barh(yPosition, imageSize[1], align='edge', height=1.0, color=horizontalLineColors)
+# plt.title("Most active output neuron depending on position and orientation ")
+# plt.xlabel("width [px]")
+# plt.ylabel("height [px]")
+# pieLegend1 = patches.Patch(color=colors[0], label='Z1')
+# pieLegend2 = patches.Patch(color=colors[1], label='Z2')
+# pieLegend3 = patches.Patch(color=colors[2], label='Z3')
+# pieLegend4 = patches.Patch(color=colors[3], label='Z4')
+# pieLegend5 = patches.Patch(color=colors[4], label='Z5')
+# pieLegend6 = patches.Patch(color=colors[5], label='Z6')
+# pieLegend7 = patches.Patch(color=colors[6], label='Z7')
+# pieLegend8 = patches.Patch(color=colors[7], label='Z8')
+# pieLegend9 = patches.Patch(color=colors[8], label='Z9')
+# pieLegend10 = patches.Patch(color=colors[9], label='Z10')
+# plt.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
+# plt.tight_layout()
+# plt.savefig(directoryPath + "/horizontalLines.png")        
     
-# calc which Z fired the most for vertical position
-positionAndWhichZFiredVertically = np.zeros([imageSize[1], numberZNeurons])
-for i in range(len(images[0])):
-  # only take horizontal images
-  if images[3][i] == 0:
-    # check which position the image was
-    for position in range(imageSize[1]):
-      if images[1][i] > position and images[1][i] <= position + 1:
-        currentPosition = position
-    for j in range(len(ZSpikes[0])):
-      # get all spikes between t and t+imagePresentationDuration
-      # !!! maybe save last index to not always start from 0 like above for YNeuronspikes
-      if ZSpikes[1][j] > i * imagePresentationDuration and ZSpikes[1][j] < i * imagePresentationDuration + imagePresentationDuration:
-        positionAndWhichZFiredVertically[currentPosition, ZSpikes[0][j]] += 1
-# determine Z neuron that fired the most for each vertical position
-verticalLineColors = []
-for i in range(imageSize[1]):
-  winnerID = math.inf
-  maxSpikes = 0
-  for j in range(numberZNeurons):
-    if positionAndWhichZFiredVertically[i][j] > maxSpikes:
-      winnerID = j
-      maxSpikes = positionAndWhichZFiredVertically[i][j]
-  # code winnerID of Z neuron to its color used above
-  if winnerID == math.inf:
-    verticalLineColors.append('white')
-  else:
-    verticalLineColors.append(colors[winnerID])
-# plot vertical lines 
-xPosition = np.arange(imageSize[0])
-plt.figure()
-plt.bar(xPosition, imageSize[0], align='edge', width=1.0, color=verticalLineColors)
-plt.title("Most active output neuron depending on position and orientation ")
-plt.xlabel("width [px]")
-plt.ylabel("height [px]")
-pieLegend1 = patches.Patch(color=colors[0], label='Z1')
-pieLegend2 = patches.Patch(color=colors[1], label='Z2')
-pieLegend3 = patches.Patch(color=colors[2], label='Z3')
-pieLegend4 = patches.Patch(color=colors[3], label='Z4')
-pieLegend5 = patches.Patch(color=colors[4], label='Z5')
-pieLegend6 = patches.Patch(color=colors[5], label='Z6')
-pieLegend7 = patches.Patch(color=colors[6], label='Z7')
-pieLegend8 = patches.Patch(color=colors[7], label='Z8')
-pieLegend9 = patches.Patch(color=colors[8], label='Z9')
-pieLegend10 = patches.Patch(color=colors[9], label='Z10')
-plt.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
-plt.tight_layout()
-plt.savefig(directoryPath + "/verticalLines.png")      
+# # calc which Z fired the most for vertical position
+# positionAndWhichZFiredVertically = np.zeros([imageSize[1], numberZNeurons])
+# for i in range(len(images[0])):
+#   # only take horizontal images
+#   if images[3][i] == 0:
+#     # check which position the image was
+#     for position in range(imageSize[1]):
+#       if images[1][i] > position and images[1][i] <= position + 1:
+#         currentPosition = position
+#     for j in range(len(ZSpikes[0])):
+#       # get all spikes between t and t+imagePresentationDuration
+#       # !!! maybe save last index to not always start from 0 like above for YNeuronspikes
+#       if ZSpikes[1][j] > i * imagePresentationDuration and ZSpikes[1][j] < i * imagePresentationDuration + imagePresentationDuration:
+#         positionAndWhichZFiredVertically[currentPosition, ZSpikes[0][j]] += 1
+# # determine Z neuron that fired the most for each vertical position
+# verticalLineColors = []
+# for i in range(imageSize[1]):
+#   winnerID = math.inf
+#   maxSpikes = 0
+#   for j in range(numberZNeurons):
+#     if positionAndWhichZFiredVertically[i][j] > maxSpikes:
+#       winnerID = j
+#       maxSpikes = positionAndWhichZFiredVertically[i][j]
+#   # code winnerID of Z neuron to its color used above
+#   if winnerID == math.inf:
+#     verticalLineColors.append('white')
+#   else:
+#     verticalLineColors.append(colors[winnerID])
+# # plot vertical lines 
+# xPosition = np.arange(imageSize[0])
+# plt.figure()
+# plt.bar(xPosition, imageSize[0], align='edge', width=1.0, color=verticalLineColors)
+# plt.title("Most active output neuron depending on position and orientation ")
+# plt.xlabel("width [px]")
+# plt.ylabel("height [px]")
+# pieLegend1 = patches.Patch(color=colors[0], label='Z1')
+# pieLegend2 = patches.Patch(color=colors[1], label='Z2')
+# pieLegend3 = patches.Patch(color=colors[2], label='Z3')
+# pieLegend4 = patches.Patch(color=colors[3], label='Z4')
+# pieLegend5 = patches.Patch(color=colors[4], label='Z5')
+# pieLegend6 = patches.Patch(color=colors[5], label='Z6')
+# pieLegend7 = patches.Patch(color=colors[6], label='Z7')
+# pieLegend8 = patches.Patch(color=colors[7], label='Z8')
+# pieLegend9 = patches.Patch(color=colors[8], label='Z9')
+# pieLegend10 = patches.Patch(color=colors[9], label='Z10')
+# plt.legend(handles=[pieLegend1,pieLegend2,pieLegend3,pieLegend4,pieLegend5,pieLegend6,pieLegend7,pieLegend8,pieLegend9,pieLegend10], loc=(1.04, 0.25))
+# plt.tight_layout()
+# plt.savefig(directoryPath + "/verticalLines.png")      
