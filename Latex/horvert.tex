@@ -83,13 +83,14 @@ During the validation of all possible horizontal bar images the output spike act
 Next the impact of the prior was analysed. To do this an image with a horizontal (at pixel 12) and a vertical bar (at pixel 5) on it was generated. Then the prior was once set once to horizontal and once to vertical. The image and the prior was then fed to the network. The results can be seen in Figure \ref{fig:horvertAdaptiveInhibitionPriorValResults}.
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/20priors_pos5and12/mergedCrossHorvert.png}
+  \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/20priors_pos5and12/crossValidation.png}
   \caption{\textbf{Impact of the prior Neurons.} \textbf{A} Image with a horizontal and a vertical bar on it that was fed to the network. \textbf{B} Spiking activity of the output neurons with prior = 'horizontal'. \textbf{C} Spiking activity of the output neurons with prior = 'vertical'. }
   \label{fig:horvertAdaptiveInhibitionPriorValResults}
 \end{figure}
 
 To better show the impact of the prior it was gradually changed from horizontal to vertical. The starting firing frequency of the horizontal prior neurons was 200 Hz and 0 Hz for the vertical prior neurons. A cross image was shown to the network for 200 ms. After each image presentation duration the firing frequency of the horizontal prior neurons was decreased by 1 Hz and increased by 1 Hz for the vertical prior neurons. The used cross image can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorValImage}. The firing frequency of the 2 most active output neurons depending on the firing frequency of the vertical prior neurons can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorValFrequency}. As expected the correct horizontal output neuron is active in the beginning with about 200 Hz and the correct vertical output neuron is almost inactive. With rising firing frequency of the vertical prior neurons the activity of the horizontal output neurons decreases and the activity of the vertical output neurons increases. The membrane potentials of all output neurons for vertical prior neurons spiking with 200 Hz and horizontal prior neurons spiking with 0 Hz can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorValMembranePotentials}.
 
+%TODO swap below 3 figs for  "YFrequency_prior"
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/crossImageForVariablePrior.png}
   \caption{ Cross image fed to the network. }
