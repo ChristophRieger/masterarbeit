@@ -26,8 +26,8 @@ plt.close("all")
 plotWeights = False
 validateVertical = False
 validateHorizontal = False
-validateCross = True
-showImpactOfVariablePriorOnCross = False
+validateCross = False
+showImpactOfVariablePriorOnCross = True
 ATildeFactor = 1
 
 imageSize = (35, 35)
@@ -44,7 +44,7 @@ tauRise = 0.001
 tauDecay = 0.015
 RStar = 200 # Hz; total output firing rate
 
-directoryPath =  "newCrossValidation" + str(numberANeurons)
+directoryPath =  "newVariablePriorValidation" + str(numberANeurons)
 if not os.path.exists(directoryPath):
   os.mkdir(directoryPath)
 
@@ -972,7 +972,7 @@ if showImpactOfVariablePriorOnCross:
   ax11 = fig.add_subplot(gs[0, 1])
   
   ax10.imshow(image, origin='lower', cmap='gray')
-  ax10.set_title('Input image', fontsize=18)
+  ax10.set_title('Input image', fontsize=20)
   ax10XAxis = ax10.get_xaxis()
   ax10XAxis.set_visible(False)
   ax10YAxis = ax10.get_yaxis()
@@ -982,10 +982,13 @@ if showImpactOfVariablePriorOnCross:
   xPositionPlt = np.arange(AfiringRate)
   ax11.plot(xPositionPlt, firingRateY0, color=colors[IdOfY0])
   ax11.plot(xPositionPlt, firingRateY1, color=colors[IdOfY1])
-  ax11.set_title("Firing frequency of 2 most active output neurons", fontsize=18)
-  ax11.set_ylabel("Output neuron firing frequency [Hz]", fontsize=16)
-  ax11.set_xlabel("Vertical prior neuron firing frequency [Hz]", fontsize=16)
-  ax11.tick_params(axis="both", labelsize=16)
+  ax11.set_title("Firing frequency of 2 most active output neurons", fontsize=20)
+  ax11.set_ylabel("Output neuron firing frequency [Hz]", fontsize=18)
+  ax11.set_xlabel("Firing frequency of neurons representing vertical prior [Hz]", fontsize=18)
+  ax11.tick_params(axis="both", labelsize=18)
+  pieLegend2 = patches.Patch(color=colors[1], label='y2')
+  pieLegend8 = patches.Patch(color=colors[7], label='y8')
+  ax11.legend(handles=[pieLegend2,pieLegend8],  loc=(1.02, 0.8),  prop={'size': 18})
 
   # plt.legend()
   # pickle.dump(fig_object, open(directoryPath + '/YFrequency_prior' + str(currentPrior) + '.pickle','wb'))
