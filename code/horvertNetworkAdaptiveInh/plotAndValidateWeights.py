@@ -10,6 +10,7 @@ sys.path.insert(0, '../helpers')
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+from matplotlib.ticker import (MultipleLocator, AutoMinorLocator)
 import dataGenerator
 import dataEncoder
 import poissonGenerator
@@ -24,10 +25,10 @@ plt.close("all")
 
 # Command Center
 plotWeights = False
-validateVertical = False
+validateVertical = True
 validateHorizontal = False
 validateCross = False
-showImpactOfVariablePriorOnCross = True
+showImpactOfVariablePriorOnCross = False
 ATildeFactor = 1
 
 imageSize = (35, 35)
@@ -44,7 +45,7 @@ tauRise = 0.001
 tauDecay = 0.015
 RStar = 200 # Hz; total output firing rate
 
-directoryPath =  "newVariablePriorValidation" + str(numberANeurons)
+directoryPath =  "newnewVerticalValidation" + str(numberANeurons)
 if not os.path.exists(directoryPath):
   os.mkdir(directoryPath)
 
@@ -271,6 +272,8 @@ if validateVertical:
   ax1.set_xlabel("Position [px]", fontsize=12)
   ax1.tick_params(axis="x", labelsize=12)
   ax1.tick_params(axis="y", which='both', left=False, right=False, labelleft=False)
+  ax1.xaxis.set_major_locator(MultipleLocator(5))
+  ax1.xaxis.set_minor_locator(MultipleLocator(1))
   # ax1.set_ylim([0,35])
   ax1.xaxis.set_ticks(np.arange(0,36, 5))
   pieLegend1 = patches.Patch(color=colors[0], label='y1')
@@ -296,6 +299,9 @@ if validateVertical:
   ax3.xaxis.set_ticks(np.arange(0,36, 5))
   ax3.yaxis.set_ticks(np.arange(1,3, 1))
   ax3.tick_params(axis="both", labelsize=12)
+  ax3.xaxis.set_major_locator(MultipleLocator(5))
+  ax3.xaxis.set_minor_locator(MultipleLocator(1))
+  ax3.yaxis.set_minor_locator(MultipleLocator(0.1))
 
 
   for i in range(0, len(ZSpikeHistory[0])):
@@ -306,6 +312,8 @@ if validateVertical:
   ax2.set_ylim([0,11])
   ax2.yaxis.set_ticks(np.arange(1,11, 1))
   ax2.tick_params(axis="both", labelsize=12)
+  ax2.xaxis.set_major_locator(MultipleLocator(1))
+  ax2.xaxis.set_minor_locator(MultipleLocator(0.2))
  
   # show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
   
@@ -316,6 +324,9 @@ if validateVertical:
   ax4.set_xlabel("Position [px]", fontsize=12)
   ax4.xaxis.set_ticks(np.arange(0,36, 5))
   ax4.tick_params(axis="both", labelsize=12)
+  ax4.xaxis.set_major_locator(MultipleLocator(5))
+  ax4.xaxis.set_minor_locator(MultipleLocator(1))
+  ax4.yaxis.set_minor_locator(MultipleLocator(0.01))
 
   
   # plt.tight_layout()
@@ -511,6 +522,8 @@ if validateHorizontal:
   ax1.set_ylabel("Position [px]", fontsize=12)
   ax1.tick_params(axis="y", labelsize=12)
   ax1.tick_params(axis="x", which='both', bottom=False, top=False, labelbottom=False)
+  ax1.yaxis.set_major_locator(MultipleLocator(5))
+  ax1.yaxis.set_minor_locator(MultipleLocator(1))
   # ax1.set_ylim([0,35])
   ax1.yaxis.set_ticks(np.arange(0,36, 5))
   # pieLegend1 = patches.Patch(color=colors[0], label='y1')
@@ -535,6 +548,9 @@ if validateHorizontal:
   ax3.xaxis.set_ticks(np.arange(0,36, 5))
   ax3.yaxis.set_ticks(np.arange(1,3, 1))
   ax3.tick_params(axis="both", labelsize=12)
+  ax3.xaxis.set_major_locator(MultipleLocator(5))
+  ax3.xaxis.set_minor_locator(MultipleLocator(1))
+  ax3.yaxis.set_minor_locator(MultipleLocator(0.1))
 
 
   for i in range(0, len(ZSpikeHistory[0])):
@@ -545,6 +561,8 @@ if validateHorizontal:
   ax2.set_ylim([0,11])
   ax2.yaxis.set_ticks(np.arange(1,11, 1))
   ax2.tick_params(axis="both", labelsize=12)
+  ax2.xaxis.set_major_locator(MultipleLocator(1))
+  ax2.xaxis.set_minor_locator(MultipleLocator(0.2))
  
   # show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
   ax4.plot(relativeActivityMean, marker='o', ms=4)
@@ -554,6 +572,9 @@ if validateHorizontal:
   ax4.set_xlabel("Position [px]", fontsize=12)
   ax4.xaxis.set_ticks(np.arange(0,36, 5))
   ax4.tick_params(axis="both", labelsize=12)
+  ax4.xaxis.set_major_locator(MultipleLocator(5))
+  ax4.xaxis.set_minor_locator(MultipleLocator(1))
+  ax4.yaxis.set_minor_locator(MultipleLocator(0.01))
 
   
   # plt.tight_layout()
