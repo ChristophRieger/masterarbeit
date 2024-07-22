@@ -3,8 +3,8 @@
 
 \subsection{Introduction}
 
-For this experiment the WTA network will be shown images of either horizontal or vertical bars. Through unsupervised learning the output neurons will learn to cluster the images together, depending on the orientation and position of the bars. 
-The effect of the prior neurons will be demonstrated by generating ambiguous images which show a horizontal and a vertical bar at the same time. Depending on the activity of the prior neurons the output neurons will respond more to the horizontal, or to the vertical bar of the image. 
+For this experiment the WTA network will be shown images of either horizontal or vertical bars. Through unsupervised learning the output neurons will learn to cluster the images together, depending on the orientation and position of the bars. The unsupervised clustering process will be visualized and analysed.
+Further, the effect of the prior neurons will be demonstrated by generating ambiguous images which show a horizontal and a vertical bar at the same time. The output of the network will be analysed, depending on the activity of the prior neurons. 
 
 \subsection{Methods}
 
@@ -59,31 +59,28 @@ The output spikes of the network can be seen in \ref{fig:horvertAdaptiveInhibiti
   \label{fig:horvertAdaptiveInhibitionHorizontalValResults}
 \end{figure}
 
-The validation process for the vertical bars was done analogously to the horizontal bars. Its results are given in Figure \ref{fig:horvertAdaptiveInhibitionVerticalValResults}.
+The validation process for the vertical bars was done analogously to the horizontal bars. Its results are given in Figure \ref{fig:horvertAdaptiveInhibitionVerticalValResults}. 
  
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/vertical_validation.png}
   \caption{\textbf{Vertical validation.} Vertical bars with a height of seven pixels were shown to the network at different positions. \textbf{A} Most active output neuron, depending on the horizontal position of the center of a vertical bar. \textbf{B} Output spikes during the validation process. The ticks of the x-axis are in steps of 0.2 seconds, thus each tick signifies the start of a new image being shown. \textbf{C} The mean number of active output neurons, depending on the horizontal position of a vertical bar. The standard deviation is given by the red bars. \textbf{D} This shows the of number of spikes the most active output neuron generated, relative to the number of spikes all other output neurons generated combined. The blue dots indicate the mean and the red bars the standard deviation. }
   \label{fig:horvertAdaptiveInhibitionVerticalValResults}
 \end{figure}
- 
-Every one of the ten output neurons responds primarily to one coherent area in one orientation.
-During the validation of all possible horizontal bar images the output spike activity was recorded and how many distinct output neurons were spiking during each image presentation period. For the parts where the 7 pixels high bar in the image did not overlap the areas of two output neurons only one output neuron was active. Only in the border areas there were two output neurons active. This can be seen in Figures \ref{fig:horvert_c20_3_Zfactor5_horizontalDistinctZ} and \ref{fig:horvert_c20_3_Zfactor5_horizontalZSpikes}.
 
-
-
-
-
-Next the impact of the prior was analysed. To do this an image with a horizontal (at pixel 12) and a vertical bar (at pixel 5) on it was generated. Then the prior was once set once to horizontal and once to vertical. The image and the prior was then fed to the network. The results can be seen in Figure \ref{fig:horvertAdaptiveInhibitionPriorValResults}.
+Next the impact of the prior was analysed. An image with a horizontal bar at position 12 and a vertical bar at position 5 on it was generated. First the prior neurons $z^v$ were activated and $z^h$ were deactivated. Then the image was shown to the network for 200 ms. After that the activity of the prior neurons was reversed and the image was shown again. The results can be seen in Figure \ref{fig:horvertAdaptiveInhibitionPriorValResults}. In that figure it can be seen that the output of the network completely changes depending of the prior activity. The prior neurons determine if the network focuses on the vertical or horizontal bar of the image.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/20priors_pos5and12/crossValidation.png}
-  \caption{\textbf{Impact of the prior Neurons.} \textbf{A} Image with a horizontal and a vertical bar on it that was fed to the network. \textbf{B} Spiking activity of the output neurons with prior = 'horizontal'. \textbf{C} Spiking activity of the output neurons with prior = 'vertical'. }
+  \caption{\textbf{Impact of the prior Neurons.} \textbf{A} Image with a horizontal and a vertical bar on it that was given to the network. \textbf{B} Spiking activity of the output neurons with $z^v$ being active. \textbf{C} Spiking activity of the output neurons with $z^h$ being active. }
   \label{fig:horvertAdaptiveInhibitionPriorValResults}
 \end{figure}
 
-To better show the impact of the prior, the firing frequencies of the prior neurons were gradually changed. The starting firing frequency of $z^h$ was 200 Hz and 0 Hz for $z^v$. For those firing frequencies a cross image was shown to the network for 200 ms. After each image presentation duration the firing frequency of $z^h$ was decreased by 1 Hz and increased by 1 Hz for $z^v$. The used cross image can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorResults} A. The firing frequency of the 2 most active output neurons depending on the firing frequency of $z^v$ can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorResults} B. At the beginning $y_2$, which represents the horizontal part of the cross image, was the most active neuron, which is correct as the prior neurons fully supported a horizontal orientation of the input image. With rising firing frequency of $z^v$ the activity of the $y_2$ decreased and the activity of $y_8$ increased. This happened because the prior neurons gradually supported the interpretation of the image as vertical more and more.
+To further illustrate the dependence of the output on the prior the firing frequencies of the prior neurons were gradually changed. The starting firing frequency of $z^h$ was set to 200 Hz and to 0 Hz for $z^v$. For those firing frequencies a cross image was shown to the network for 200 ms. After each image presentation duration the firing frequency of $z^h$ was decreased by 1 Hz and increased by 1 Hz for $z^v$. The used cross image can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorResults} A. The firing frequency of the 2 most active output neurons depending on the firing frequency of $z^v$ can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorResults} B. At the beginning $y_2$, which represents the horizontal part of the cross image, was the most active neuron, which is correct as the prior neurons fully supported the horizontal interpretation of the input image. With rising firing frequency of $z^v$ the activity of the $y_2$ decreased and the activity of $y_8$ increased. This happened because the prior neurons gradually supported the interpretation of the image as vertical more and more. 
+%TODO discuss why crossover is not in the middle... maybe 2 neurons are unequally strong, or 
+% the bars were not in the center of the active areas?
 
+%TODO add the newly generated verson of this.
+%TODO mention that it shows means of 10 runs.
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/YFrequency_prior.png}
   \caption{\textbf{Cross image with varying prior neuron activity.} \textbf{A} Cross image fed to the network. \textbf{B} Firing frequency of the 2 most active output neurons depending on the firing frequency of $z^v$. }
