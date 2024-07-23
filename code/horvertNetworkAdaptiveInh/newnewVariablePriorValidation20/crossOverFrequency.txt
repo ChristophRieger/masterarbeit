@@ -1,0 +1,13 @@
+50 = 928
+75 = 986
+
+
+75 - 50 = 25
+986 - 928 = 58
+
+25 = 58
+1 Hz = 2.32 pixel
+0.431 Hz = 1 Pixel
+
+
+x  = 948   ist 20 pixel mehr als start = 20 * 0.431 Hz = 8.62 Hz => Crossover at 58.6 Hz
