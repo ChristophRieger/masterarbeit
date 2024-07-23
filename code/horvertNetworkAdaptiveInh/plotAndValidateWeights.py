@@ -1017,7 +1017,7 @@ if showImpactOfVariablePriorOnCross:
   ax11.plot(xPositionPlt, firingRateY1, color=colors[IdOfY1])
   ax11.set_title("Firing frequency of 2 most active output neurons", fontsize=20)
   ax11.set_ylabel("Output neuron firing frequency [Hz]", fontsize=18)
-  ax11.set_xlabel("Firing frequency of $p^v$ [Hz]", fontsize=18)
+  ax11.set_xlabel("Firing frequency of $z^v$ [Hz]", fontsize=18)
   ax11.tick_params(axis="both", labelsize=18)
   pieLegend2 = patches.Patch(color=colors[1], label='y2')
   pieLegend8 = patches.Patch(color=colors[7], label='y8')
