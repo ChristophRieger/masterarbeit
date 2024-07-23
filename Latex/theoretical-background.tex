@@ -117,16 +117,21 @@ The input weights $w^{i}_{ki}$ between neurons $x_i$ and $y_k$ are updated whene
 where $\lambda$ is the learning rate, the parameter c shifts the weight values, $t^f$ is the time when $y_k$ spiked and $\sigma$ is the time window in which input spikes are considered as "before" an output spike. As the membrane potentials $u_k$ of the output neurons result from the addition of the EPSPs of the input neurons times the corresponding weight, a way to control the average size of u is needed. If u is too small the output neurons will fire too sparsely and if u is too big it will impair the learning process. So to limit u, the size of the weights is controlled via the parameter c. The learning rate $\lambda$ is needed to control the size of each weight update. If it is too big few output neurons will respond to multiple input classes and others will only respond too little or not at all. On the other hand if $\lambda$ is too small the network will learn very slowly and may never converge.
 The prior weights $w^{p}_{kj}$ are also updated whenever an output neuron fires, in the same way as $w^{i}_{ki}$
 \begin{equation}
-\label{deltawki}
+\label{deltawkj}
 \Delta w^{p}_{kj} = \begin{dcases*} \lambda \cdot (ce^{-w^{p}_{kj}} - 1) & if $z_{j}$ fired in $ [t^f - \sigma, t^f] $ \\
 \lambda \cdot (-1) & \text{if $ z_j $ did not fire in $ [t^f - \sigma, t^f] $, } \end{dcases*}
 \end{equation}
 
 \paragraph{Network architecture}
-Each pixel of an input image was connected to two neurons. The first of these neurons is in an active state when the pixel is black and in an inactive state otherwise. The second neuron expresses the opposite behaviour. As a consequence the network needs ($width \cdot height \cdot 2$) excitatory input neurons $x_1,...,x_N$. These input neurons are fully connected to the excitatory output neurons $y_1,...,y_K$. This means that that every input neuron $x_i$ is connected to each output neuron $y_k$. 
-To simulate the feedback from the inferior temporal cortex prior neurons $z_1,...,z_J$ were added to the network. Each prior neuron was connected only to the one  output neuron that represents the same class as the prior. As there are fewer prior neurons than input neurons influencing each output neuron, they have higher firing frequencies. Other than that the prior neurons behave the same as the input neurons and their EPSPs are handled the same way.
+Each pixel of an input image was connected to two neurons. The first of these neurons is in an active state when the pixel is black and in an inactive state otherwise. The second neuron expresses the opposite behaviour. As a consequence the network needs ($width \cdot height \cdot 2$) excitatory input neurons $x_1,...,x_N$. These input neurons are fully connected to the excitatory output neurons $y_1,...,y_K$. This means that every input neuron $x_i$ is connected to each output neuron $y_k$. 
+To simulate the feedback from the inferior temporal cortex prior neurons $z_1,...,z_J$ were added to the network. The prior neurons were also fully connected to the output neurons. A visualization of the network architecture can be seen in Figure \ref{fig:networkArchitecture}.
 
-%TODO add drawing of network
+\begin{figure}
+  \label{fig:networkArchitecture}
+  \includegraphics[width=\linewidth]{figures/networkPlan.png}
+  \caption{Architecture of the network.}
+  \label{fig:horvertImages}
+\end{figure}
 
 \section{Mathematical link between the spiking Winner-Take-All network model and Bayesian inference}
 \label{linkNetworkBayes}
