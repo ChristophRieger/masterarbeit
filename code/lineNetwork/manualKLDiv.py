@@ -6,6 +6,11 @@ Created on Tue Sep 19 15:52:08 2023
 """
 import numpy as np
 
+##########################
+# This script was used to calculate mean and std KLD
+##########################
+
+
 # single 440
 klDivergenceListSingle440 = []
 # 1

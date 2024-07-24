@@ -22,17 +22,18 @@ import mathematischeAnalyse
 import copy
 
 # Command Center
-loadWeights = True
+loadWeights = False
+numberOfRuns = 1
 
 plt.close("all")
 
 imageSize = (1, 9)
-imagePresentationDuration = 20
+imagePresentationDuration = 0.2 # used to be 20
 dt = 0.001 # seconds
 
 # 100/500 and 0.003 seems nice to me
-firingRate = 98 # Hz;
-AfiringRate = 440
+firingRate = 42 # Hz;
+AfiringRate = 0
 numberXNeurons = imageSize[0] * imageSize[1] # 1 neurons per pixel (one for black) # input
 numberYNeurons = 4 # output
 numberZNeurons = 4 # prior
@@ -40,7 +41,7 @@ numberZNeurons = 4 # prior
 sigma = 0.01 # time frame in which spikes count as before output spike
 c = 4 # 10 seems good, scales weights to 0 ... 1
 tauRise = 0.001
-tauDecay = 0.004  # might be onto something here, my problem gets better
+tauDecay = 0.015  # might be onto something here, my problem gets better
 # tauDecay = 0.015
 
 learningRateFactor = 3
@@ -124,7 +125,7 @@ for gridIterator in range(1):
   # AfiringRate = AfiringRateList[gridIterator]
   
   PvonYvorausgesetztXundZSimulationListList = []
-  for standardDeviationIterator in range(20):
+  for standardDeviationIterator in range(numberOfRuns):
   
     imagesEncoded = []
     priorsEncoded = []
@@ -331,10 +332,54 @@ for gridIterator in range(1):
       PvonYvorausgesetztXundZSimulation[3] = amountY3Spikes / totalSpikes
       PvonYvorausgesetztXundZSimulationList.append(PvonYvorausgesetztXundZSimulation)
     PvonYvorausgesetztXundZSimulationListList.append(PvonYvorausgesetztXundZSimulationList)
-  fig = plt.figure(figsize=(20, 12))
-  gs = fig.add_gridspec(2 * int(len(imagesEncoded)/2) + 1, 20)
+  fig = plt.figure(figsize=(10, 12))
+  # gs = fig.add_gridspec(2 * int(len(imagesEncoded)/2) + 1, 20)
+  rowsMultiplicator = 16
+  barPlotVerticalOffset = 8
+  barPlotLeftHorizontalOffset = 1
+  barPlotRightHorizontalOffset = 1
+  inputDataOffset = 4
+  analyisisMultiplicator = 2
+  gs = fig.add_gridspec(rowsMultiplicator * int(len(imagesEncoded)/2) + 1, 20)
   counter = 0
   klDivergenceList = [[],[],[],[],[],[]]
+  
+  useCustomValues = True
+  if useCustomValues:
+    # TODO Here I inject my values for the simulation output probabilities
+    analysisProb = []
+    simulProb = []
+    simulStd = []
+    # finput = 42, fprior = 0, taudecay = 15
+    
+    # 1
+    analysisProb.append([0.175, 0.612, 0.175, 0.038])
+    simulProb.append([0.126, 0.695, 0.124, 0.054])
+    simulStd.append([0.0061, 0.0093, 0.0058, 0.0033])
+    # 2
+    analysisProb.append([0.143, 0.518, 0.304, 0.035])
+    simulProb.append([0.106, 0.587, 0.264, 0.043])
+    simulStd.append([0.0059, 0.009, 0.0067, 0.0025])
+    # 3
+    analysisProb.append([0.453, 0.453, 0.047, 0.047])
+    simulProb.append([0.429, 0.421, 0.07, 0.08])
+    simulStd.append([0.0089, 0.0073, 0.0045, 0.0042])
+    # 4
+    analysisProb.append([0.291, 0.613, 0.048, 0.048])
+    simulProb.append([0.24, 0.556, 0.095, 0.109])
+    simulStd.append([0.0065, 0.0072, 0.0045, 0.0053])
+    # 5
+    analysisProb.append([0.175, 0.612, 0.175, 0.038])
+    simulProb.append([0.125, 0.697, 0.124, 0.054])
+    simulStd.append([0.0046, 0.0069, 0.005, 0.0043])
+    # 6
+    analysisProb.append([0.453, 0.453, 0.047, 0.047])
+    simulProb.append([0.426, 0.424, 0.072, 0.078])
+    simulStd.append([0.0116, 0.0111, 0.0034, 0.0047])
+    customKLD = 0.0233
+    customKLDStd = 0.00145
+  
+  
   for i in range(int(len(imagesEncoded)/2)):
     for j in range(2):
       imageEncoded = imagesEncoded[counter]
@@ -345,13 +390,13 @@ for gridIterator in range(1):
       # calc std and average of the 20 runs
       PvonYvorausgesetztXundZSimulationMeanTmp = np.zeros(4)
       PvonYvorausgesetztXundZSimulationStdTmp = [[],[],[],[]]
-      for runsIterator in range(20):
+      for runsIterator in range(numberOfRuns):
         for outputClassIterator in range(numberYNeurons):
           PvonYvorausgesetztXundZSimulationMeanTmp[outputClassIterator] += PvonYvorausgesetztXundZSimulationListList[runsIterator][counter][outputClassIterator]
           PvonYvorausgesetztXundZSimulationStdTmp[outputClassIterator].append(PvonYvorausgesetztXundZSimulationListList[runsIterator][counter][outputClassIterator])
       
       # calc mean of simulation probabs over 20 runs
-      PvonYvorausgesetztXundZSimulationMeanTmp /= 20
+      PvonYvorausgesetztXundZSimulationMeanTmp /= numberOfRuns
       PvonYvorausgesetztXundZSimulation = PvonYvorausgesetztXundZSimulationMeanTmp
       
       # calc standard deviation of simulation probabs over 20 runs
@@ -361,6 +406,10 @@ for gridIterator in range(1):
         
       
       PvonYvorausgesetztXundZAnalysis = mathematischeAnalyse.calcPvonYvorausgesetztXundZ(imageEncoded, priorEncoded)
+      
+      if useCustomValues:
+        standardDeviations = [0,0,0,0]
+        
       # TODO changed function to disable prior
       # PvonYvorausgesetztXundZAnalysis = mathematischeAnalyse.calcPvonYvorausgesetztXundZNull(imageEncoded, priorEncoded)
       
@@ -369,30 +418,31 @@ for gridIterator in range(1):
       # but the .svg seems fine anyway, solve only if figure is not good enough.
       # gs3 = fig.add_gridspec(6, 2, wspace=0.4, hspace=400)
       
-      ax10 = fig.add_subplot(gs[0 + 2*i, 0 + 2 + 10*j:10 + 10*j - 2])
+      ax10 = fig.add_subplot(gs[(0 + rowsMultiplicator*i + inputDataOffset) : (0 + rowsMultiplicator*i + inputDataOffset) + analyisisMultiplicator, 0 + 2 + 10*j:10 + 10*j - 2])
       
-      ax21 = fig.add_subplot(gs[1 + 2*i, 0 + 10*j:4 + 10*j])
-      ax22 = fig.add_subplot(gs[1 + 2*i, 6 + 10*j:10 + 10*j])
+      # ax21 = fig.add_subplot(gs[1 + 2*i, 0 + 10*j:4 + 10*j])
+      # ax22 = fig.add_subplot(gs[1 + 2*i, 6 + 10*j:10 + 10*j])
+      ax20 = fig.add_subplot(gs[1 + rowsMultiplicator*i + barPlotVerticalOffset: rowsMultiplicator - 1 + rowsMultiplicator*i, barPlotLeftHorizontalOffset + 10*j:10 - barPlotRightHorizontalOffset + 10*j])
       
       # Add ghost axes and titles
-      ax_firstRow = fig.add_subplot(gs[0 + 2*i, 0 + 10*j:10 + 10*j])
+      ax_firstRow = fig.add_subplot(gs[(0 + rowsMultiplicator*i + inputDataOffset) : (0 + rowsMultiplicator*i + inputDataOffset) + analyisisMultiplicator, 0 + 10*j:10 + 10*j])
       ax_firstRow.axis('off')
-      ax_firstRow.set_title('A' + str(counter+1), loc="left", x=-0.008,y=0.5, fontsize=16.0, fontweight='semibold')
+      ax_firstRow.set_title('A' + str(counter+1), loc="left", x=0.2,y=1, fontsize=16.0, fontweight='semibold')
       
-      ax_secondRow = fig.add_subplot(gs[1 + 2*i, 0 + 10*j])
+      ax_secondRow = fig.add_subplot(gs[1 + rowsMultiplicator*i + barPlotVerticalOffset: rowsMultiplicator - 1 + rowsMultiplicator*i, 0 + 10*j])
       ax_secondRow.axis('off')
-      ax_secondRow.set_title('B' + str(counter+1), loc="left", x=-0.11,y=0.5, fontsize=16.0, fontweight='semibold')
+      ax_secondRow.set_title('B' + str(counter+1), loc="left", x=1.2,y=1, fontsize=16.0, fontweight='semibold')
       
-      ax_thirdRow = fig.add_subplot(gs[1 + 2*i, 6 + 10*j])
-      ax_thirdRow.axis('off')
-      ax_thirdRow.set_title('C' + str(counter+1), loc="left", x=-0.11,y=0.5, fontsize=16.0, fontweight='semibold')
+      # ax_thirdRow = fig.add_subplot(gs[1 + 2*i, 6 + 10*j])
+      # ax_thirdRow.axis('off')
+      # ax_thirdRow.set_title('C' + str(counter+1), loc="left", x=-0.11,y=0.5, fontsize=16.0, fontweight='semibold')
       
       # plot input data
       ax10.imshow(images[0][counter], cmap='gray')
       # TODO !!!!!! remove next 3 lines to disable prior
-      rect = patches.Rectangle((-0.5 + prior*2,-0.5), 3, 1, linewidth=8, edgecolor='r', facecolor='none')
-      ax10.add_patch(rect)
-      rect.set_clip_path(rect)
+      # rect = patches.Rectangle((-0.5 + prior*2,-0.5), 3, 1, linewidth=8, edgecolor='r', facecolor='none')
+      # ax10.add_patch(rect)
+      # rect.set_clip_path(rect)
       ax10.axvline(x=0.5)
       ax10.axvline(x=1.5)
       ax10.axvline(x=2.5)
@@ -403,32 +453,52 @@ for gridIterator in range(1):
       ax10.axvline(x=7.5)
       ax10.axvline(x=8.5)
       ax10.set_ylim([-0.5, 0.5])
-      ax10.set_title("Input data", y=1.3, fontsize=14)
+      ax10.set_title("Input data", fontsize=14)
       ax10.axes.yaxis.set_visible(False)
       ax10.tick_params(axis='x', which='major', labelsize=12)
+      ax10.set_xticks([0,1,2,3,4,5,6,7,8])
+
       
-      PvonYvorausgesetztXundZAnalysis = PvonYvorausgesetztXundZAnalysis.reshape(4,1)
-      tab21 = ax21.table(cellText=np.around(PvonYvorausgesetztXundZAnalysis, 3), bbox=[0.2, -0.2, 0.3, 1])
-      tab21.set_fontsize(14)
-      tab21.auto_set_column_width(0)
-      # tab21.scale(1,1.2)
-      ax21.axis('off')
-      ax21.set_title("Analysis output probabilities", y=0.9, fontsize=14)
+      x = np.arange(4)
+      width = 0.4
+      offset = width / 2
+      ax20.bar(x - offset, analysisProb[counter], width=width, color='C3')
+      ax20.bar(x + offset, simulProb[counter], yerr=simulStd[counter], width=width, color='C0')
+      ax20.set_title('Output probabilities', fontsize=14)
+      ax20.set_xticks(x, ["$y_1$", "$y_2$", "$y_3$", "$y_4$"])
+      ax20.set_yticks([0, 0.2, 0.4, 0.6])
+      ax20.legend(loc='upper left', ncols=3)
+      ax20.tick_params(axis='x', which='major', labelsize=12)
+      ax20.tick_params(axis='y', which='major', labelsize=12)
+      # legend1 = patches.Patch(color='C3', label='Analysis')
+      # legend2 = patches.Patch(color='C0', label='Simulation')
+      # ax20.legend(handles=[legend1, legend2], loc='upper right', prop={'size': 10})
+
+
       
-      PvonYvorausgesetztXundZSimulation = PvonYvorausgesetztXundZSimulation.reshape(4,1)
-      standardDeviations = standardDeviations.reshape(4,1)
-      cellTextTmp = [[], [], [], []]
-      for cellTextIterator in range(numberYNeurons):  
-        cellTextTmp[cellTextIterator].append(str(np.around(PvonYvorausgesetztXundZSimulation[cellTextIterator], 3)).strip("[]") + " (" + str(np.around(standardDeviations[cellTextIterator], 4)).strip("[]") + ")")
-      tab22 = ax22.table(cellText=cellTextTmp, bbox=[0.2, -0.2, 0.7, 1])
-      tab22.set_fontsize(14)
-      tab22.auto_set_column_width(0)
-      # tab22.scale(1,1.2)
-      ax22.axis('off')
-      ax22.set_title("Simulation output probabilities", y=0.9, fontsize=14)
+      # TODO commented out tables, Need them as separate table.
+      # PvonYvorausgesetztXundZAnalysis = PvonYvorausgesetztXundZAnalysis.reshape(4,1)
+      # tab21 = ax21.table(cellText=np.around(PvonYvorausgesetztXundZAnalysis, 3), bbox=[0.2, -0.2, 0.3, 1])
+      # tab21.set_fontsize(14)
+      # tab21.auto_set_column_width(0)
+      # # tab21.scale(1,1.2)
+      # ax21.axis('off')
+      # ax21.set_title("Analysis output probabilities", y=0.9, fontsize=14)
+      
+      # PvonYvorausgesetztXundZSimulation = PvonYvorausgesetztXundZSimulation.reshape(4,1)
+      # standardDeviations = standardDeviations.reshape(4,1)
+      # cellTextTmp = [[], [], [], []]
+      # for cellTextIterator in range(numberYNeurons):  
+      #   cellTextTmp[cellTextIterator].append(str(np.around(PvonYvorausgesetztXundZSimulation[cellTextIterator], 3)).strip("[]") + " (" + str(np.around(standardDeviations[cellTextIterator], 4)).strip("[]") + ")")
+      # tab22 = ax22.table(cellText=cellTextTmp, bbox=[0.2, -0.2, 0.7, 1])
+      # tab22.set_fontsize(14)
+      # tab22.auto_set_column_width(0)
+      # # tab22.scale(1,1.2)
+      # ax22.axis('off')
+      # ax22.set_title("Simulation output probabilities", y=0.9, fontsize=14)
       
       # calculate Kullback Leibler Divergence for each image and each run
-      for runsIterator in range(20):
+      for runsIterator in range(numberOfRuns):
         klDivergenceTmp = 0
         for outputClassIterator in range(numberYNeurons):
           klDivergenceTmp += PvonYvorausgesetztXundZAnalysis[outputClassIterator] * np.log(PvonYvorausgesetztXundZAnalysis[outputClassIterator] / PvonYvorausgesetztXundZSimulationListList[runsIterator][counter][outputClassIterator]) 
@@ -437,7 +507,7 @@ for gridIterator in range(1):
       counter += 1
   
   klDivergenceMeanPerRun = []
-  for runIterator in range(20):
+  for runIterator in range(numberOfRuns):
     klDivergenceMeanPerRunTmp = 0
     for imageIterator in range(6):
       klDivergenceMeanPerRunTmp += klDivergenceList[imageIterator][runIterator]
@@ -445,12 +515,20 @@ for gridIterator in range(1):
      
       
   klDivergenceMean = sum(klDivergenceMeanPerRun) / len(klDivergenceMeanPerRun)
-  klDivergenceStd = np.std(klDivergenceMeanPerRun)
-  ax3 = fig.add_subplot(gs[2 * int(len(imagesEncoded)/2):2 * int(len(imagesEncoded)/2)+1, 0:20])
+  klDivergenceStd = np.std(klDivergenceMeanPerRun)  
+  
+  ax3 = fig.add_subplot(gs[rowsMultiplicator * int(len(imagesEncoded)/2):rowsMultiplicator * int(len(imagesEncoded)/2)+1, 0:20])
   ax3.axis('off')
   textStyle = dict(horizontalalignment='center', verticalalignment='center',
                   fontsize=16)
-  ax3.text(0.5, 0.5, "Kullback–Leibler divergence = " + str(np.around(klDivergenceMean, 4)).strip("[]") + " (" + str(np.around(klDivergenceStd, 5)) + ")", textStyle, transform=ax3.transAxes)
+  if useCustomValues:
+    ax3.text(0.5, -1.5, "Kullback–Leibler divergence = " + str(customKLD) + " $\pm$ " + str(customKLDStd), textStyle, transform=ax3.transAxes)
+  else:
+    ax3.text(0.5, -1.5, "Kullback–Leibler divergence = " + str(np.around(klDivergenceMean, 4)).strip("[]") + " $\pm$ " + str(np.around(klDivergenceStd, 5)), textStyle, transform=ax3.transAxes)
+  
+  legend1 = patches.Patch(color='C3', label='Analysis output probabilities')
+  legend2 = patches.Patch(color='C0', label='Simulation output probabilities')
+  ax3.legend(handles=[legend1, legend2], loc=(0.293, 56.5), prop={'size': 12})
   
   pickle.dump(fig, open(directoryPath + "/trainingPlot5" + '.pickle','wb'))
   plt.savefig(directoryPath + "/trainingPlot5" + ".svg")  
