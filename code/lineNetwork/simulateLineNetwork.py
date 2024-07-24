@@ -25,10 +25,50 @@ import copy
 loadWeights = False
 numberOfRuns = 1
 
+useCustomValues = True
+if useCustomValues:
+  # TODO Here I inject my values for the simulation output probabilities
+  analysisProb = []
+  simulProb = []
+  simulStd = []
+  
+  ########################################
+  customFInput = 42
+  customFPrior = 0
+  customTauDecay = 15
+  customC = False
+  # 1
+  analysisProb.append([0.175, 0.612, 0.175, 0.038])
+  simulProb.append([0.126, 0.695, 0.124, 0.054])
+  simulStd.append([0.0061, 0.0093, 0.0058, 0.0033])
+  # 2
+  analysisProb.append([0.143, 0.518, 0.304, 0.035])
+  simulProb.append([0.106, 0.587, 0.264, 0.043])
+  simulStd.append([0.0059, 0.009, 0.0067, 0.0025])
+  # 3
+  analysisProb.append([0.453, 0.453, 0.047, 0.047])
+  simulProb.append([0.429, 0.421, 0.07, 0.08])
+  simulStd.append([0.0089, 0.0073, 0.0045, 0.0042])
+  # 4
+  analysisProb.append([0.291, 0.613, 0.048, 0.048])
+  simulProb.append([0.24, 0.556, 0.095, 0.109])
+  simulStd.append([0.0065, 0.0072, 0.0045, 0.0053])
+  # 5
+  analysisProb.append([0.175, 0.612, 0.175, 0.038])
+  simulProb.append([0.125, 0.697, 0.124, 0.054])
+  simulStd.append([0.0046, 0.0069, 0.005, 0.0043])
+  # 6
+  analysisProb.append([0.453, 0.453, 0.047, 0.047])
+  simulProb.append([0.426, 0.424, 0.072, 0.078])
+  simulStd.append([0.0116, 0.0111, 0.0034, 0.0047])
+  customKLD = 0.0233
+  customKLDStd = 0.00145
+  ########################################
+
 plt.close("all")
 
 imageSize = (1, 9)
-imagePresentationDuration = 0.2 # used to be 20
+imagePresentationDuration = 0.1 # used to be 20
 dt = 0.001 # seconds
 
 # 100/500 and 0.003 seems nice to me
@@ -300,7 +340,16 @@ for gridIterator in range(1):
           
       # Simulation DONE
       
-      directoryPath =  "Simulation_fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay) + "_c" + str(c)
+      if useCustomValues:
+        customFInput = 42
+        customFPrior = 0
+        customTauDecay = 15
+        if customC:
+          directoryPath =  "custom_fInput" + str(customFInput) + "_fPrior" + str(customFPrior) + "_tauDecay" + str(customTauDecay) + "_c" + str(customC)
+        else:  
+          directoryPath =  "custom_fInput" + str(customFInput) + "_fPrior" + str(customFPrior) + "_tauDecay" + str(customTauDecay)
+      else:
+        directoryPath =  "Simulation_fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay) + "_c" + str(c)
       if not os.path.exists(directoryPath):
         os.mkdir(directoryPath)
       # np.save(directoryPath + "/weights" + ".npy", weights)
@@ -344,42 +393,6 @@ for gridIterator in range(1):
   counter = 0
   klDivergenceList = [[],[],[],[],[],[]]
   
-  useCustomValues = True
-  if useCustomValues:
-    # TODO Here I inject my values for the simulation output probabilities
-    analysisProb = []
-    simulProb = []
-    simulStd = []
-    # finput = 42, fprior = 0, taudecay = 15
-    
-    # 1
-    analysisProb.append([0.175, 0.612, 0.175, 0.038])
-    simulProb.append([0.126, 0.695, 0.124, 0.054])
-    simulStd.append([0.0061, 0.0093, 0.0058, 0.0033])
-    # 2
-    analysisProb.append([0.143, 0.518, 0.304, 0.035])
-    simulProb.append([0.106, 0.587, 0.264, 0.043])
-    simulStd.append([0.0059, 0.009, 0.0067, 0.0025])
-    # 3
-    analysisProb.append([0.453, 0.453, 0.047, 0.047])
-    simulProb.append([0.429, 0.421, 0.07, 0.08])
-    simulStd.append([0.0089, 0.0073, 0.0045, 0.0042])
-    # 4
-    analysisProb.append([0.291, 0.613, 0.048, 0.048])
-    simulProb.append([0.24, 0.556, 0.095, 0.109])
-    simulStd.append([0.0065, 0.0072, 0.0045, 0.0053])
-    # 5
-    analysisProb.append([0.175, 0.612, 0.175, 0.038])
-    simulProb.append([0.125, 0.697, 0.124, 0.054])
-    simulStd.append([0.0046, 0.0069, 0.005, 0.0043])
-    # 6
-    analysisProb.append([0.453, 0.453, 0.047, 0.047])
-    simulProb.append([0.426, 0.424, 0.072, 0.078])
-    simulStd.append([0.0116, 0.0111, 0.0034, 0.0047])
-    customKLD = 0.0233
-    customKLDStd = 0.00145
-  
-  
   for i in range(int(len(imagesEncoded)/2)):
     for j in range(2):
       imageEncoded = imagesEncoded[counter]
@@ -406,9 +419,6 @@ for gridIterator in range(1):
         
       
       PvonYvorausgesetztXundZAnalysis = mathematischeAnalyse.calcPvonYvorausgesetztXundZ(imageEncoded, priorEncoded)
-      
-      if useCustomValues:
-        standardDeviations = [0,0,0,0]
         
       # TODO changed function to disable prior
       # PvonYvorausgesetztXundZAnalysis = mathematischeAnalyse.calcPvonYvorausgesetztXundZNull(imageEncoded, priorEncoded)
@@ -531,7 +541,6 @@ for gridIterator in range(1):
   ax3.legend(handles=[legend1, legend2], loc=(0.293, 56.5), prop={'size': 12})
   
   pickle.dump(fig, open(directoryPath + "/trainingPlot5" + '.pickle','wb'))
-  plt.savefig(directoryPath + "/trainingPlot5" + ".svg")  
-  plt.savefig(directoryPath + "/trainingPlot5" + ".png")
-  plt.savefig(directoryPath + "/trainingPlot5" + ".jpg") 
+  plt.savefig(directoryPath + "/trainingPlot5" + ".svg", bbox_inches='tight')  
+  plt.savefig(directoryPath + "/trainingPlot5" + ".png", bbox_inches='tight', dpi=300)
   plt.show()
