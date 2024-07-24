@@ -106,6 +106,9 @@ To simplify the parameter fitting process the network was at first simulated wit
 
 \subparagraph{$\tau_{decay} = 0.015 seconds$, $f_{prior} = 0 Hz$}
 Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. After identifying the input firing rate with the smallest Kullback-Leibler divergence the network was simulated again for $f_{input}$ values $\pm$ 10 Hz in steps of 2 Hz of the best value. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau15}. This process yielded the best input firing rate of 42 Hz. The results of this parameter combination can be seen in Figure \ref{fig:1D_42_0_15}. In this figure six different input images can be seen marked with the letter "A". The active pixels are shown in black.  The posterior probability of the mathematical analysis can be seen next to the letter "B". And finally the proportion of output spikes of the different output neurons can be seen next to the letter "C". Each probability of "C" has a standard deviation next to it, which was calculated over 20 runs of the network. At the bottom the value of the Kullback-Leibler divergence is given, with its standard deviation next to it.
+%TODO replace ALL result plots and add table with values
+%TODO mention tables whenever you insert them.
+%TODO Fix alls \textbf in plots of this file, they seem fucked.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/KLDvsfInput_fPrior0tau15.png}
@@ -118,6 +121,25 @@ Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. A
   \caption{\textbf{Analysis and simulation result. Parameters: } $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities. \textbf{C} Proportions of the spikes of the output neurons during the simulation and their standard deviations in brackets.}
   \label{fig:1D_42_0_15}
 \end{figure}
+
+%TODO first table test
+\begin{table}[]
+\begin{tabular}{|c|cc|cc|cc|}
+\hline
+      & \multicolumn{2}{c|}{Image 1}                       & \multicolumn{2}{c|}{Image 2}                       & \multicolumn{2}{c|}{Image 3}                       \\ \hline
+      & \multicolumn{1}{c|}{Analysis} & Simulation         & \multicolumn{1}{c|}{Analysis} & Simulation         & \multicolumn{1}{c|}{Analysis} & Simulation         \\ \hline
+$y_0$ & \multicolumn{1}{c|}{0.175}    & 0.124 $\pm$ 0.0061 & \multicolumn{1}{c|}{0.143}    & 0.104 $\pm$ 0.0059 & \multicolumn{1}{c|}{0.453}    & 0.43 $\pm$ 0.0089  \\ \hline
+$y_1$ & \multicolumn{1}{c|}{0.612}    & 0.699 $\pm$ 0.0093 & \multicolumn{1}{c|}{0.518}    & 0.587 $\pm$ 0.009  & \multicolumn{1}{c|}{0.453}    & 0.421 $\pm$ 0.0073 \\ \hline
+$y_2$ & \multicolumn{1}{c|}{0.175}    & 0.121 $\pm$ 0.0058 & \multicolumn{1}{c|}{0.304}    & 0.266 $\pm$ 0.0067 & \multicolumn{1}{c|}{0.047}    & 0.07 $\pm$ 0.0045  \\ \hline
+$y_3$ & \multicolumn{1}{c|}{0.038}    & 0.056 $\pm$ 0.0033 & \multicolumn{1}{c|}{0.035}    & 0.043 $\pm$ 0.0025 & \multicolumn{1}{c|}{0.047}    & 0.08 $\pm$ 0.0042  \\ \hline
+      & \multicolumn{2}{c|}{Image 4}                       & \multicolumn{2}{c|}{Image 5}                       & \multicolumn{2}{c|}{Image 6}                       \\ \hline
+$y_0$ & \multicolumn{1}{c|}{0.291}    & 0.245 $\pm$ 0.0065 & \multicolumn{1}{c|}{0.175}    & 0.124 $\pm$ 0.0046 & \multicolumn{1}{c|}{0.453}    & 0.428 $\pm$ 0.0116 \\ \hline
+$y_1$ & \multicolumn{1}{c|}{0.613}    & 0.553 $\pm$ 0.0072 & \multicolumn{1}{c|}{0.612}    & 0.697 $\pm$ 0.0069 & \multicolumn{1}{c|}{0.453}    & 0.421 $\pm$ 0.0111 \\ \hline
+$y_2$ & \multicolumn{1}{c|}{0.048}    & 0.09 $\pm$ 0.0045  & \multicolumn{1}{c|}{0.175}    & 0.123 $\pm$ 0.005  & \multicolumn{1}{c|}{0.047}    & 0.07 $\pm$ 0.0034  \\ \hline
+$y_3$ & \multicolumn{1}{c|}{0.048}    & 0.111 $\pm$ 0.0053 & \multicolumn{1}{c|}{0.038}    & 0.056 $\pm$ 0.0043 & \multicolumn{1}{c|}{0.047}    & 0.081 $\pm$ 0.0047 \\ \hline
+\end{tabular}
+\caption{Analysis and simulation output probabilities for $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$}
+\end{table}
 
 When $f_{input}$ was 70 Hz the results of the analysis and the simulation differed more as can be seen in Figure \ref{fig:1D_70_0_15}.
 

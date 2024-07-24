@@ -39,30 +39,30 @@ if useCustomValues:
   customC = False
   # 1
   analysisProb.append([0.175, 0.612, 0.175, 0.038])
-  simulProb.append([0.126, 0.695, 0.124, 0.054])
+  simulProb.append([0.124, 0.699, 0.121, 0.056])
   simulStd.append([0.0061, 0.0093, 0.0058, 0.0033])
   # 2
   analysisProb.append([0.143, 0.518, 0.304, 0.035])
-  simulProb.append([0.106, 0.587, 0.264, 0.043])
+  simulProb.append([0.104, 0.587, 0.266, 0.043])
   simulStd.append([0.0059, 0.009, 0.0067, 0.0025])
   # 3
   analysisProb.append([0.453, 0.453, 0.047, 0.047])
-  simulProb.append([0.429, 0.421, 0.07, 0.08])
+  simulProb.append([0.43, 0.421, 0.07, 0.08])
   simulStd.append([0.0089, 0.0073, 0.0045, 0.0042])
   # 4
   analysisProb.append([0.291, 0.613, 0.048, 0.048])
-  simulProb.append([0.24, 0.556, 0.095, 0.109])
+  simulProb.append([0.245, 0.553, 0.09, 0.111])
   simulStd.append([0.0065, 0.0072, 0.0045, 0.0053])
   # 5
   analysisProb.append([0.175, 0.612, 0.175, 0.038])
-  simulProb.append([0.125, 0.697, 0.124, 0.054])
+  simulProb.append([0.124, 0.697, 0.123, 0.056])
   simulStd.append([0.0046, 0.0069, 0.005, 0.0043])
   # 6
   analysisProb.append([0.453, 0.453, 0.047, 0.047])
-  simulProb.append([0.426, 0.424, 0.072, 0.078])
+  simulProb.append([0.428, 0.421, 0.07, 0.081])
   simulStd.append([0.0116, 0.0111, 0.0034, 0.0047])
-  customKLD = 0.0233
-  customKLDStd = 0.00145
+  customKLD = 0.0241
+  customKLDStd = 0.00159
   ########################################
 
 plt.close("all")
@@ -540,7 +540,17 @@ for gridIterator in range(1):
   legend2 = patches.Patch(color='C0', label='Simulation output probabilities')
   ax3.legend(handles=[legend1, legend2], loc=(0.293, 56.5), prop={'size': 12})
   
-  pickle.dump(fig, open(directoryPath + "/trainingPlot5" + '.pickle','wb'))
-  plt.savefig(directoryPath + "/trainingPlot5" + ".svg", bbox_inches='tight')  
-  plt.savefig(directoryPath + "/trainingPlot5" + ".png", bbox_inches='tight', dpi=300)
+  if useCustomValues:
+    if customC:
+      pickle.dump(fig, open(directoryPath + "/trainingEvaluation_" + str(customFInput) + "_" + str(customFPrior) + "_" + str(customTauDecay) + "_c" + str(customC) + '.pickle','wb'))
+      plt.savefig(directoryPath + "/trainingEvaluation_" + str(customFInput) + "_" + str(customFPrior) + "_" + str(customTauDecay) + "_c" + str(customC) + ".svg", bbox_inches='tight')  
+      plt.savefig(directoryPath + "/trainingEvaluation_" + str(customFInput) + "_" + str(customFPrior) + "_" + str(customTauDecay) + "_c" + str(customC) + ".png", bbox_inches='tight', dpi=300)
+    else:
+      pickle.dump(fig, open(directoryPath + "/1D_" + str(customFInput) + "_" + str(customFPrior) + "_" + str(customTauDecay) + '.pickle','wb'))
+      plt.savefig(directoryPath + "/1D_" + str(customFInput) + "_" + str(customFPrior) + "_" + str(customTauDecay) + ".svg", bbox_inches='tight')  
+      plt.savefig(directoryPath + "/1D_" + str(customFInput) + "_" + str(customFPrior) + "_" + str(customTauDecay) + ".png", bbox_inches='tight', dpi=300)
+  else:
+    pickle.dump(fig, open(directoryPath + "/trainingPlot5" + '.pickle','wb'))
+    plt.savefig(directoryPath + "/trainingPlot5" + ".svg", bbox_inches='tight')  
+    plt.savefig(directoryPath + "/trainingPlot5" + ".png", bbox_inches='tight', dpi=300)
   plt.show()
