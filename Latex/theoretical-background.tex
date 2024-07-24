@@ -47,10 +47,10 @@ z_j(t) = e^{-(t + \delta t - t_f) / \tau_{decay}} - e^{-(t + \delta t - t_f) / \
   \label{fig:XSpike}
 \end{figure}
 
-The membrane potential $u_k$ of each output neuron is calculated by multiplying the EPSP of each input neuron times the input weight $w^{i}_{ki}$ of the connection between them, plus the EPSP of each prior neuron times the prior weight $w^{p}_{kj}$
+The membrane potential $u_k$ of each output neuron is calculated by multiplying the EPSP of each input neuron times the input weight $w^{I}_{ki}$ of the connection between them, plus the EPSP of each prior neuron times the prior weight $w^{P}_{kj}$
 \begin{equation}
 \label{eqn:uk}
-u_k(t) = \sum_{i=1}^N w^{i}_{ki} \cdot x_i(t) + \sum_{j=1}^J w^{p}_{kj} \cdot z_j(t).
+u_k(t) = \sum_{i=1}^N w^{I}_{ki} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t).
 \end{equation}
 
 In \citet{nessler} each output neuron $y_k$ also had an intrinsic excitability $w_{k0}$ which was learned for each neuron. For the experiments of this thesis however it was omitted, as the different classes of  input images were equally likely, thus the intrinsic excitabilities of the output neurons would all end up being equal to each other.
@@ -108,17 +108,17 @@ q_k(t) = \frac{r_k(t) \delta t}{R(t) \delta t} = \frac{e^{u_k(t) - I(t)}}{\sum_{
 The inhibition term cancels out because all output neurons receive the same inhibition, meaning that it is independent of k.
 
 \paragraph{Spike timing dependent plasticity}
-The input weights $w^{i}_{ki}$ between neurons $x_i$ and $y_k$ are updated whenever an output neuron fires. $\sigma$ indicates the time window, after which spikes are no longer considered. If $y_k$ produces a spike all its weights to the input neurons are updated as
+The input weights $w^{I}_{ki}$ between neurons $x_i$ and $y_k$ are updated whenever an output neuron fires. $\sigma$ indicates the time window, after which spikes are no longer considered. If $y_k$ produces a spike all its weights to the input neurons are updated as
 \begin{equation}
 \label{deltawki}
-\Delta w^{i}_{ki} = \begin{dcases*} \lambda \cdot (ce^{-w^{i}_{ki}} - 1) & if $x_{i}$ fired in $ [t^f - \sigma, t^f] $ \\
+\Delta w^{I}_{ki} = \begin{dcases*} \lambda \cdot (ce^{-w^{I}_{ki}} - 1) & if $x_{i}$ fired in $ [t^f - \sigma, t^f] $ \\
 \lambda \cdot (-1) & \text{if $ x_i $ did not fire in $ [t^f - \sigma, t^f] $, } \end{dcases*}
 \end{equation}
 where $\lambda$ is the learning rate, the parameter c shifts the weight values, $t^f$ is the time when $y_k$ spiked and $\sigma$ is the time window in which input spikes are considered as "before" an output spike. As the membrane potentials $u_k$ of the output neurons result from the addition of the EPSPs of the input neurons times the corresponding weight, a way to control the average size of u is needed. If u is too small the output neurons will fire too sparsely and if u is too big it will impair the learning process. So to limit u, the size of the weights is controlled via the parameter c. The learning rate $\lambda$ is needed to control the size of each weight update. If it is too big few output neurons will respond to multiple input classes and others will only respond too little or not at all. On the other hand if $\lambda$ is too small the network will learn very slowly and may never converge.
-The prior weights $w^{p}_{kj}$ are also updated whenever an output neuron fires, in the same way as $w^{i}_{ki}$
+The prior weights $w^{P}_{kj}$ are also updated whenever an output neuron fires, in the same way as $w^{I}_{ki}$
 \begin{equation}
 \label{deltawkj}
-\Delta w^{p}_{kj} = \begin{dcases*} \lambda \cdot (ce^{-w^{p}_{kj}} - 1) & if $z_{j}$ fired in $ [t^f - \sigma, t^f] $ \\
+\Delta w^{P}_{kj} = \begin{dcases*} \lambda \cdot (ce^{-w^{P}_{kj}} - 1) & if $z_{j}$ fired in $ [t^f - \sigma, t^f] $ \\
 \lambda \cdot (-1) & \text{if $ z_j $ did not fire in $ [t^f - \sigma, t^f] $, } \end{dcases*}
 \end{equation}
 
@@ -138,7 +138,7 @@ To simulate the feedback from the inferior temporal cortex prior neurons $z_1,..
 
 \citet{nessler} hypothesized that the ensemble of weights of a neuron can be understood as a generative model. They further claimed that every synaptic weight, due to STDP-induced changes,  converges stochastically to the log of the conditional probability that the presynaptic neuron has fired just before the postsynaptic neuron, given that the postsynaptic neuron fires. This connection is given by
 \begin{equation}
- w^{i}_{ki} = log(p(x_i = 1 | y_k = 1))
+ w^{I}_{ki} = log(p(x_i = 1 | y_k = 1))
 \end{equation}
 an will be analysed in Section \ref{section:1D}.
 Furthermore they claimed that in a Bayesian inference context every input spike provides evidence for an observed variable and every output spike represents one stochastic sample from the posterior distribution over hidden causes, which are encoded in the circuit. 
@@ -147,11 +147,11 @@ To show the connection between the spiking Winner-Take-All network model and Bay
 
 As explained in Section \ref{section:bayesianInference} the visual input, modelled by the input neurons can be thought of as the Bayesian likelihood and the feedback, modelled by the prior neurons, as the Bayesian prior. As defined in Equation \ref{eqn:pVonY} the firing probability of an output neuron is proportional to the exponent of its membrane potential minus the inhibition. To obtain the Bayesian likelihood and prior we first split the membrane potential into the contributions of the input and prior neurons. The first part that signifies the contribution of the input neurons is given by
 \begin{equation}
-e^{u_x} = e^{\sum_{i=1}^N w^{i}_{ki} \cdot x_i(t)}.
+e^{u_x} = e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t)}.
 \end{equation}
 The second part gives the contribution of the prior neurons as
 \begin{equation}
-e^{u_z} = e^{\sum_{j=1}^J w^{p}_{kj} \cdot z_j(t)}.
+e^{u_z} = e^{\sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)}.
 \end{equation}
 
 These two parts can be seen as two partial membrane potentials. By inserting each of them into Equation \ref{eqn:pVonY} we get the likelihood
@@ -167,10 +167,10 @@ When inserting the likelihood and the prior into Equation \ref{eqn:pYvorausgeset
 
 \begin{equation}
 \begin{split}
-P(Y=k|X=x,Z=j) &= \frac{e^{\sum_{i=1}^N w{i}_{ki} \cdot x_i(t) - I(t)} \cdot e^{\sum_{j=1}^J w^{p}_{kj} \cdot z_j(t) - I(t)}}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w^{i}_{k'i} \cdot x_i(t) - I(t)} \cdot e^{\sum_{j=1}^J w^{p}_{k'j} \cdot z_j(t) - I(t)}}\\
-&= \frac{e^{-I(t) \cdot N + \sum_{i=1}^N w^{i}_{ki} \cdot x_i(t)} \cdot e^{-I(t) \cdot J + \sum_{j=1}^J w^{p}_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K  e^{-I(t) \cdot N + \sum_{i=1}^N w^{i}_{k'i} \cdot x_i(t)} \cdot e^{-I(t) \cdot J + \sum_{j=1}^J w^{p}_{k'j} \cdot z_j(t)}}\\
-&= \frac{e^{-I(t) \cdot N} \cdot e^{\sum_{i=1}^N w^{i}_{ki} \cdot x_i(t)} \cdot e^{-I(t) \cdot J} \cdot e^{\sum_{j=1}^J w^{p}_{kj} \cdot z_j(t)}}{e^{-I(t) \cdot N} \cdot e^{-I(t) \cdot J} \cdot \sum_{k'=1}^K  e^{\sum_{i=1}^N w^{i}_{k'i} \cdot x_i(t)} \cdot e^{\sum_{j=1}^J w^{p}_{k'j} \cdot z_j(t)}}\\
-&= \frac{e^{\sum_{i=1}^N w^{i}_{ki} \cdot x_i(t) + \sum_{j=1}^J w^{p}_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w^{i}_{k'i} \cdot x_i(t) + \sum_{j=1}^J w^{p}_{k'j} \cdot z_j(t)}}\\
+P(Y=k|X=x,Z=j) &= \frac{e^{\sum_{i=1}^N w{i}_{ki} \cdot x_i(t) - I(t)} \cdot e^{\sum_{j=1}^J w^{P}_{kj} \cdot z_j(t) - I(t)}}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t) - I(t)} \cdot e^{\sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t) - I(t)}}\\
+&= \frac{e^{-I(t) \cdot N + \sum_{i=1}^N w^{I}_{ki} \cdot x_i(t)} \cdot e^{-I(t) \cdot J + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K  e^{-I(t) \cdot N + \sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t)} \cdot e^{-I(t) \cdot J + \sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}}\\
+&= \frac{e^{-I(t) \cdot N} \cdot e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t)} \cdot e^{-I(t) \cdot J} \cdot e^{\sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)}}{e^{-I(t) \cdot N} \cdot e^{-I(t) \cdot J} \cdot \sum_{k'=1}^K  e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t)} \cdot e^{\sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}}\\
+&= \frac{e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}}\\
 &= \frac{e^{U_k(t)}}{\sum_{k'=1}^K e^{U_k'(t)}}\\
 &= q_k(t)
 \end{split}
