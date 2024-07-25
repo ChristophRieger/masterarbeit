@@ -40,7 +40,7 @@ numberYNeurons = 4 # output
 numberZNeurons = 4 # prior
 
 sigma = 0.01 # time frame in which spikes count as before output spike
-c = 4 # 10 seems good, scales weights to 0 ... 1
+c = 3 # 10 seems good, scales weights to 0 ... 1
 tauRise = 0.001
 tauDecay = 0.004  # might be onto something here, my problem gets better
 
@@ -185,10 +185,11 @@ for t in np.arange(0, simulationTime, dt):
     # transpose weights again because everything is fucked up
     weights = weights.T
     priorWeights = neuronFunctions.updateWeights(ATilde, priorWeights, ZNeuronsThatWantToFire[i], c, learningRate)
-    
+  if (t) % 1 == 0:
+      print("Finished simulation of t= " + str(t))
 # Simulation DONE ############
     
-directoryPath =  "fInput" + str(firingRate) + "_fPrior" + str(AfiringRate) + "_tauDecay" + str(tauDecay) + "_c" + str(c)
+directoryPath =  "training_" + str(firingRate) + "_" + str(AfiringRate) + "_" + str(tauDecay) + "_" + str(c)
 if not os.path.exists(directoryPath):
   os.mkdir(directoryPath)
 
@@ -220,52 +221,54 @@ np.save(directoryPath + "/priorWeights" + ".npy", priorWeights)
 
 # TRAINING PLOT
 colors = ['red', 'blue', 'black', 'green']
-fig = plt.figure(figsize=(12,8))
-gs = fig.add_gridspec(8, 2, hspace=1)
-gs2 = fig.add_gridspec(8, 2, wspace=0.4, hspace=25)
+fig = plt.figure(figsize=(12,16))
+gs = fig.add_gridspec(8, 2, hspace=0.4)
+gs2 = fig.add_gridspec(8, 2, wspace=0.3, hspace=1.4)
 # hspace seems to be capped and doesnt really influence the spacing anymore. 
 # but the .svg seems fine anyway, solve only if figure is not good enough.
-gs3 = fig.add_gridspec(8, 2, wspace=0.4, hspace=400)
+gs3 = fig.add_gridspec(8, 2, wspace=0.3, hspace=1.4)
 
 
-ax10 = fig.add_subplot(gs[0:2, 0])
-ax11 = fig.add_subplot(gs[0:2, 1])
-ax20 = fig.add_subplot(gs[2:4, 0])
-ax21 = fig.add_subplot(gs[2:4, 1])
+ax10 = fig.add_subplot(gs[0:1, 0])
+ax11 = fig.add_subplot(gs[0:1, 1])
+ax20 = fig.add_subplot(gs[1:2, 0])
+ax21 = fig.add_subplot(gs[1:2, 1])
 
-ax31 = fig.add_subplot(gs2[4:6, 0])
-ax32 = fig.add_subplot(gs2[4:6, 1])
+ax31 = fig.add_subplot(gs2[2:5, 0])
+ax32 = fig.add_subplot(gs2[2:5, 1])
 
-ax41 = fig.add_subplot(gs3[6:8, 0])
-ax42 = fig.add_subplot(gs3[6:8, 1])
+# ax41 = fig.add_subplot(gs3[5:8, 0])
+ax42 = fig.add_subplot(gs3[5:8, 0:2])
 
 # Add ghost axes and titles
 ax_firstRowFirstColumn = fig.add_subplot(gs[0:2, 0])
 ax_firstRowFirstColumn.axis('off')
-ax_firstRowFirstColumn.set_title('A', loc="left", x=-0.06,y=0.5, fontsize=16.0, fontweight='semibold')
+ax_firstRowFirstColumn.set_title('A', loc="left", x=-0.06,y=1, fontsize=16.0, fontweight='semibold')
 ax_firstRowSecondColumn = fig.add_subplot(gs[0:2, 1])
 ax_firstRowSecondColumn.axis('off')
-ax_firstRowSecondColumn.set_title('B', loc="left", x=-0.06,y=0.5, fontsize=16.0, fontweight='semibold')
+ax_firstRowSecondColumn.set_title('B', loc="left", x=-0.06,y=1, fontsize=16.0, fontweight='semibold')
 ax_secondRowFirstColumn = fig.add_subplot(gs[2:4, 0])
 ax_secondRowFirstColumn.axis('off')
-ax_secondRowFirstColumn.set_title('C', loc="left", x=-0.06,y=0.5, fontsize=16.0, fontweight='semibold')
+ax_secondRowFirstColumn.set_title('C', loc="left", x=-0.06,y=1.5, fontsize=16.0, fontweight='semibold')
 ax_secondRowSecondColumn = fig.add_subplot(gs[2:4, 1])
 ax_secondRowSecondColumn.axis('off')
-ax_secondRowSecondColumn.set_title('D', loc="left", x=-0.06,y=0.5, fontsize=16.0, fontweight='semibold')
+ax_secondRowSecondColumn.set_title('D', loc="left", x=-0.06,y=1.5, fontsize=16.0, fontweight='semibold')
 
 ax_thirdRowFirstColumn = fig.add_subplot(gs2[4:6, 0])
 ax_thirdRowFirstColumn.axis('off')
-ax_thirdRowFirstColumn.set_title('E', loc="left", x=-0.06, fontsize=16.0, fontweight='semibold')
+ax_thirdRowFirstColumn.set_title('E', loc="left", x=-0.06, y=2.425, fontsize=16.0, fontweight='semibold')
 ax_thirdRowSecondColumn = fig.add_subplot(gs2[4:6, 1])
 ax_thirdRowSecondColumn.axis('off')
-ax_thirdRowSecondColumn.set_title('F', loc="left", x=-0.151, fontsize=16.0, fontweight='semibold')
+# ax_thirdRowSecondColumn.set_title('F', loc="left", x=-0.151, y=2.425, fontsize=16.0, fontweight='semibold')
+ax_thirdRowSecondColumn.set_title('F', loc="left", x=-0.06, y=2.425, fontsize=16.0, fontweight='semibold')
 
-ax_fourthRowFirstColumn = fig.add_subplot(gs3[6:8, 0])
+ax_fourthRowFirstColumn = fig.add_subplot(gs3[6:8, 0:2])
 ax_fourthRowFirstColumn.axis('off')
-ax_fourthRowFirstColumn.set_title('G', loc="left", x=-0.06, fontsize=16.0, fontweight='semibold')
-ax_fourthRowSecondColumn = fig.add_subplot(gs3[6:8, 1])
-ax_fourthRowSecondColumn.axis('off')
-ax_fourthRowSecondColumn.set_title('H', loc="left", x=-0.151, fontsize=16.0, fontweight='semibold')
+ax_fourthRowFirstColumn.set_title('G', loc="left", x=-0.06, y=1.715, fontsize=16.0, fontweight='semibold')
+# ax_fourthRowSecondColumn = fig.add_subplot(gs3[6:8, 1])
+# ax_fourthRowSecondColumn.axis('off')
+# ax_fourthRowSecondColumn.set_title('H', loc="left", x=-0.151, y=1.715, fontsize=16.0, fontweight='semibold')
+
 
 # plot weights
 tab10 = ax10.table(cellText=np.around(np.exp(weights[:, 0::2]), 2), loc='center', cellLoc='center'
@@ -312,11 +315,12 @@ ax31.axvline(x=0, color="red", linestyle="dashed")
 ax31.axvline(x=0.2, color="red", linestyle="dashed")
 ax31.axvline(x=0.4, color="red", linestyle="dashed")
 ax31.axvline(x=0.6, color="red", linestyle="dashed")
-ax31.set_title("Output before learning")
+ax31.set_title("Output neuron activity before learning")
 ax31.title.set_size(14)
 ax31.set_ylabel("Output neuron", fontsize=12)
 ax31.set_xlabel("Time [s]", fontsize=12)
 ax31.tick_params(axis='both', labelsize=11)
+ax31.yaxis.set_ticks(np.arange(1,5, 1))
 
 # plot the last 120 Z spikes
 for i in range(len(YSpikes[0]) - len(YSpikes[0][-120:]), len(YSpikes[0])):
@@ -325,36 +329,37 @@ ax32.axvline(x=simulationTime, color="red", linestyle="dashed")
 ax32.axvline(x=simulationTime - 0.2, color="red", linestyle="dashed")
 ax32.axvline(x=simulationTime - 0.4, color="red", linestyle="dashed")
 ax32.axvline(x=simulationTime - 0.6, color="red", linestyle="dashed")
-ax32.set_title("Output after learning")
+ax32.set_title("Output neuron activity after learning")
 ax32.title.set_size(14)
 ax32.set_ylabel("Output neuron", fontsize=12)
 ax32.set_xlabel("Time [s]", fontsize=12)
 ax32.tick_params(axis='both', labelsize=11)
+ax32.yaxis.set_ticks(np.arange(1,5, 1))
+
 
 # show training progress (how many distinct Z fired during each image presentation duration)
 # remove first empty entry
-distinctZFiredHistory.pop(0)
-ax41.plot(distinctZFiredHistory)
-ax41.set_title("Training progress")
-ax41.title.set_size(14)
-ax41.set_ylabel("Output neurons spiking", fontsize=12)
-ax41.set_xlabel("Image shown", fontsize=12)
-ax41.tick_params(axis='both', labelsize=11)
+# distinctZFiredHistory.pop(0)
+# ax41.plot(distinctZFiredHistory)
+# ax41.set_title("Training progress")
+# ax41.title.set_size(14)
+# ax41.set_ylabel("# of output neurons spiking", fontsize=12)
+# ax41.set_xlabel("Image shown", fontsize=12)
+# ax41.tick_params(axis='both', labelsize=11)
 
 # show training progress (fraction of spikes of most common Z neuron to amount of overall Z spikes)
 ax42.plot(averageZFiredHistory)
-ax42.set_title("Certainty of the network")
+ax42.set_title("Relative activity of most active output neuron")
 ax42.title.set_size(14)
-ax42.set_ylabel("Certainty", fontsize=12)
+ax42.set_ylabel("Relative activity", fontsize=12)
 ax42.set_xlabel("Image shown", fontsize=12)
 ax42.tick_params(axis='both', labelsize=11)
 
 pickle.dump(fig, open(directoryPath + "/trainingPlot" + '.pickle','wb'))
-plt.savefig(directoryPath + "/trainingPlot.svg")  
-plt.savefig(directoryPath + "/trainingPlot.png")
-plt.savefig(directoryPath + "/trainingPlot.jpg") 
+plt.savefig(directoryPath + "/trainingPlot.svg", bbox_inches='tight')  
+plt.savefig(directoryPath + "/trainingPlot.png", bbox_inches='tight', dpi=300)
 plt.show()
-
+plt.close()
 
 
 

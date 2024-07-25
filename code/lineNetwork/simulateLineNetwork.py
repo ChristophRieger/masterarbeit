@@ -39,6 +39,7 @@ if useCustomValues:
   # customTauDecay = 
   # customC = False
   # customEnablePrior = False
+  # customDoubleSize = False
   # barYTicks = [0, 0.2, 0.4, 0.6]
   # barYLim = [0, 0.75]
   # # 1
@@ -76,6 +77,7 @@ if useCustomValues:
   # customTauDecay = 
   # customC = False
   # customEnablePrior = False
+  # customDoubleSize = False
   # barYTicks = [0, 0.2, 0.4, 0.6]
   # barYLim = [0, 0.75]
   # # 1
@@ -113,6 +115,7 @@ if useCustomValues:
   # customTauDecay = 
   # customC = False
   # customEnablePrior = True
+  # customDoubleSize = False
   # barYTicks = [0, 0.2, 0.4, 0.6, 0.8, 1]
   # barYLim = [0, 1]
   # # 1
@@ -153,6 +156,7 @@ if useCustomValues:
   # customTauDecay = 15
   # customC = False
   # customEnablePrior = False
+  # customDoubleSize = False
   # barYTicks = [0, 0.2, 0.4, 0.6]
   # barYLim = [0, 0.75]
   # # 1
@@ -189,6 +193,7 @@ if useCustomValues:
   # customTauDecay = 15 
   # customC = False
   # customEnablePrior = False
+  # customDoubleSize = False
   # barYTicks = [0, 0.2, 0.4, 0.6, 0.8]
   # barYLim = [0, 0.95]
   # # 1
@@ -225,6 +230,7 @@ if useCustomValues:
   # customTauDecay = 4 
   # customC = False
   # customEnablePrior = False
+  # customDoubleSize = False
   # barYTicks = [0, 0.2, 0.4, 0.6]
   # barYLim = [0, 0.75]
   # # 1
@@ -261,6 +267,7 @@ if useCustomValues:
   # customTauDecay = 15
   # customC = False
   # customEnablePrior = True
+  # customDoubleSize = False
   # barYTicks = [0, 0.2, 0.4, 0.6, 0.8, 1]
   # barYLim = [0, 1]
   # # 1
@@ -297,6 +304,7 @@ if useCustomValues:
   # customTauDecay = 4
   # customC = False
   # customEnablePrior = True
+  # customDoubleSize = False
   # barYTicks = [0, 0.2, 0.4, 0.6, 0.8, 1]
   # barYLim = [0, 1]
   # # 1
@@ -333,6 +341,7 @@ if useCustomValues:
   # customTauDecay = 4
   # customC = False
   # customEnablePrior = True
+  # customDoubleSize = False
   # barYTicks = [0, 0.2, 0.4, 0.6, 0.8, 1]
   # barYLim = [0, 1]
   # # 1
@@ -364,40 +373,116 @@ if useCustomValues:
   ########################################
   
   ########################################
+  # customFInput = 98
+  # customFPrior = 440
+  # customTauDecay = 4
+  # customC = False
+  # customEnablePrior = True
+  # customDoubleSize = False
+  # barYTicks = [0, 0.2, 0.4, 0.6, 0.8, 1]
+  # barYLim = [0, 1]
+  # # 1
+  # analysisProb.append([0.010, 0.977, 0.010, 0.002])
+  # simulProb.append([0.009, 0.979, 0.009, 0.004])
+  # simulStd.append([0.0016, 0.0020, 0.0010, 0.0009])
+  # # 2
+  # analysisProb.append([0.010, 0.967, 0.021, 0.002])
+  # simulProb.append([0.009, 0.963, 0.025, 0.003])
+  # simulStd.append([0.0015, 0.0023, 0.0020, 0.0008])
+  # # 3
+  # analysisProb.append([0.035, 0.957, 0.004, 0.004])
+  # simulProb.append([0.067, 0.916, 0.007, 0.009])
+  # simulStd.append([0.0051, 0.0051, 0.0012, 0.0019])
+  # # 4
+  # analysisProb.append([0.017, 0.977, 0.003, 0.003])
+  # simulProb.append([0.025, 0.955, 0.009, 0.011])
+  # simulStd.append([0.0031, 0.0033, 0.0012, 0.0019])
+  # # 5
+  # analysisProb.append([0.088, 0.308, 0.088, 0.515])
+  # simulProb.append([0.051, 0.379, 0.046, 0.523])
+  # simulStd.append([0.0035, 0.0084, 0.0027, 0.0084])
+  # # 6
+  # analysisProb.append([0.205, 0.205, 0.021, 0.570])
+  # simulProb.append([0.191, 0.188, 0.022, 0.600])
+  # simulStd.append([0.0080, 0.0061, 0.0021, 0.0116])
+  # customKLD = 0.0101
+  # customKLDStd = 0.0009
+  ########################################
+  
+  ########################################
+  # customFInput = 98
+  # customFPrior = 440
+  # customTauDecay = 4
+  # customC = False
+  # customEnablePrior = True
+  # customDoubleSize = True
+  # barYTicks = [0, 0.2, 0.4, 0.6, 0.8, 1]
+  # barYLim = [0, 1]
+  # # 1
+  # analysisProb.append([0.010, 0.977, 0.010, 0.002])
+  # simulProb.append([0.002, 0.996, 0.002, 0.000])
+  # simulStd.append([0.0008, 0.0011, 0.0007, 0.0002])
+  # # 2
+  # analysisProb.append([0.010, 0.967, 0.021, 0.002])
+  # simulProb.append([0.002, 0.982, 0.016, 0.000])
+  # simulStd.append([0.0007, 0.0026, 0.0025, 0.0002])
+  # # 3
+  # analysisProb.append([0.035, 0.957, 0.004, 0.004])
+  # simulProb.append([0.089, 0.907, 0.001, 0.002])
+  # simulStd.append([0.0058, 0.0059, 0.0004, 0.0009])
+  # # 4
+  # analysisProb.append([0.017, 0.977, 0.003, 0.003])
+  # simulProb.append([0.016, 0.979, 0.002, 0.003])
+  # simulStd.append([0.0021, 0.0023, 0.0006, 0.0010])
+  # # 5
+  # analysisProb.append([0.088, 0.308, 0.088, 0.515])
+  # simulProb.append([0.022, 0.799, 0.019, 0.160])
+  # simulStd.append([0.0025, 0.0071, 0.0018, 0.0066])
+  # # 6
+  # analysisProb.append([0.205, 0.205, 0.021, 0.570])
+  # simulProb.append([0.356, 0.352, 0.007, 0.285])
+  # simulStd.append([0.0088, 0.0100, 0.0013, 0.0081])
+  # customKLD = 0.1411
+  # customKLDStd = 0
+  ########################################
+  
+  ########################################
   customFInput = 98
   customFPrior = 440
   customTauDecay = 4
-  customC = False
+  customC = 3
   customEnablePrior = True
+  customDoubleSize = False
   barYTicks = [0, 0.2, 0.4, 0.6, 0.8, 1]
   barYLim = [0, 1]
   # 1
   analysisProb.append([0.010, 0.977, 0.010, 0.002])
-  simulProb.append([0.009, 0.979, 0.009, 0.004])
-  simulStd.append([0.0016, 0.0020, 0.0010, 0.0009])
+  simulProb.append([0.004, 0.988, 0.005, 0.003])
+  simulStd.append([0.0010, 0.0016, 0.0011, 0.0008])
   # 2
   analysisProb.append([0.010, 0.967, 0.021, 0.002])
-  simulProb.append([0.009, 0.963, 0.025, 0.003])
-  simulStd.append([0.0015, 0.0023, 0.0020, 0.0008])
+  simulProb.append([0.005, 0.977, 0.014, 0.004])
+  simulStd.append([0.0009, 0.0028, 0.0018, 0.0012])
   # 3
   analysisProb.append([0.035, 0.957, 0.004, 0.004])
-  simulProb.append([0.067, 0.916, 0.007, 0.009])
-  simulStd.append([0.0051, 0.0051, 0.0012, 0.0019])
+  simulProb.append([0.035, 0.953, 0.005, 0.006])
+  simulStd.append([0.0026, 0.0035, 0.0010, 0.0014])
   # 4
   analysisProb.append([0.017, 0.977, 0.003, 0.003])
-  simulProb.append([0.025, 0.955, 0.009, 0.011])
-  simulStd.append([0.0031, 0.0033, 0.0012, 0.0019])
+  simulProb.append([0.012, 0.977, 0.004, 0.006])
+  simulStd.append([0.0018, 0.0025, 0.0009, 0.0014])
   # 5
   analysisProb.append([0.088, 0.308, 0.088, 0.515])
-  simulProb.append([0.051, 0.379, 0.046, 0.523])
-  simulStd.append([0.0035, 0.0084, 0.0027, 0.0084])
+  simulProb.append([0.039, 0.202, 0.032, 0.727])
+  simulStd.append([0.0027, 0.0070, 0.0023, 0.0063])
   # 6
   analysisProb.append([0.205, 0.205, 0.021, 0.570])
-  simulProb.append([0.191, 0.188, 0.022, 0.600])
-  simulStd.append([0.0080, 0.0061, 0.0021, 0.0116])
-  customKLD = 0.0101
-  customKLDStd = 0.0009
+  simulProb.append([0.144, 0.099, 0.019, 0.738])
+  simulStd.append([0.0053, 0.0049, 0.0021, 0.0074])
+  customKLD = 0.0342
+  customKLDStd = 0.0016
   ########################################
+  
   
 plt.close("all")
 
@@ -675,7 +760,9 @@ for gridIterator in range(1):
       # Simulation DONE
       
       if useCustomValues:
-        if customC:
+        if customDoubleSize:
+          directoryPath =  "customDouble_fInput" + str(customFInput) + "_fPrior" + str(customFPrior) + "_tauDecay" + str(customTauDecay)
+        elif customC:
           directoryPath =  "custom_fInput" + str(customFInput) + "_fPrior" + str(customFPrior) + "_tauDecay" + str(customTauDecay) + "_c" + str(customC)
         else:  
           directoryPath =  "custom_fInput" + str(customFInput) + "_fPrior" + str(customFPrior) + "_tauDecay" + str(customTauDecay)
@@ -724,6 +811,48 @@ for gridIterator in range(1):
   counter = 0
   klDivergenceList = [[],[],[],[],[],[]]
   
+  if customDoubleSize:
+    images = [[],[],[]]
+    # 1
+    image = np.array([[255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
+    prior = 1
+    images[0].append(image)
+    images[1].append(prior)
+    # for each pixel there are 2 neurons, this vector represents the active neurons for non active pixels
+    images[2].append(255 - image)
+    # 2
+    image = np.array([[255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
+    prior = 1
+    images[0].append(image)
+    images[1].append(prior)
+    images[2].append(255 - image)
+    # 3
+    image = np.array([[255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
+    prior = 1
+    images[0].append(image)
+    images[1].append(prior)
+    images[2].append(255 - image)
+    # 4
+    image = np.array([[255, 255, 255, 255, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
+    prior = 1
+    images[0].append(image)
+    images[1].append(prior)
+    images[2].append(255 - image)
+
+    # 5
+    image = np.array([[255, 255, 255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
+    prior = 3
+    images[0].append(image)
+    images[1].append(prior)
+    # for each pixel there are 2 neurons, this vector represents the active neurons for non active pixels
+    images[2].append(255 - image)
+    # 6
+    image = np.array([[255, 255, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]], dtype=np.uint8)
+    prior = 3
+    images[0].append(image)
+    images[1].append(prior)
+    images[2].append(255 - image)
+  
   for i in range(int(len(imagesEncoded)/2)):
     for j in range(2):
       imageEncoded = imagesEncoded[counter]
@@ -759,7 +888,10 @@ for gridIterator in range(1):
       # but the .svg seems fine anyway, solve only if figure is not good enough.
       # gs3 = fig.add_gridspec(6, 2, wspace=0.4, hspace=400)
       
-      ax10 = fig.add_subplot(gs[(0 + rowsMultiplicator*i + inputDataOffset) : (0 + rowsMultiplicator*i + inputDataOffset) + analyisisMultiplicator, 0 + 2 + 10*j:10 + 10*j - 2])
+      if customDoubleSize:
+        ax10 = fig.add_subplot(gs[(0 + rowsMultiplicator*i + inputDataOffset) : (0 + rowsMultiplicator*i + inputDataOffset) + analyisisMultiplicator, 0 +1 + 10*j:10 + 10*j - 1])
+      else:
+        ax10 = fig.add_subplot(gs[(0 + rowsMultiplicator*i + inputDataOffset) : (0 + rowsMultiplicator*i + inputDataOffset) + analyisisMultiplicator, 0 + 2 + 10*j:10 + 10*j - 2])
       
       # ax21 = fig.add_subplot(gs[1 + 2*i, 0 + 10*j:4 + 10*j])
       # ax22 = fig.add_subplot(gs[1 + 2*i, 6 + 10*j:10 + 10*j])
@@ -781,7 +913,10 @@ for gridIterator in range(1):
       # plot input data
       ax10.imshow(images[0][counter], cmap='gray')
       if customEnablePrior:
-        rect = patches.Rectangle((-0.5 + prior*2,-0.5), 3, 1, linewidth=8, edgecolor='r', facecolor='none')
+        if customDoubleSize:
+          rect = patches.Rectangle((-0.5 + prior*4,-0.5), 6, 1, linewidth=6, edgecolor='r', facecolor='none')
+        else:
+          rect = patches.Rectangle((-0.5 + prior*2,-0.5), 3, 1, linewidth=8, edgecolor='r', facecolor='none')
         ax10.add_patch(rect)
         rect.set_clip_path(rect)
       ax10.axvline(x=0.5)
@@ -792,12 +927,25 @@ for gridIterator in range(1):
       ax10.axvline(x=5.5)
       ax10.axvline(x=6.5)
       ax10.axvline(x=7.5)
-      ax10.axvline(x=8.5)
+      ax10.axvline(x=8.5)    
+      if customDoubleSize:
+        ax10.axvline(x=9.5)
+        ax10.axvline(x=10.5)
+        ax10.axvline(x=11.5)
+        ax10.axvline(x=12.5)
+        ax10.axvline(x=13.5)
+        ax10.axvline(x=14.5)
+        ax10.axvline(x=15.5)
+        ax10.axvline(x=16.5)
+        ax10.axvline(x=17.5)
       ax10.set_ylim([-0.5, 0.5])
       ax10.set_title("Input data", fontsize=14)
       ax10.axes.yaxis.set_visible(False)
       ax10.tick_params(axis='x', which='major', labelsize=12)
-      ax10.set_xticks([0,1,2,3,4,5,6,7,8])
+      if customDoubleSize:
+        ax10.set_xticks([0,2,4,6,8,10, 12, 14, 16])
+      else:
+        ax10.set_xticks([0,1,2,3,4,5,6,7,8])
 
       
       x = np.arange(4)
@@ -872,7 +1020,11 @@ for gridIterator in range(1):
   ax3.legend(handles=[legend1, legend2], loc=(0.293, 56.5), prop={'size': 12})
   
   if useCustomValues:
-    if customC:
+    if customDoubleSize:
+      pickle.dump(fig, open(directoryPath + "/doubleSize_" + str(customFInput) + "_" + str(customFPrior) + "_" + str(customTauDecay) + '.pickle','wb'))
+      plt.savefig(directoryPath + "/doubleSize_" + str(customFInput) + "_" + str(customFPrior) + "_" + str(customTauDecay) + ".svg", bbox_inches='tight')  
+      plt.savefig(directoryPath + "/doubleSize_" + str(customFInput) + "_" + str(customFPrior) + "_" + str(customTauDecay) + ".png", bbox_inches='tight', dpi=300)
+    elif customC:
       pickle.dump(fig, open(directoryPath + "/trainingEvaluation_" + str(customFInput) + "_" + str(customFPrior) + "_" + str(customTauDecay) + "_c" + str(customC) + '.pickle','wb'))
       plt.savefig(directoryPath + "/trainingEvaluation_" + str(customFInput) + "_" + str(customFPrior) + "_" + str(customTauDecay) + "_c" + str(customC) + ".svg", bbox_inches='tight')  
       plt.savefig(directoryPath + "/trainingEvaluation_" + str(customFInput) + "_" + str(customFPrior) + "_" + str(customTauDecay) + "_c" + str(customC) + ".png", bbox_inches='tight', dpi=300)
