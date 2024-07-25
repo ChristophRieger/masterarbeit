@@ -65,6 +65,7 @@ The prior weights $w^P$ were derived by
 \label{eqn:1DWeightsPrior}
 w^P = \ln(P^{Y|Z}).
 \end{equation}
+%TODO say that the 6 different input images were handpicked to analyse different edge cases
 The network was simulated for six different input images for each parameter set. After the image presentation period of each input image the amount of the output spikes of different classes were counted and their proportions were calculated to yield the "simulation output probabilities" in later plots. The Kullback-Leibler divergence was chosen to compare the divergence of the analytic and the simulated results of the network. This metric indicates how much two probability distributions diverge from each other. The goal of the parameter search of the simulation was to minimize the Kullback-Leibler divergence. After showing an output image to the network the Kullback-Leibler divergence was calculated as
 \begin{equation}
 \begin{split}
@@ -105,9 +106,11 @@ yielded the "Analysis output probability" $P(Y = i|X = x, Z = j)$.
 To simplify the parameter fitting process the network was at first simulated with inactive prior neurons. Only after determining the best values for $f_{input}$ and $\tau_{decay}$ were the prior neurons reactivated and $f_{prior}$ was fitted. The values 0.015 seconds and 0.004 seconds for $\tau_{decay}$ were used for the simulation and compared. For each of these values an optimal value for $f_{input}$ was found by simulating different values and looking for the value that yields the smallest Kullback-Leibler divergence.
 
 \subparagraph{$\tau_{decay} = 0.015 seconds$, $f_{prior} = 0 Hz$}
-Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. After identifying the input firing rate with the smallest Kullback-Leibler divergence the network was simulated again for $f_{input}$ values $\pm$ 10 Hz in steps of 2 Hz of the best value. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau15}. This process yielded the best input firing rate of 42 Hz. The results of this parameter combination can be seen in Figure \ref{fig:1D_42_0_15}. In this figure six different input images can be seen marked with the letter "A". The active pixels are shown in black.  The posterior probability of the mathematical analysis can be seen next to the letter "B". And finally the proportion of output spikes of the different output neurons can be seen next to the letter "C". Each probability of "C" has a standard deviation next to it, which was calculated over 20 runs of the network. At the bottom the value of the Kullback-Leibler divergence is given, with its standard deviation next to it.
+Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. After identifying the input firing rate with the smallest Kullback-Leibler divergence the network was simulated again for $f_{input}$ values $\pm$ 10 Hz in steps of 2 Hz of the best value. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau15}. This process yielded the best input firing rate of 42 Hz. The results of this parameter combination can be seen in Figure \ref{fig:1D_42_0_15}. In this figure six different input images can be seen in A. The active pixels are shown in black. In B the posterior probabilities of the mathematical analysis are given by the red bars and the simulation output probabilities are given by the blue bars. Each simulation output probability has its standard deviation marked by a black bar. At the bottom the value of the Kullback-Leibler divergence is given, with its standard deviation. The exact numeric probabilities are given in Table \ref{tab:1D_42_0_15}.
 %TODO replace ALL result plots and add table with values
+%TODO update all result plot captions
 %TODO mention tables whenever you insert them.
+%TODO update references to new result plots, as no more values are inside them.
 %TODO Fix alls \textbf in plots of this file, they seem fucked.
 
 \begin{figure}
@@ -118,39 +121,72 @@ Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. A
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_42_0_15.png}
-  \caption{\textbf{Analysis and simulation result. Parameters: } $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities. \textbf{C} Proportions of the spikes of the output neurons during the simulation and their standard deviations in brackets.}
+  \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
   \label{fig:1D_42_0_15}
 \end{figure}
 
-%TODO first table test
 \begin{table}[]
-\begin{tabular}{|c|cc|cc|cc|}
+\label{tab:1D_42_0_15}
+\small
+\tabcolsep=0.11cm
+\begin{tabular}{|c|cc|cc|}
 \hline
-      & \multicolumn{2}{c|}{Image 1}                       & \multicolumn{2}{c|}{Image 2}                       & \multicolumn{2}{c|}{Image 3}                       \\ \hline
-      & \multicolumn{1}{c|}{Analysis} & Simulation         & \multicolumn{1}{c|}{Analysis} & Simulation         & \multicolumn{1}{c|}{Analysis} & Simulation         \\ \hline
-$y_0$ & \multicolumn{1}{c|}{0.175}    & 0.124 $\pm$ 0.0061 & \multicolumn{1}{c|}{0.143}    & 0.104 $\pm$ 0.0059 & \multicolumn{1}{c|}{0.453}    & 0.43 $\pm$ 0.0089  \\ \hline
-$y_1$ & \multicolumn{1}{c|}{0.612}    & 0.699 $\pm$ 0.0093 & \multicolumn{1}{c|}{0.518}    & 0.587 $\pm$ 0.009  & \multicolumn{1}{c|}{0.453}    & 0.421 $\pm$ 0.0073 \\ \hline
-$y_2$ & \multicolumn{1}{c|}{0.175}    & 0.121 $\pm$ 0.0058 & \multicolumn{1}{c|}{0.304}    & 0.266 $\pm$ 0.0067 & \multicolumn{1}{c|}{0.047}    & 0.07 $\pm$ 0.0045  \\ \hline
-$y_3$ & \multicolumn{1}{c|}{0.038}    & 0.056 $\pm$ 0.0033 & \multicolumn{1}{c|}{0.035}    & 0.043 $\pm$ 0.0025 & \multicolumn{1}{c|}{0.047}    & 0.08 $\pm$ 0.0042  \\ \hline
-      & \multicolumn{2}{c|}{Image 4}                       & \multicolumn{2}{c|}{Image 5}                       & \multicolumn{2}{c|}{Image 6}                       \\ \hline
-$y_0$ & \multicolumn{1}{c|}{0.291}    & 0.245 $\pm$ 0.0065 & \multicolumn{1}{c|}{0.175}    & 0.124 $\pm$ 0.0046 & \multicolumn{1}{c|}{0.453}    & 0.428 $\pm$ 0.0116 \\ \hline
-$y_1$ & \multicolumn{1}{c|}{0.613}    & 0.553 $\pm$ 0.0072 & \multicolumn{1}{c|}{0.612}    & 0.697 $\pm$ 0.0069 & \multicolumn{1}{c|}{0.453}    & 0.421 $\pm$ 0.0111 \\ \hline
-$y_2$ & \multicolumn{1}{c|}{0.048}    & 0.09 $\pm$ 0.0045  & \multicolumn{1}{c|}{0.175}    & 0.123 $\pm$ 0.005  & \multicolumn{1}{c|}{0.047}    & 0.07 $\pm$ 0.0034  \\ \hline
-$y_3$ & \multicolumn{1}{c|}{0.048}    & 0.111 $\pm$ 0.0053 & \multicolumn{1}{c|}{0.038}    & 0.056 $\pm$ 0.0043 & \multicolumn{1}{c|}{0.047}    & 0.081 $\pm$ 0.0047 \\ \hline
+                       & \multicolumn{2}{c|}{Image 1}                       & \multicolumn{2}{c|}{Image 2}                       \\ \hline
+                       & \multicolumn{1}{c|}{Analysis} & Simulation         & \multicolumn{1}{c|}{Analysis} & Simulation         \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.175}    & 0.124 $\pm$ 0.0061 & \multicolumn{1}{c|}{0.143}    & 0.104 $\pm$ 0.0059 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.612}    & 0.699 $\pm$ 0.0093 & \multicolumn{1}{c|}{0.518}    & 0.587 $\pm$ 0.0090 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.175}    & 0.121 $\pm$ 0.0058 & \multicolumn{1}{c|}{0.304}    & 0.266 $\pm$ 0.0067 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.038}    & 0.056 $\pm$ 0.0033 & \multicolumn{1}{c|}{0.035}    & 0.043 $\pm$ 0.0025 \\ \hline
+                       & \multicolumn{2}{c|}{Image 3}                       & \multicolumn{2}{c|}{Image 4}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.453}    & 0.430 $\pm$ 0.0089 & \multicolumn{1}{c|}{0.291}    & 0.245 $\pm$ 0.0065 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.453}    & 0.421 $\pm$ 0.0073 & \multicolumn{1}{c|}{0.613}    & 0.553 $\pm$ 0.0072 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.047}    & 0.070 $\pm$ 0.0045 & \multicolumn{1}{c|}{0.048}    & 0.090 $\pm$ 0.0045 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.047}    & 0.080 $\pm$ 0.0042 & \multicolumn{1}{c|}{0.048}    & 0.111 $\pm$ 0.0053 \\ \hline
+						& \multicolumn{2}{c|}{Image 5}                       & \multicolumn{2}{c|}{Image 6}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.175}    & 0.124 $\pm$ 0.0046 & \multicolumn{1}{c|}{0.453}    & 0.428 $\pm$ 0.0116 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.612}    & 0.697 $\pm$ 0.0069 & \multicolumn{1}{c|}{0.453}    & 0.421 $\pm$ 0.0111 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.175}    & 0.123 $\pm$ 0.0050 & \multicolumn{1}{c|}{0.047}    & 0.070 $\pm$ 0.0034 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.038}    & 0.056 $\pm$ 0.0043 & \multicolumn{1}{c|}{0.047}    & 0.081 $\pm$ 0.0047 \\ \hline
 \end{tabular}
-\caption{Analysis and simulation output probabilities for $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$}
+\caption{\textbf{Analysis and simulation output probabilities. } Parameters: $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$}
 \end{table}
 
-When $f_{input}$ was 70 Hz the results of the analysis and the simulation differed more as can be seen in Figure \ref{fig:1D_70_0_15}.
+When $f_{input}$ was 70 Hz the results of the analysis and the simulation differed more as can be seen in Figure \ref{fig:1D_70_0_15} and Table \ref{tab:1D_70_0_15}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_70_0_15.png}
-  \caption{\textbf{Analysis and simulation result. Parameters: }$f_{input} = 70 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. The red borders indicate the class of the prior. \textbf{B} Analytically calculated posterior probabilities. \textbf{C} Proportions of the spikes of the output neurons during the simulation and their standard deviations in brackets.}
+    \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 70 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
   \label{fig:1D_70_0_15}
 \end{figure}
 
+\begin{table}[]
+\label{tab:1D_70_0_15}
+\small
+\tabcolsep=0.11cm
+\begin{tabular}{|c|cc|cc|}
+\hline
+                       & \multicolumn{2}{c|}{Image 1}                       & \multicolumn{2}{c|}{Image 2}                       \\ \hline
+                       & \multicolumn{1}{c|}{Analysis} & Simulation         & \multicolumn{1}{c|}{Analysis} & Simulation         \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.175}    & 0.061 $\pm$ 0.0038 & \multicolumn{1}{c|}{0.143}    & 0.049 $\pm$ 0.0027 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.612}    & 0.861 $\pm$ 0.0065 & \multicolumn{1}{c|}{0.518}    & 0.715 $\pm$ 0.0083 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.175}    & 0.061 $\pm$ 0.0041 & \multicolumn{1}{c|}{0.304}    & 0.226 $\pm$ 0.0070 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.038}    & 0.017 $\pm$ 0.0016 & \multicolumn{1}{c|}{0.035}    & 0.011 $\pm$ 0.0017 \\ \hline
+                       & \multicolumn{2}{c|}{Image 3}                       & \multicolumn{2}{c|}{Image 4}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.453}    & 0.472 $\pm$ 0.0100 & \multicolumn{1}{c|}{0.291}    & 0.207 $\pm$ 0.0067 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.453}    & 0.464 $\pm$ 0.0101 & \multicolumn{1}{c|}{0.613}    & 0.685 $\pm$ 0.0080 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.047}    & 0.027 $\pm$ 0.0027 & \multicolumn{1}{c|}{0.048}    & 0.043 $\pm$ 0.0037 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.047}    & 0.037 $\pm$ 0.0032 & \multicolumn{1}{c|}{0.048}    & 0.065 $\pm$ 0.0042 \\ \hline
+						& \multicolumn{2}{c|}{Image 5}                       & \multicolumn{2}{c|}{Image 6}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.175}    & 0.061 $\pm$ 0.0033 & \multicolumn{1}{c|}{0.453}    & 0.475 $\pm$ 0.0086 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.612}    & 0.864 $\pm$ 0.0062 & \multicolumn{1}{c|}{0.453}    & 0.459 $\pm$ 0.0087 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.175}    & 0.057 $\pm$ 0.0036 & \multicolumn{1}{c|}{0.047}    & 0.028 $\pm$ 0.0018 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.038}    & 0.018 $\pm$ 0.0022 & \multicolumn{1}{c|}{0.047}    & 0.038 $\pm$ 0.0032 \\ \hline
+\end{tabular}
+\caption{\textbf{Analysis and simulation output probabilities. } Parameters: $f_{input} = 70 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$}
+\end{table}
+
 \subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{prior} = 0 Hz$}
-For this parameter combination values between 50 and 150 Hz for $f_{input}$ in steps of 10 Hz were simulated. Analogously to the previous parameter set after finding the best input firing rate the search was performed in finer steps until the best value was determined as 88 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau4}. The result of the simulation with those parameters can be seen in Figure \ref{fig:1D_88_0_4}.
+For this parameter combination values between 50 and 150 Hz for $f_{input}$ in steps of 10 Hz were simulated. Analogously to the previous parameter set after finding the best input firing rate the search was performed in finer steps until the best value was determined as 88 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau4}. The result of the simulation with those parameters can be seen in Figure \ref{fig:1D_88_0_4} and Table \ref{tab:1D_88_0_4}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/KLDvsfInput_fPrior0tau4.png}
@@ -160,14 +196,40 @@ For this parameter combination values between 50 and 150 Hz for $f_{input}$ in s
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_0_4.png}
-  \caption{\textbf{Analysis and simulation result. Parameters: } $f_{input} = 88 Hz, f_{prior} = 0 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities. \textbf{C} Proportions of the spikes of the output neurons during the simulation and their standard deviations in brackets.}
+   \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 88 Hz, f_{prior} = 0 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
   \label{fig:1D_88_0_4}
 \end{figure}
+
+\begin{table}[]
+\label{tab:1D_88_0_4}
+\small
+\tabcolsep=0.11cm
+\begin{tabular}{|c|cc|cc|}
+\hline
+                       & \multicolumn{2}{c|}{Image 1}                       & \multicolumn{2}{c|}{Image 2}                       \\ \hline
+                       & \multicolumn{1}{c|}{Analysis} & Simulation         & \multicolumn{1}{c|}{Analysis} & Simulation         \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.175}    & 0.126 $\pm$ 0.0050 & \multicolumn{1}{c|}{0.143}    & 0.106 $\pm$ 0.0054 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.612}    & 0.695 $\pm$ 0.0066 & \multicolumn{1}{c|}{0.518}    & 0.587 $\pm$ 0.0098 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.175}    & 0.124 $\pm$ 0.0049 & \multicolumn{1}{c|}{0.304}    & 0.264 $\pm$ 0.0072 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.038}    & 0.054 $\pm$ 0.0039 & \multicolumn{1}{c|}{0.035}    & 0.043 $\pm$ 0.0028 \\ \hline
+                       & \multicolumn{2}{c|}{Image 3}                       & \multicolumn{2}{c|}{Image 4}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.453}    & 0.429 $\pm$ 0.0080 & \multicolumn{1}{c|}{0.291}    & 0.240 $\pm$ 0.0044 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.453}    & 0.421 $\pm$ 0.0083 & \multicolumn{1}{c|}{0.613}    & 0.556 $\pm$ 0.0084 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.047}    & 0.070 $\pm$ 0.0037 & \multicolumn{1}{c|}{0.048}    & 0.095 $\pm$ 0.0036 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.047}    & 0.080 $\pm$ 0.0044 & \multicolumn{1}{c|}{0.048}    & 0.109 $\pm$ 0.0058 \\ \hline
+						& \multicolumn{2}{c|}{Image 5}                       & \multicolumn{2}{c|}{Image 6}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.175}    & 0.125 $\pm$ 0.0044 & \multicolumn{1}{c|}{0.453}    & 0.426 $\pm$ 0.0085 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.612}    & 0.697 $\pm$ 0.0072 & \multicolumn{1}{c|}{0.453}    & 0.424 $\pm$ 0.0068 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.175}    & 0.124 $\pm$ 0.0038 & \multicolumn{1}{c|}{0.047}    & 0.072 $\pm$ 0.0031 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.038}    & 0.054 $\pm$ 0.0032 & \multicolumn{1}{c|}{0.047}    & 0.078 $\pm$ 0.0047 \\ \hline
+\end{tabular}
+\caption{\textbf{Analysis and simulation output probabilities. } Parameters: $f_{input} = 88 Hz, f_{prior} = 0 Hz, \tau_{decay} = 4 ms$}
+\end{table}
 
 \paragraph{Simulation results with prior}
 After determining the best input firing rates for two different values of $\tau_{decay}$, the prior neurons were activated and the best prior firing rate $f_{prior}$ was fitted.
 \subparagraph{$\tau_{decay} = 0.015 seconds$, $f_{input} = 42 Hz$}
-The search for the best value of $f_{prior}$ was performed in the same manner as for $f_{input}$. Values between 140 and 240 Hz were simulated and a prior firing rate of 222 Hz performed the best. The result of this search can be seen in Figure \ref{fig:1D_KLD_fInput42_tau15}. The simulation results can be seen in Figure \ref{fig:1D_42_222_15}. The value of the prior is indicated by the red border which is three pixels wide and centered at the center position of the corresponding output class.
+The search for the best value of $f_{prior}$ was performed in the same manner as for $f_{input}$. Values between 140 and 240 Hz were simulated and a prior firing rate of 222 Hz performed the best. The result of this search can be seen in Figure \ref{fig:1D_KLD_fInput42_tau15}. The simulation results can be seen in Figure \ref{fig:1D_42_222_15} and Table \ref{tab:1D_42_222_15}. In Figure \ref{fig:1D_42_222_15} the value of the prior is indicated by the red border which is three pixels wide and centered at the center position of the corresponding output class.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/KLDvsfPrior_fInput42tau15.png}
@@ -177,12 +239,38 @@ The search for the best value of $f_{prior}$ was performed in the same manner as
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_42_222_15.png}
-  \caption{\textbf{Analysis and simulation result. Parameters: } $f_{input} = 42 Hz, f_{prior} = 222 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities. \textbf{C} Proportions of the spikes of the output neurons during the simulation and their standard deviations in brackets.}
+     \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 42 Hz, f_{prior} = 222 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
   \label{fig:1D_42_222_15}
 \end{figure}
 
+\begin{table}[]
+\label{tab:1D_42_222_15}
+\small
+\tabcolsep=0.11cm
+\begin{tabular}{|c|cc|cc|}
+\hline
+                       & \multicolumn{2}{c|}{Image 1}                       & \multicolumn{2}{c|}{Image 2}                       \\ \hline
+                       & \multicolumn{1}{c|}{Analysis} & Simulation         & \multicolumn{1}{c|}{Analysis} & Simulation         \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.010}    & 0.015 $\pm$ 0.0021 & \multicolumn{1}{c|}{0.010}    & 0.013 $\pm$ 0.0016 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.977}    & 0.962 $\pm$ 0.0030 & \multicolumn{1}{c|}{0.967}    & 0.938 $\pm$ 0.0040 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.010}    & 0.015 $\pm$ 0.0017 & \multicolumn{1}{c|}{0.021}    & 0.042 $\pm$ 0.0032 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.002}    & 0.008 $\pm$ 0.0016 & \multicolumn{1}{c|}{0.002}    & 0.007 $\pm$ 0.0013 \\ \hline
+                       & \multicolumn{2}{c|}{Image 3}                       & \multicolumn{2}{c|}{Image 4}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.035}    & 0.084 $\pm$ 0.0038 & \multicolumn{1}{c|}{0.017}    & 0.039 $\pm$ 0.0033 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.957}    & 0.891 $\pm$ 0.0046 & \multicolumn{1}{c|}{0.977}    & 0.931 $\pm$ 0.0045 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.004}    & 0.010 $\pm$ 0.0018 & \multicolumn{1}{c|}{0.003}    & 0.012 $\pm$ 0.0017 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.004}    & 0.015 $\pm$ 0.0016 & \multicolumn{1}{c|}{0.003}    & 0.018 $\pm$ 0.0024 \\ \hline
+						& \multicolumn{2}{c|}{Image 5}                       & \multicolumn{2}{c|}{Image 6}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.088}    & 0.050 $\pm$ 0.0033 & \multicolumn{1}{c|}{0.205}    & 0.175 $\pm$ 0.0077 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.308}    & 0.321 $\pm$ 0.0087 & \multicolumn{1}{c|}{0.205}    & 0.172 $\pm$ 0.0106 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.088}    & 0.043 $\pm$ 0.0039 & \multicolumn{1}{c|}{0.021}    & 0.021 $\pm$ 0.0018 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.587 $\pm$ 0.0105 & \multicolumn{1}{c|}{0.570}    & 0.632 $\pm$ 0.0158 \\ \hline
+\end{tabular}
+\caption{\textbf{Analysis and simulation output probabilities. } Parameters: $f_{input} = 42 Hz, f_{prior} = 222 Hz, \tau_{decay} = 15 ms$}
+\end{table}
+
 \subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{input} = 88 Hz$}
-The search for the best value of $f_{prior}$ was performed in the same manner as for $f_{input}$. Values between 360 and 460 Hz were simulated and a prior firing rate of 440 Hz performed the best. The result of this search can be seen in Figure \ref{fig:1D_KLD_fInput88_tau4}. The results of this parameter combination are given in Figure \ref{fig:1D_88_440_4}.
+The search for the best value of $f_{prior}$ was performed in the same manner as for $f_{input}$. Values between 360 and 460 Hz were simulated and a prior firing rate of 440 Hz performed the best. The result of this search can be seen in Figure \ref{fig:1D_KLD_fInput88_tau4}. The results of this parameter combination are given in Figure \ref{fig:1D_88_440_4} and Table \ref{tab:1D_88_440_4}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/KLDvsfPrior_fInput88tau4.png}
@@ -192,20 +280,73 @@ The search for the best value of $f_{prior}$ was performed in the same manner as
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_440_4.png}
-  \caption{\textbf{Analysis and simulation result. Parameters: } $f_{input} = 88 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities. \textbf{C} Proportions of the spikes of the output neurons during the simulation and their standard deviations in brackets.}
+       \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 88 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
   \label{fig:1D_88_440_4}
 \end{figure}
 
-To demonstrate the impact of rising $f_{prior}$ it was set to 600 Hz and the results can be seen in Figure \ref{fig:1D_88_600_4}.
+\begin{table}[]
+\label{tab:1D_88_440_4}
+\small
+\tabcolsep=0.11cm
+\begin{tabular}{|c|cc|cc|}
+\hline
+                       & \multicolumn{2}{c|}{Image 1}                       & \multicolumn{2}{c|}{Image 2}                       \\ \hline
+                       & \multicolumn{1}{c|}{Analysis} & Simulation         & \multicolumn{1}{c|}{Analysis} & Simulation         \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.010}    & 0.011 $\pm$ 0.0016 & \multicolumn{1}{c|}{0.010}    & 0.010 $\pm$ 0.0017 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.977}    & 0.974 $\pm$ 0.0026 & \multicolumn{1}{c|}{0.967}    & 0.957 $\pm$ 0.0034 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.010}    & 0.010 $\pm$ 0.0019 & \multicolumn{1}{c|}{0.021}    & 0.028 $\pm$ 0.0036 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.002}    & 0.005 $\pm$ 0.0013 & \multicolumn{1}{c|}{0.002}    & 0.005 $\pm$ 0.0011 \\ \hline
+                       & \multicolumn{2}{c|}{Image 3}                       & \multicolumn{2}{c|}{Image 4}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.035}    & 0.066 $\pm$ 0.0031 & \multicolumn{1}{c|}{0.017}    & 0.026 $\pm$ 0.0030 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.957}    & 0.915 $\pm$ 0.0044 & \multicolumn{1}{c|}{0.977}    & 0.952 $\pm$ 0.0039 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.004}    & 0.009 $\pm$ 0.0014 & \multicolumn{1}{c|}{0.003}    & 0.009 $\pm$ 0.0017 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.004}    & 0.011 $\pm$ 0.0018 & \multicolumn{1}{c|}{0.003}    & 0.012 $\pm$ 0.0020 \\ \hline
+						& \multicolumn{2}{c|}{Image 5}                       & \multicolumn{2}{c|}{Image 6}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.088}    & 0.052 $\pm$ 0.0027 & \multicolumn{1}{c|}{0.205}    & 0.172 $\pm$ 0.0061 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.308}    & 0.328 $\pm$ 0.0085 & \multicolumn{1}{c|}{0.205}    & 0.174 $\pm$ 0.0059 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.088}    & 0.046 $\pm$ 0.0031 & \multicolumn{1}{c|}{0.021}    & 0.025 $\pm$ 0.0025 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.573 $\pm$ 0.0089 & \multicolumn{1}{c|}{0.570}    & 0.630 $\pm$ 0.0095 \\ \hline
+\end{tabular}
+\caption{\textbf{Analysis and simulation output probabilities. } Parameters: $f_{input} = 88 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
+\end{table}
+
+
+To demonstrate the impact of rising $f_{prior}$ it was set to 600 Hz and the results can be seen in Figure \ref{fig:1D_88_600_4} and Table \ref{tab:1D_88_600_4}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_600_4.png}
-  \caption{\textbf{Analysis and simulation result. The Kullback-Leibler divergence could not be calculated for this case, as it is not defined for probabilities of 0. Parameters: } $f_{input} = 88 Hz, f_{prior} = 600 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities. \textbf{C} Proportions of the spikes of the output neurons during the simulation and their standard deviations in brackets.}
+  \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 88 Hz, f_{prior} = 600 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
   \label{fig:1D_88_600_4}
 \end{figure}
 
+\begin{table}[]
+\label{tab:1D_88_600_4}
+\small
+\tabcolsep=0.11cm
+\begin{tabular}{|c|cc|cc|}
+\hline
+                       & \multicolumn{2}{c|}{Image 1}                       & \multicolumn{2}{c|}{Image 2}                       \\ \hline
+                       & \multicolumn{1}{c|}{Analysis} & Simulation         & \multicolumn{1}{c|}{Analysis} & Simulation         \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.010}    & 0.003 $\pm$ 0.0011 & \multicolumn{1}{c|}{0.010}    & 0.003 $\pm$ 0.0009 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.977}    & 0.993 $\pm$ 0.0013 & \multicolumn{1}{c|}{0.967}    & 0.987 $\pm$ 0.0024 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.010}    & 0.003 $\pm$ 0.0008 & \multicolumn{1}{c|}{0.021}    & 0.009 $\pm$ 0.0019 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.002}    & 0.001 $\pm$ 0.0005 & \multicolumn{1}{c|}{0.002}    & 0.001 $\pm$ 0.0008 \\ \hline
+                       & \multicolumn{2}{c|}{Image 3}                       & \multicolumn{2}{c|}{Image 4}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.035}    & 0.023 $\pm$ 0.0025 & \multicolumn{1}{c|}{0.017}    & 0.008 $\pm$ 0.0011 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.957}    & 0.971 $\pm$ 0.0030 & \multicolumn{1}{c|}{0.977}    & 0.984 $\pm$ 0.0019 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.004}    & 0.003 $\pm$ 0.0009 & \multicolumn{1}{c|}{0.003}    & 0.003 $\pm$ 0.0008 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.004}    & 0.003 $\pm$ 0.0011 & \multicolumn{1}{c|}{0.003}    & 0.004 $\pm$ 0.0011 \\ \hline
+						& \multicolumn{2}{c|}{Image 5}                       & \multicolumn{2}{c|}{Image 6}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.088}    & 0.028 $\pm$ 0.0026 & \multicolumn{1}{c|}{0.205}    & 0.089 $\pm$ 0.0057 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.308}    & 0.182 $\pm$ 0.0077 & \multicolumn{1}{c|}{0.205}    & 0.088 $\pm$ 0.0047 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.088}    & 0.023 $\pm$ 0.0025 & \multicolumn{1}{c|}{0.021}    & 0.010 $\pm$ 0.0016 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.766 $\pm$ 0.0079 & \multicolumn{1}{c|}{0.570}    & 0.813 $\pm$ 0.0081 \\ \hline
+\end{tabular}
+\caption{\textbf{Analysis and simulation output probabilities. } Parameters: $f_{input} = 88 Hz, f_{prior} = 600 Hz, \tau_{decay} = 4 ms$}
+\end{table}
+
 \subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{input} = 98$, $f_{prior} = 440 Hz$}
-Finally to it was tested if a increase of $f_{input}$ might decrease the Kullback-Leibler divergence even further. The network was simulated with increasing values of $f_{input}$ in steps of 2 Hz, beginning from 90 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior440_tau4}. The best result was obtained with an input firing rate of 98 Hz. The results of that simulation can be seen in Figure \ref{fig:1D_98_440_4}.
+Finally to it was tested if a increase of $f_{input}$ might decrease the Kullback-Leibler divergence even further. The network was simulated with increasing values of $f_{input}$ in steps of 2 Hz, beginning from 90 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior440_tau4}. The best result was obtained with an input firing rate of 98 Hz. The results of that simulation can be seen in Figure \ref{fig:1D_98_440_4} and Table \ref{tab:1D_98_440_4}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/KLDvsfInput_fPrior440tau4.png}
@@ -215,14 +356,37 @@ Finally to it was tested if a increase of $f_{input}$ might decrease the Kullbac
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_98_440_4.png}
-  \caption{\textbf{Analysis and simulation result. Parameters: } $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities. \textbf{C} Proportions of the spikes of the output neurons during the simulation and their standard deviations in brackets.}
+    \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
   \label{fig:1D_98_440_4}
 \end{figure}
 
-\subsection{Discussion}
+\begin{table}[]
+\label{tab:1D_98_440_4}
+\small
+\tabcolsep=0.11cm
+\begin{tabular}{|c|cc|cc|}
+\hline
+                       & \multicolumn{2}{c|}{Image 1}                       & \multicolumn{2}{c|}{Image 2}                       \\ \hline
+                       & \multicolumn{1}{c|}{Analysis} & Simulation         & \multicolumn{1}{c|}{Analysis} & Simulation         \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.010}    & 0.009 $\pm$ 0.0016 & \multicolumn{1}{c|}{0.010}    & 0.009 $\pm$ 0.0015 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.977}    & 0.979 $\pm$ 0.0020 & \multicolumn{1}{c|}{0.967}    & 0.963 $\pm$ 0.0023 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.010}    & 0.009 $\pm$ 0.0010 & \multicolumn{1}{c|}{0.021}    & 0.025 $\pm$ 0.0020 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.002}    & 0.004 $\pm$ 0.0009 & \multicolumn{1}{c|}{0.002}    & 0.003 $\pm$ 0.0008 \\ \hline
+                       & \multicolumn{2}{c|}{Image 3}                       & \multicolumn{2}{c|}{Image 4}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.035}    & 0.067 $\pm$ 0.0051 & \multicolumn{1}{c|}{0.017}    & 0.025 $\pm$ 0.0031 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.957}    & 0.916 $\pm$ 0.0051 & \multicolumn{1}{c|}{0.977}    & 0.955 $\pm$ 0.0033 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.004}    & 0.007 $\pm$ 0.0012 & \multicolumn{1}{c|}{0.003}    & 0.009 $\pm$ 0.0012 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.004}    & 0.009 $\pm$ 0.0019 & \multicolumn{1}{c|}{0.003}    & 0.011 $\pm$ 0.0019 \\ \hline
+						& \multicolumn{2}{c|}{Image 5}                       & \multicolumn{2}{c|}{Image 6}                       \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.088}    & 0.051 $\pm$ 0.0035 & \multicolumn{1}{c|}{0.205}    & 0.191 $\pm$ 0.0080 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.308}    & 0.379 $\pm$ 0.0084 & \multicolumn{1}{c|}{0.205}    & 0.188 $\pm$ 0.0061 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.088}    & 0.046 $\pm$ 0.0027 & \multicolumn{1}{c|}{0.021}    & 0.022 $\pm$ 0.0021 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.523 $\pm$ 0.0084 & \multicolumn{1}{c|}{0.570}    & 0.600 $\pm$ 0.0116 \\ \hline
+\end{tabular}
+\caption{\textbf{Analysis and simulation output probabilities. } Parameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
+\end{table}
 
 In this experiment the impact of the three network parameters $f_{input}$, $f_{prior}$ and $\tau_{decay}$ was analysed.
-
 \paragraph{$f_{input}$} controls how strongly the information of the pixels of the input image is weighed. This means that by raising $f_{input}$ the impact of the active pixels increases, while the impact of the prior neuron decreases comparatively. This effect will be shown in the discussion about $f_{prior}$. However this is not the only impact this parameter has. When raising $f_{input}$ it was also observed that the probabilities for output classes adjacent to the active pixels decreased. This can be observed when comparing Figures \ref{fig:1D_42_0_15} and \ref{fig:1D_70_0_15} where $f_{input}$ was raised from 42 Hz to 70 Hz. For example when looking at "C4" in the mentioned figures, it can be seen that for $f_{input} = 42 Hz$ the simulation output probability for class 1 is 0.245. This high probability is mostly due to the active pixel number 2, which belongs to class 1 and 2 at the same time. When now increasing $f_{input}$ to 70 Hz one might expect the probabilities for class 1 and 2 to rise. This however does not happen, instead the simulation output probability for class 1 fell to 0.207, while for class 2 it rose.
 It is assumed that this happens because the membrane potentials of the output neurons are never normalized. As the input neurons spike more quickly the membrane potential of output neuron 1 rises slower than the membrane potential of output neuron 2. This leads to shifted firing rates in favour of output neuron 2. However this behaviour might be expected, as faster spiking input neurons correspond statistically to taking more samples of a probability distribution. This means that the more samples the network takes, the more certain it becomes of the more likely option, which is output class 2.
 

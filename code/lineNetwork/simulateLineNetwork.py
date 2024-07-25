@@ -32,39 +32,373 @@ if useCustomValues:
   simulProb = []
   simulStd = []
   
+  # Empty Template
   ########################################
-  customFInput = 42
-  customFPrior = 0
-  customTauDecay = 15
-  customC = False
-  # 1
-  analysisProb.append([0.175, 0.612, 0.175, 0.038])
-  simulProb.append([0.124, 0.699, 0.121, 0.056])
-  simulStd.append([0.0061, 0.0093, 0.0058, 0.0033])
-  # 2
-  analysisProb.append([0.143, 0.518, 0.304, 0.035])
-  simulProb.append([0.104, 0.587, 0.266, 0.043])
-  simulStd.append([0.0059, 0.009, 0.0067, 0.0025])
-  # 3
-  analysisProb.append([0.453, 0.453, 0.047, 0.047])
-  simulProb.append([0.43, 0.421, 0.07, 0.08])
-  simulStd.append([0.0089, 0.0073, 0.0045, 0.0042])
-  # 4
-  analysisProb.append([0.291, 0.613, 0.048, 0.048])
-  simulProb.append([0.245, 0.553, 0.09, 0.111])
-  simulStd.append([0.0065, 0.0072, 0.0045, 0.0053])
-  # 5
-  analysisProb.append([0.175, 0.612, 0.175, 0.038])
-  simulProb.append([0.124, 0.697, 0.123, 0.056])
-  simulStd.append([0.0046, 0.0069, 0.005, 0.0043])
-  # 6
-  analysisProb.append([0.453, 0.453, 0.047, 0.047])
-  simulProb.append([0.428, 0.421, 0.07, 0.081])
-  simulStd.append([0.0116, 0.0111, 0.0034, 0.0047])
-  customKLD = 0.0241
-  customKLDStd = 0.00159
+  # customFInput = 
+  # customFPrior = 
+  # customTauDecay = 
+  # customC = False
+  # customEnablePrior = False
+  # barYTicks = [0, 0.2, 0.4, 0.6]
+  # barYLim = [0, 0.75]
+  # # 1
+  # analysisProb.append([])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 2
+  # analysisProb.append([])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 3
+  # analysisProb.append([])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 4
+  # analysisProb.append([])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 5
+  # analysisProb.append([])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 6
+  # analysisProb.append([])
+  # simulProb.append([])
+  # simulStd.append([])
+  # customKLD = 
+  # customKLDStd = 
+  ########################################
+  
+  # Empty Template, with size 9 and DISABLED prior
+  ########################################
+  # customFInput = 
+  # customFPrior = 
+  # customTauDecay = 
+  # customC = False
+  # customEnablePrior = False
+  # barYTicks = [0, 0.2, 0.4, 0.6]
+  # barYLim = [0, 0.75]
+  # # 1
+  # analysisProb.append([0.175, 0.612, 0.175, 0.038])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 2
+  # analysisProb.append([0.143, 0.518, 0.304, 0.035])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 3
+  # analysisProb.append([0.453, 0.453, 0.047, 0.047])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 4
+  # analysisProb.append([0.291, 0.613, 0.048, 0.048])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 5
+  # analysisProb.append([0.175, 0.612, 0.175, 0.038])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 6
+  # analysisProb.append([0.453, 0.453, 0.047, 0.047])
+  # simulProb.append([])
+  # simulStd.append([])
+  # customKLD = 
+  # customKLDStd = 
+  ########################################
+  
+  # Empty Template, with size 9 and ENABLED prior
+  ########################################
+  # customFInput = 
+  # customFPrior = 
+  # customTauDecay = 
+  # customC = False
+  # customEnablePrior = True
+  # barYTicks = [0, 0.2, 0.4, 0.6, 0.8, 1]
+  # barYLim = [0, 1]
+  # # 1
+  # analysisProb.append([0.010, 0.977, 0.010, 0.002])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 2
+  # analysisProb.append([0.010, 0.967, 0.021, 0.002])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 3
+  # analysisProb.append([0.035, 0.957, 0.004, 0.004])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 4
+  # analysisProb.append([0.017, 0.977, 0.003, 0.003])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 5
+  # analysisProb.append([0.088, 0.308, 0.088, 0.515])
+  # simulProb.append([])
+  # simulStd.append([])
+  # # 6
+  # analysisProb.append([0.205, 0.205, 0.021, 0.570])
+  # simulProb.append([])
+  # simulStd.append([])
+  # customKLD = 
+  # customKLDStd = 
+  ########################################
+  
+  
+  
+  
+  
+  ########################################
+  # customFInput = 42
+  # customFPrior = 0
+  # customTauDecay = 15
+  # customC = False
+  # customEnablePrior = False
+  # barYTicks = [0, 0.2, 0.4, 0.6]
+  # barYLim = [0, 0.75]
+  # # 1
+  # analysisProb.append([0.175, 0.612, 0.175, 0.038])
+  # simulProb.append([0.124, 0.699, 0.121, 0.056])
+  # simulStd.append([0.0061, 0.0093, 0.0058, 0.0033])
+  # # 2
+  # analysisProb.append([0.143, 0.518, 0.304, 0.035])
+  # simulProb.append([0.104, 0.587, 0.266, 0.043])
+  # simulStd.append([0.0059, 0.0090, 0.0067, 0.0025])
+  # # 3
+  # analysisProb.append([0.453, 0.453, 0.047, 0.047])
+  # simulProb.append([0.430, 0.421, 0.070, 0.080])
+  # simulStd.append([0.0089, 0.0073, 0.0045, 0.0042])
+  # # 4
+  # analysisProb.append([0.291, 0.613, 0.048, 0.048])
+  # simulProb.append([0.245, 0.553, 0.090, 0.111])
+  # simulStd.append([0.0065, 0.0072, 0.0045, 0.0053])
+  # # 5
+  # analysisProb.append([0.175, 0.612, 0.175, 0.038])
+  # simulProb.append([0.124, 0.697, 0.123, 0.056])
+  # simulStd.append([0.0046, 0.0069, 0.0050, 0.0043])
+  # # 6
+  # analysisProb.append([0.453, 0.453, 0.047, 0.047])
+  # simulProb.append([0.428, 0.421, 0.070, 0.081])
+  # simulStd.append([0.0116, 0.0111, 0.0034, 0.0047])
+  # customKLD = 0.0241
+  # customKLDStd = 0.00159
   ########################################
 
+  ########################################
+  # customFInput = 70
+  # customFPrior = 0
+  # customTauDecay = 15 
+  # customC = False
+  # customEnablePrior = False
+  # barYTicks = [0, 0.2, 0.4, 0.6, 0.8]
+  # barYLim = [0, 0.95]
+  # # 1
+  # analysisProb.append([0.175, 0.612, 0.175, 0.038])
+  # simulProb.append([0.061, 0.861, 0.061, 0.017])
+  # simulStd.append([0.0038, 0.0065, 0.0041, 0.0016])
+  # # 2
+  # analysisProb.append([0.143, 0.518, 0.304, 0.035])
+  # simulProb.append([0.049, 0.715, 0.226, 0.011])
+  # simulStd.append([0.0027, 0.0083, 0.0070, 0.0017])
+  # # 3
+  # analysisProb.append([0.453, 0.453, 0.047, 0.047])
+  # simulProb.append([0.472, 0.464, 0.027, 0.037])
+  # simulStd.append([0.0100, 0.0101, 0.0027, 0.0032])
+  # # 4
+  # analysisProb.append([0.291, 0.613, 0.048, 0.048])
+  # simulProb.append([0.207, 0.685, 0.043, 0.065])
+  # simulStd.append([0.0067, 0.0080, 0.0037, 0.0042])
+  # # 5
+  # analysisProb.append([0.175, 0.612, 0.175, 0.038])
+  # simulProb.append([0.061, 0.864, 0.057, 0.018])
+  # simulStd.append([0.0033, 0.0062, 0.0036, 0.0022])
+  # # 6
+  # analysisProb.append([0.453, 0.453, 0.047, 0.047])
+  # simulProb.append([0.475, 0.459, 0.028, 0.038])
+  # simulStd.append([0.0086, 0.0087, 0.0018, 0.0032])
+  # customKLD = 0.0915
+  # customKLDStd = 0.004
+  ########################################
+  
+  ########################################
+  # customFInput = 88
+  # customFPrior = 0
+  # customTauDecay = 4 
+  # customC = False
+  # customEnablePrior = False
+  # barYTicks = [0, 0.2, 0.4, 0.6]
+  # barYLim = [0, 0.75]
+  # # 1
+  # analysisProb.append([0.175, 0.612, 0.175, 0.038])
+  # simulProb.append([0.126, 0.695, 0.124, 0.054])
+  # simulStd.append([0.0050, 0.0066, 0.0049, 0.0039])
+  # # 2
+  # analysisProb.append([0.143, 0.518, 0.304, 0.035])
+  # simulProb.append([0.106, 0.587, 0.264, 0.043])
+  # simulStd.append([0.0054, 0.0098, 0.0072, 0.0028])
+  # # 3
+  # analysisProb.append([0.453, 0.453, 0.047, 0.047])
+  # simulProb.append([0.429, 0.421, 0.070, 0.080])
+  # simulStd.append([0.0080, 0.0083, 0.0037, 0.0044])
+  # # 4
+  # analysisProb.append([0.291, 0.613, 0.048, 0.048])
+  # simulProb.append([0.240, 0.556, 0.095, 0.109])
+  # simulStd.append([0.0044, 0.0084, 0.0036, 0.0058])
+  # # 5
+  # analysisProb.append([0.175, 0.612, 0.175, 0.038])
+  # simulProb.append([0.125, 0.697, 0.124, 0.054])
+  # simulStd.append([0.0044, 0.0072, 0.0038, 0.0032])
+  # # 6
+  # analysisProb.append([0.453, 0.453, 0.047, 0.047])
+  # simulProb.append([0.426, 0.424, 0.072, 0.078])
+  # simulStd.append([0.0085, 0.0068, 0.0031, 0.0047])
+  # customKLD = 0.0233
+  # customKLDStd = 0.00145
+  ########################################
+  
+  ########################################
+  # customFInput = 42
+  # customFPrior = 222
+  # customTauDecay = 15
+  # customC = False
+  # customEnablePrior = True
+  # barYTicks = [0, 0.2, 0.4, 0.6, 0.8, 1]
+  # barYLim = [0, 1]
+  # # 1
+  # analysisProb.append([0.010, 0.977, 0.010, 0.002])
+  # simulProb.append([0.015, 0.962, 0.015, 0.008])
+  # simulStd.append([0.0021, 0.0030, 0.0017, 0.0016])
+  # # 2
+  # analysisProb.append([0.010, 0.967, 0.021, 0.002])
+  # simulProb.append([0.013, 0.938, 0.042, 0.007])
+  # simulStd.append([0.0016, 0.0040, 0.0032, 0.0013])
+  # # 3
+  # analysisProb.append([0.035, 0.957, 0.004, 0.004])
+  # simulProb.append([0.084, 0.891, 0.010, 0.015])
+  # simulStd.append([0.0038, 0.0046, 0.0018, 0.0016])
+  # # 4
+  # analysisProb.append([0.017, 0.977, 0.003, 0.003])
+  # simulProb.append([0.039, 0.931, 0.012, 0.018])
+  # simulStd.append([0.0033, 0.0045, 0.0017, 0.0024])
+  # # 5
+  # analysisProb.append([0.088, 0.308, 0.088, 0.515])
+  # simulProb.append([0.050, 0.321, 0.043, 0.587])
+  # simulStd.append([0.0033, 0.0087, 0.0039, 0.0105])
+  # # 6
+  # analysisProb.append([0.205, 0.205, 0.021, 0.570])
+  # simulProb.append([0.175, 0.172, 0.021, 0.632])
+  # simulStd.append([0.0077, 0.0106, 0.0018, 0.0158])
+  # customKLD = 0.0188
+  # customKLDStd = 0.00145
+  ########################################
+  
+  ########################################
+  # customFInput = 88
+  # customFPrior = 440
+  # customTauDecay = 4
+  # customC = False
+  # customEnablePrior = True
+  # barYTicks = [0, 0.2, 0.4, 0.6, 0.8, 1]
+  # barYLim = [0, 1]
+  # # 1
+  # analysisProb.append([0.010, 0.977, 0.010, 0.002])
+  # simulProb.append([0.011, 0.974, 0.010, 0.005])
+  # simulStd.append([0.0016, 0.0026, 0.0019, 0.0013])
+  # # 2
+  # analysisProb.append([0.010, 0.967, 0.021, 0.002])
+  # simulProb.append([0.010, 0.957, 0.028, 0.005])
+  # simulStd.append([0.0017, 0.0034, 0.0036, 0.0011])
+  # # 3
+  # analysisProb.append([0.035, 0.957, 0.004, 0.004])
+  # simulProb.append([0.066, 0.915, 0.009, 0.011])
+  # simulStd.append([0.0031, 0.0044, 0.0014, 0.0018])
+  # # 4
+  # analysisProb.append([0.017, 0.977, 0.003, 0.003])
+  # simulProb.append([0.026, 0.952, 0.009, 0.012])
+  # simulStd.append([0.0030, 0.0039, 0.0017, 0.0020])
+  # # 5
+  # analysisProb.append([0.088, 0.308, 0.088, 0.515])
+  # simulProb.append([0.052, 0.328, 0.046, 0.573])
+  # simulStd.append([0.0027, 0.0085, 0.0031, 0.0089])
+  # # 6
+  # analysisProb.append([0.205, 0.205, 0.021, 0.570])
+  # simulProb.append([0.172, 0.174, 0.025, 0.630])
+  # simulStd.append([0.0061, 0.0059, 0.0025, 0.0095])
+  # customKLD = 0.0112
+  # customKLDStd = 0.00088
+  ########################################
+  
+  ########################################
+  # customFInput = 88
+  # customFPrior = 600
+  # customTauDecay = 4
+  # customC = False
+  # customEnablePrior = True
+  # barYTicks = [0, 0.2, 0.4, 0.6, 0.8, 1]
+  # barYLim = [0, 1]
+  # # 1
+  # analysisProb.append([0.010, 0.977, 0.010, 0.002])
+  # simulProb.append([0.003, 0.993, 0.003, 0.001])
+  # simulStd.append([0.0011, 0.0013, 0.0008, 0.0005])
+  # # 2
+  # analysisProb.append([0.010, 0.967, 0.021, 0.002])
+  # simulProb.append([0.003, 0.987, 0.009, 0.001])
+  # simulStd.append([0.0009, 0.0024, 0.0019, 0.0008])
+  # # 3
+  # analysisProb.append([0.035, 0.957, 0.004, 0.004])
+  # simulProb.append([0.023, 0.971, 0.003, 0.003])
+  # simulStd.append([0.0025, 0.0030, 0.0009, 0.0011])
+  # # 4
+  # analysisProb.append([0.017, 0.977, 0.003, 0.003])
+  # simulProb.append([0.008, 0.984, 0.003, 0.004])
+  # simulStd.append([0.0011, 0.0019, 0.0008, 0.0011])
+  # # 5
+  # analysisProb.append([0.088, 0.308, 0.088, 0.515])
+  # simulProb.append([0.028, 0.182, 0.023, 0.766])
+  # simulStd.append([0.0026, 0.0077, 0.0025, 0.0079])
+  # # 6
+  # analysisProb.append([0.205, 0.205, 0.021, 0.570])
+  # simulProb.append([0.089, 0.088, 0.010, 0.813])
+  # simulStd.append([0.0057, 0.0047, 0.0016, 0.0081])
+  # customKLD = 0.0615
+  # customKLDStd = 0.00235
+  ########################################
+  
+  ########################################
+  customFInput = 98
+  customFPrior = 440
+  customTauDecay = 4
+  customC = False
+  customEnablePrior = True
+  barYTicks = [0, 0.2, 0.4, 0.6, 0.8, 1]
+  barYLim = [0, 1]
+  # 1
+  analysisProb.append([0.010, 0.977, 0.010, 0.002])
+  simulProb.append([0.009, 0.979, 0.009, 0.004])
+  simulStd.append([0.0016, 0.0020, 0.0010, 0.0009])
+  # 2
+  analysisProb.append([0.010, 0.967, 0.021, 0.002])
+  simulProb.append([0.009, 0.963, 0.025, 0.003])
+  simulStd.append([0.0015, 0.0023, 0.0020, 0.0008])
+  # 3
+  analysisProb.append([0.035, 0.957, 0.004, 0.004])
+  simulProb.append([0.067, 0.916, 0.007, 0.009])
+  simulStd.append([0.0051, 0.0051, 0.0012, 0.0019])
+  # 4
+  analysisProb.append([0.017, 0.977, 0.003, 0.003])
+  simulProb.append([0.025, 0.955, 0.009, 0.011])
+  simulStd.append([0.0031, 0.0033, 0.0012, 0.0019])
+  # 5
+  analysisProb.append([0.088, 0.308, 0.088, 0.515])
+  simulProb.append([0.051, 0.379, 0.046, 0.523])
+  simulStd.append([0.0035, 0.0084, 0.0027, 0.0084])
+  # 6
+  analysisProb.append([0.205, 0.205, 0.021, 0.570])
+  simulProb.append([0.191, 0.188, 0.022, 0.600])
+  simulStd.append([0.0080, 0.0061, 0.0021, 0.0116])
+  customKLD = 0.0101
+  customKLDStd = 0.0009
+  ########################################
+  
 plt.close("all")
 
 imageSize = (1, 9)
@@ -341,9 +675,6 @@ for gridIterator in range(1):
       # Simulation DONE
       
       if useCustomValues:
-        customFInput = 42
-        customFPrior = 0
-        customTauDecay = 15
         if customC:
           directoryPath =  "custom_fInput" + str(customFInput) + "_fPrior" + str(customFPrior) + "_tauDecay" + str(customTauDecay) + "_c" + str(customC)
         else:  
@@ -449,10 +780,10 @@ for gridIterator in range(1):
       
       # plot input data
       ax10.imshow(images[0][counter], cmap='gray')
-      # TODO !!!!!! remove next 3 lines to disable prior
-      # rect = patches.Rectangle((-0.5 + prior*2,-0.5), 3, 1, linewidth=8, edgecolor='r', facecolor='none')
-      # ax10.add_patch(rect)
-      # rect.set_clip_path(rect)
+      if customEnablePrior:
+        rect = patches.Rectangle((-0.5 + prior*2,-0.5), 3, 1, linewidth=8, edgecolor='r', facecolor='none')
+        ax10.add_patch(rect)
+        rect.set_clip_path(rect)
       ax10.axvline(x=0.5)
       ax10.axvline(x=1.5)
       ax10.axvline(x=2.5)
@@ -476,8 +807,8 @@ for gridIterator in range(1):
       ax20.bar(x + offset, simulProb[counter], yerr=simulStd[counter], width=width, color='C0')
       ax20.set_title('Output probabilities', fontsize=14)
       ax20.set_xticks(x, ["$y_1$", "$y_2$", "$y_3$", "$y_4$"])
-      ax20.set_yticks([0, 0.2, 0.4, 0.6])
-      ax20.legend(loc='upper left', ncols=3)
+      ax20.set_yticks(barYTicks)
+      ax20.set_ylim(barYLim)
       ax20.tick_params(axis='x', which='major', labelsize=12)
       ax20.tick_params(axis='y', which='major', labelsize=12)
       # legend1 = patches.Patch(color='C3', label='Analysis')
@@ -553,4 +884,5 @@ for gridIterator in range(1):
     pickle.dump(fig, open(directoryPath + "/trainingPlot5" + '.pickle','wb'))
     plt.savefig(directoryPath + "/trainingPlot5" + ".svg", bbox_inches='tight')  
     plt.savefig(directoryPath + "/trainingPlot5" + ".png", bbox_inches='tight', dpi=300)
-  plt.show()
+  # plt.show()
+  plt.close()
