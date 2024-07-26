@@ -29,9 +29,9 @@ During the training of the network random images were generated and presented fo
 
 As every pixel of an image was connected to two input neurons the network had 2450 input neurons. Each of these neurons had a firing frequency of 20 Hz, when in the active state. Then there were ten output neurons, one for each possible group. Lastly, there were two equal sized groups of prior neurons. During training the first group $z^h$ was active when the image was of horizontal orientation and the other group $z^v$ was active for vertical orientation. The number of prior neurons and their firing frequency had to be determined via grid search, as they needed to be set at values where the impact of the a-priori information is neither too strong nor too weak.
 
-\paragraph{Network and simulation parameters}
+\paragraph{Network and hyperparameters}
 
-The simulation of the experiment was performed in time steps of 1 ms. This step size was used for all experiments. As given by \citet{nessler} the time window $\sigma$ was 10 ms, the time constant for the rise of the EPSPs $\tau_{rise}$ was 1 ms and the time constant for the decay of the EPSPs $\tau_{decay}$ was 15 ms. Before performing this experiment, Experiment 2 of \citet{nessler} was reproduced to validate that the implementation of the simulation was correct. This proof of concept was omitted in this work, however within it the weight shift parameter $c = 20$ and the learning rate $\lambda = 10^-3$ were determined via grid search. These parameter values were reused for this experiment as the input data, as well as the network architecture, were similar.
+The simulation of the experiment was performed in time steps of 1 ms. This step size was used for all experiments. As given by \citet{nessler} the time window $\sigma$ was 10 ms, the time constant for the rise of the EPSPs $\tau_{rise}$ was 1 ms and the time constant for the decay of the EPSPs $\tau_{decay}$ was 15 ms. Before performing this experiment, Experiment 2 of \citet{nessler} was reproduced to validate that the implementation of the simulation was correct. This proof of concept was omitted in this work, however within it the weight shift hyperparameter $c = 20$ and the learning rate $\lambda = 10^-3$ were determined via grid search. These hyperparameter values were reused for this experiment as the input data, as well as the network architecture, were similar.
 
 \subsection{Results}
 
@@ -152,7 +152,7 @@ The input and output neurons functioned the same way as in the previous experime
 \paragraph{Parameters}
 As the number of input neurons and the average number of black pixels in an input image stayed roughly the same in this experiment, the same parameters $c=  20$ and $\lambda = 10^{-3}$ could be used.
 
-%% TODO START
+%% START
 %% this block was copied to Theoretical Background, cut this accordingly
 %% Zfactor does not exist, remove!!!
  However as there are only two prior neurons, a way to amplify their produced signals was needed, otherwise their impact on the membrane potential of the output neurons would not be distinctive enough. So the EPSPs $z_l(t)$ were multiplied by the factor $Z_{factor}$. This factor was determined via grid search. The additional prior layer resulted in an expanded version of the membrane potential $u_k(t)$
@@ -162,7 +162,7 @@ As the number of input neurons and the average number of black pixels in an inpu
 u_k(t) = \sum_{i=1}^n w_{ki} \cdot x_i(t) + \sum_{j=1}^n w_{kj} \cdot Z_{factor} \cdot z_j(t).
 \end{equation}
 
-%% TODO END
+%% END
 
 \subsection{Results} 
 
