@@ -24,10 +24,10 @@ import random
 plt.close("all")
 
 # Command Center
-plotWeights = True
+plotWeights = False
 validateVertical = False
 validateHorizontal = False
-validateCross = False
+validateCross = True
 showImpactOfVariablePriorOnCross = False
 ATildeFactor = 1
 
