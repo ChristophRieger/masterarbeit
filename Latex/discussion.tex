@@ -1,8 +1,17 @@
+This thesis provides evidence that a spiking Winner-Take-All neural network can recreate behaviours that were observed in the visual cortex. Neural feedback is most commonly associated with attention. Such attention behaviour could be shown in Experiment 1, where ambiguous cross images were shown to the network. Without the feedback and if the output neurons would have learned the optimal solution, where each neuron had active areas of the same sizes and relative activities of 0.5 in the border areas, then the network would have not known which part of the cross image to focus on. In reality the output neurons ended up with different sized active areas and unequal relative activities. Due to that, if both parts of the cross were exactly in the middle of the theoretical centers of two output neurons, one output neuron was more active then the other, signifying attention on the corresponding part of the cross. However, this unequal learning of the output neurons could be countered by the activity of the prior neurons that delivered feedback. If the prior activity was set to "horizontal" the corresponding output neuron was always more active than its vertical counterpart.
+
+%wie bei den affen halluziniert es was wo nix is.
 %1. Prior hat im modell funktioniert wie im biologischen experiment. siehe exp 1 cross validation und exp 2 image 6
+
+
+
+
+
 % weights could be calculated from conditional probabilities
 %4. why were the parameters not transferable to bigger network. Why would they even be in the first place? They were not transferable, as we saw in experiment 2 increasing f_input changes the conditional probabilities.
+% why training Exp4 sucked
 
-
+\subsection{Future work}
 %2. Future work: 
 %a. Normalization of U? mby, but it actually makes more sense how it is right now wegen stochastic samples ziehen
 %b. implement a prior that is actually influenced by network activity
