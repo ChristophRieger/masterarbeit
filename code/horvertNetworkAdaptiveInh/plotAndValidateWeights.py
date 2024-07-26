@@ -24,11 +24,11 @@ import random
 plt.close("all")
 
 # Command Center
-plotWeights = False
+plotWeights = True
 validateVertical = False
 validateHorizontal = False
 validateCross = False
-showImpactOfVariablePriorOnCross = True
+showImpactOfVariablePriorOnCross = False
 ATildeFactor = 1
 
 imageSize = (35, 35)
@@ -68,25 +68,37 @@ if plotWeights:
     
     
     
-  fig, axs = plt.subplots(nrows=2, ncols=int(len(priorWeights)/2), subplot_kw={'xticks': []})
-  
+  fig, axs = plt.subplots(nrows=2, ncols=int(len(priorWeights)/2) + 1, subplot_kw={'xticks': []})
+  fig.set_figheight(10)
+  fig.set_figwidth(11)
   priorWeightCounter = 0
   for ax in axs.flat:
-    priorWeightCounterString = str(priorWeightCounter+1) 
-    ax.set_title("$w^p$" + "$_k$" + r'$_{{{stringToAdd}}}$'.format(stringToAdd=priorWeightCounterString), fontsize = 14)
-    wAZ = priorWeights[priorWeightCounter].reshape((10, 1))
-    ax.set_yticks([0,1,2,3,4,5,6,7,8,9], labels=[1,2,3,4,5,6,7,8,9,10])
-    ax.tick_params(axis="y", labelsize=12)
-    ax.set_ylabel("Output neuron", fontsize=12)
-    ax.yaxis.set_label_coords(-0.63, 0.5)
-
-    im = ax.imshow(wAZ, origin='lower', cmap='gray')
-    cbar = plt.colorbar(im)
-    cbar.ax.tick_params(labelsize=12)
-
-
+    if priorWeightCounter == 0 or priorWeightCounter == 11:
+      im = ax.imshow(priorWeights[priorWeightCounter].reshape((10, 1)), cmap='gray')
+      im.set_visible(False)
+      ax.set_visible(False)
+      cbar = plt.colorbar(im, location='left', ticks=[-0.5, 0, 0.5, 1, 1.5, 2, 2.4])
+      cbar.ax.set_yticklabels(['-0.5', '0', '0.5', '1', '1.5', '2', '2.4']) 
+      cbar.ax.tick_params(labelsize=12)
+    else:
+      if priorWeightCounter < 12:
+        wAZ = priorWeights[priorWeightCounter-1].reshape((10, 1))
+        priorWeightCounterString = str(priorWeightCounter) 
+      else:
+        wAZ = priorWeights[priorWeightCounter-2].reshape((10, 1))
+        priorWeightCounterString = str(priorWeightCounter-1) 
+      ax.set_title("$w^p$" + "$_k$" + r'$_{{{stringToAdd}}}$'.format(stringToAdd=priorWeightCounterString), fontsize = 14)
+      ax.set_yticks([0,1,2,3,4,5,6,7,8,9], labels=[1,2,3,4,5,6,7,8,9,10])
+      ax.tick_params(axis="y", labelsize=12)
+      if priorWeightCounter == 1 or priorWeightCounter == 12:
+        ax.set_ylabel("Output neuron", fontsize=14)
+      # ax.yaxis.set_label_coords(-0.63, 0.5)
+      im = ax.imshow(wAZ, origin='lower', cmap='gray')
     priorWeightCounter += 1
   fig.suptitle('Prior weights', fontsize=16)
+  plt.savefig("priorWeights.png", bbox_inches='tight', dpi=300)
+  plt.close()
+
   # plt.savefig(directoryPath + '/priorWeight' + str(a+1) + '.png')
 
 if validateVertical:
