@@ -3,49 +3,50 @@
 
 \subsection{Introduction}
 
-The purpose of this experiment was to mathematically analyse a smaller network and providing a definitive way to verify the performance of the simulation. The network was scaled down to be one-dimensional with 18 input neurons, four prior neurons and four output neurons, making it easier to analyse. The conditional probabilities of the input and output neurons of the network  were calculated and then used to determine the theoretical posterior probability of the network. These probabilities were then used to calculate the weights for the simulation of the network. The distribution of the output spikes was then used to calculate the posterior probability of the simulation. The posterior probabilities of both the mathematical analysis and the simulation were compared, and by varying three parameters of the simulation it is tuned to approximate the analytical solution as closely as possible.
+The purpose of this experiment was to analyse a smaller network and provide a definitive way to verify the performance of the simulation. Furthermore, the weights were not learned as in the previous experiment, but rather determined analytically.
+First the network was scaled down to be one-dimensional with 18 input neurons, four prior neurons and four output neurons, making it easier to analyse. The weights were determined by utilizing the logarithmic connection between them and the corresponding conditional probabilities, as given by Equation \ref{eqn:weightProbLink}. The conditional probabilities of the input and output neurons of the network  were calculated and then used to determine the posterior probability of the network. After the simulation of the network the distribution of the output spikes was used to calculate the posterior probability. The posterior probabilities of both the mathematical analysis and the simulation were compared. By varying three network parameters it was tuned to approximate the analytical solution as closely as possible.
 
 \subsection{Methods}
 
 \paragraph{Input data}
-The input image consisted of nine pixels in a horizontal line. Within those nine pixels four output classes could be represented. Each output class had of three pixels next to each other. This resulted in each output class overlapping its neighbour classes by one pixel. Thus the centres of the output classes were at position 1, 3, 5 and 7.
+The input image consisted of nine pixels in a horizontal line. Within those nine pixels, going from position 0 to 8, four output classes could be represented. Each output class had of three pixels next to each other. This resulted in each output class overlapping its neighbour classes by one pixel. Thus the centers of the output classes were at position 1, 3, 5 and 7.
  
 \paragraph{Network architecture}
 Compared to the architecture of the previous experiment only the amount of neurons was changed. As there have to be 2 input neurons for each pixel, one neuron being active if the pixel is white and one if the pixel is black, the network had 18 input neurons. Furthermore four prior neurons were implemented, of which only one is being active for one of the output classes at a time. Lastly the network had four output neurons.
 
 \paragraph{Mathematical Analysis}
 The posterior probability of the network was calculated by using Equation \ref{eqn:pYvorausgesetztXUndZ}.
-$P(X=x|Y=i)$ and $P(Y=i|Z=j)$ were derived corresponding to the paradigm of the experiment.
- The calculation of $P(X=x|Y=i)$ was split into two parts. First the contribution of the active input neurons was calculated by determining the matrix $P^{X|Y}$. This matrix is of size 4 x 9 and contains the conditional probabilities of each input neuron $y_i$ being active, given that an output neuron $x_k$ is active. These probabilities were calculated by determining which input neurons are active depending on the output class and which input neurons are inactive, as dictated by the network architecture. Furthermore, the noise that was applied to the input neurons had to be taken into account. For input neurons belonging to the output class the conditional probability was determined as 1 and lowered by the noise level, while for the input neurons outside of the 3-wide pixel block belonging to the output class it was determined as 0 and raised by the noise level. According to this algorithm $P^{X|Y}$ is given by
+$P(X=x|Y=k)$ and $P(Y=k|Z=j)$ were derived corresponding to the paradigm of the experiment.
+ The calculation of $P(X=x|Y=k)$ was split into two parts. First the contribution of the active input neurons was calculated by determining the matrix $P^{X|Y}$. This matrix is of size 4 x 9 and contains the conditional probabilities of each input neuron $y_k$ being active, given that an output neuron $x_i$ is active. These probabilities were calculated by determining which input neurons are active depending on the output class and which input neurons are inactive, as dictated by the network architecture. Furthermore, the noise that was applied to the input neurons had to be taken into account. For input neurons belonging to the output class the conditional probability was determined as 1 and lowered by the noise level, while for the input neurons outside of the 3-wide pixel block belonging to the output class it was determined as 0 and raised by the noise level. According to this $P^{X|Y}$ is given by
 \begin{equation}
 \label{eqn:PXvorausgesetztYIf}
-P_{i,k}^{X|Y} = \begin{dcases*} 1 - $noise level$ & if $x_k$ is in the active area of $y_i$, \\
-0 + $noise level$ & \text{if $x_k$ is not in the active area of $ y_i $ } \end{dcases*}.\end{equation}
+P_{k,i}^{X|Y} = \begin{dcases*} 1 - $noise level$ & if $x_i$ is in the active area of $y_k$, \\
+0 + $noise level$ & \text{if $x_i$ is not in the active area of $ y_k $ } \end{dcases*}.\end{equation}
   After calculating all entries of $P^{X|Y}$ its rows were multiplied with the input image vector
 \begin{equation}
 \label{eqn:p1XvorausgesetztYMalX}
-P_1(X = x|Y = i) = P^{X|Y}_{i,*} \cdot x
+P_1(X = x|Y = k) = P^{X|Y}_{k,*} \cdot x
 \end{equation}
 resulting in a conditional probability for each output class depending on the input vector. The input vector was given with entries of 1 for active pixels and with entries of 0 for inactive pixels.
 Next to include the contribution of the input neurons that are spiking when a pixel is inactive the conditional probability of the input neurons that are active for the entries where $x_i = 0$ had to be calculated. To achieve this complementary conditional probability at first $P^{X|Y}$ was subtracted from one. To include the correct conditional probabilities for the complementary case the input image vector x was then also subtracted from one. $1 - P^{X|Y}$ and $1 - x$ were multiplied to yield
 \begin{equation}
 \label{eqn:p2minusXvorausgesetztYMalX}
-P_2(X = x|Y = i) = (1 - P^{X|Y}_{i,*}) \cdot (1 - x).
+P_2(X = x|Y = k) = (1 - P^{X|Y}_{k,*}) \cdot (1 - x).
 \end{equation}
 The results of both calculations were then multiplied element-wise to yield
 \begin{equation}
 \label{eqn:pXvorausgesetztY}
-P(X = x|Y = i) = P_1(X = x|Y = i) \odot P_2(X = x|Y = i).
+P(X = x|Y = k) = P_1(X = x|Y = k) \odot P_2(X = x|Y = k).
 \end{equation}
-$P(Y=i|Z=j)$ was determined by first calculating the matrix $P^{Y|Z}$. It has a dimension of 4 x 4 and contains the conditional probabilities for the output neuron $y_i$, given the prior neuron $z_j$ being active. For each output class there exists one corresponding prior neuron. As there can never be more than one active prior neuron at a time $P^{Y|Z}$ is given by
+$P(Y=k|Z=j)$ was determined by first calculating the matrix $P^{Y|Z}$. It has a dimension of 4 x 4 and contains the conditional probabilities for the output neuron $y_k$, given the prior neuron $z_j$ being active. For each output class there exists one corresponding prior neuron. As there can never be more than one active prior neuron at a time $P^{Y|Z}$ is given by
 \begin{equation}
 \label{eqn:PYvorausgesetztZIf}
-P_{j,i}^{Y|Z} = \begin{dcases*} 1 - $noise level$ & if $i = j$, \\
+P_{k,j}^{Y|Z} = \begin{dcases*} 1 - $noise level$ & if $i = j$, \\
 0 +  \frac{1}{3}  $noise level$ & \text{if $i \neq j$. } \end{dcases*}\end{equation} 
-$P(Y=i|Z=j)$ was then obtained by
+$P(Y=k|Z=j)$ was then obtained by
 \begin{equation}
 \label{eqn:pYvorausgesetztZ}
-P(Y=i|Z=j) = P^{Y|Z} \cdot z
+P(Y=k|Z=j) = P^{Y|Z} \cdot z
 \end{equation}
 where z is given by a 4 x 1 one-hot encoded vector of the prior.
 
@@ -65,15 +66,15 @@ The prior weights $w^P$ were derived by
 \label{eqn:1DWeightsPrior}
 w^P = \ln(P^{Y|Z}).
 \end{equation}
-%TODO say that the 6 different input images were handpicked to analyse different edge cases
-The network was simulated for six different input images for each parameter set. After the image presentation period of each input image the amount of the output spikes of different classes were counted and their proportions were calculated to yield the "simulation output probabilities" in later plots. The Kullback-Leibler divergence was chosen to compare the divergence of the analytic and the simulated results of the network. This metric indicates how much two probability distributions diverge from each other. The goal of the parameter search of the simulation was to minimize the Kullback-Leibler divergence. After showing an output image to the network the Kullback-Leibler divergence was calculated as
+
+The network was simulated for six different input images for each parameter set. These six images were hand-picked to include specific edge cases and to allow comparability of the results of different parameter sets. After the image presentation period of each input image the numbers of output spikes of each class were counted and their proportions were calculated to yield the posterior $P_{simulation}(Y = k|X, Z)$. The Kullback-Leibler divergence was chosen to compare the divergence of the analytic and the simulated posteriors of the network. This metric indicates how much two probability distributions diverge from each other. The goal of the parameter search of the simulation was to minimize the Kullback-Leibler divergence. After showing an output image to the network the Kullback-Leibler divergence was calculated as
 \begin{equation}
 \begin{split}
 \label{eqn:KLDivergence}
-D_{KL}(P_{analysis}(Y = i|X, Z)||P_{simulation}(Y = i|X, Z)) = \\ \sum_{i=1}^K P_{analysis}(Y = i|X, Z) \cdot \ln( \frac{P_{analysis}(Y = i|X, Z)}{P_{simulation}(Y = i|X, Z)})
+D_{KL}(P_{analysis}(Y = k|X, Z)||P_{simulation}(Y = k|X, Z)) = \\ \sum_{k=1}^K P_{analysis}(Y = k|X, Z) \cdot \ln( \frac{P_{analysis}(Y = k|X, Z)}{P_{simulation}(Y = k|X, Z)})
 \end{split}
 \end{equation}
-where K is the number of output neurons and $P_{analysis}(Y = i|X, Z)$ and $P_{simulation}(Y = i|X, Z)$ are the "analysis output probabilities" and "simulation output probabilities". The six resulting Kullback-Leibler divergences for each parameter set were then averaged to create a single metric by which the performance of the different parameter sets was compared. The three parameters input firing rate $f_{input}$, prior firing rate $f_{prior}$ and the membrane constant $\tau_{decay}$ were varied to inspect their influence on the result, as well as to approximate the analytical solution as closely as possible. Each input image is presented to the network for 20 seconds to reduce the variance between runs. Furthermore each simulation was repeated 20 times with the same parameter set to obtain the mean and standard deviation of the simulation output probabilities and of the Kullback-Leibler divergence.
+where K is the number of output neurons and $P_{analysis}(Y = k|X, Z)$ and $P_{simulation}(Y = k|X, Z)$ are the posteriors of the network, late called "analysis output probabilities" and "simulation output probabilities" in plots. The six resulting Kullback-Leibler divergences for each parameter set were then averaged to create a single metric by which the performance of the different parameter sets was compared. The three parameters input firing rate $f_{input}$, prior firing rate $f_{prior}$ and the membrane constant $\tau_{decay}$ were varied to inspect their influence on the result, as well as to approximate the analytical solution as closely as possible. Each input image was presented to the network for 20 seconds to reduce the variance between runs. Furthermore each simulation was repeated 20 times with the same parameter set to obtain the mean and standard deviation of the simulation output probabilities and of the Kullback-Leibler divergence.
 
 \subsection{Results}
 
@@ -99,29 +100,23 @@ P^{Y|Z} = \begin{bmatrix}
 0.0333 & 0.0333 & 0.0333 & 0.9\\
 \end{bmatrix}.
 \end{equation} 
-For each input image these two matrices were then  multiplied with the input vector and prior vector as described Equations \ref{eqn:p1XvorausgesetztYMalX}, \ref{eqn:p2minusXvorausgesetztYMalX},  \ref{eqn:pXvorausgesetztY} and \ref{eqn:pYvorausgesetztZ} to yield $P(X = x|Y = i)$ and $P(Y=i|Z=j)$. Using  \ref{eqn:pYvorausgesetztXUndZ} then 
-yielded the "Analysis output probability" $P(Y = i|X = x, Z = j)$.
+For each input image these two matrices were multiplied with the input vector and prior vector as described Equations \ref{eqn:p1XvorausgesetztYMalX}, \ref{eqn:p2minusXvorausgesetztYMalX},  \ref{eqn:pXvorausgesetztY} and \ref{eqn:pYvorausgesetztZ} to yield $P(X = x|Y = i)$ and $P(Y=i|Z=j)$. Using \ref{eqn:pYvorausgesetztXUndZ}  finally yielded the analytical $P(Y = i|X = x, Z = j)$.
 
-\paragraph{Simulation results without prior}
-To simplify the parameter fitting process the network was at first simulated with inactive prior neurons. Only after determining the best values for $f_{input}$ and $\tau_{decay}$ were the prior neurons reactivated and $f_{prior}$ was fitted. The values 0.015 seconds and 0.004 seconds for $\tau_{decay}$ were used for the simulation and compared. For each of these values an optimal value for $f_{input}$ was found by simulating different values and looking for the value that yields the smallest Kullback-Leibler divergence.
+\paragraph{Simulation results with prior disabled}
+To simplify the parameter fitting process the network was at first simulated with inactive prior neurons. Only after determining the best values for $f_{input}$ and $\tau_{decay}$ the prior neurons were reactivated and $f_{prior}$ was fitted. The values 0.015 seconds and 0.004 seconds for $\tau_{decay}$ were used for the simulation and compared. For each of these values an optimal value for $f_{input}$ was found by looking for the value that yielded the smallest Kullback-Leibler divergence.
 
 \subparagraph{$\tau_{decay} = 0.015 seconds$, $f_{prior} = 0 Hz$}
-Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. After identifying the input firing rate with the smallest Kullback-Leibler divergence the network was simulated again for $f_{input}$ values $\pm$ 10 Hz in steps of 2 Hz of the best value. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau15}. This process yielded the best input firing rate of 42 Hz. The results of this parameter combination can be seen in Figure \ref{fig:1D_42_0_15}. In this figure six different input images can be seen in A. The active pixels are shown in black. In B the posterior probabilities of the mathematical analysis are given by the red bars and the simulation output probabilities are given by the blue bars. Each simulation output probability has its standard deviation marked by a black bar. At the bottom the value of the Kullback-Leibler divergence is given, with its standard deviation. The exact numeric probabilities are given in Table \ref{tab:1D_42_0_15}.
-%TODO replace ALL result plots and add table with values
-%TODO update all result plot captions
-%TODO mention tables whenever you insert them.
-%TODO update references to new result plots, as no more values are inside them.
-%TODO Fix alls \textbf in plots of this file, they seem fucked.
+Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. After identifying the input firing rate with the smallest Kullback-Leibler divergence the network was simulated again for $f_{input}$ values $\pm$ 10 Hz in steps of 2 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau15}. This process yielded the best input firing rate of 42 Hz. The results of this parameter combination can be seen in Figure \ref{fig:1D_42_0_15}. In this figure six different input images can be seen in A. The active pixels are shown in black. In B the posterior probabilities of the mathematical analysis are given by the red bars and the posterior probabilities of the simulation are given by the blue bars. Each simulation output probability has its standard deviation marked by a black bar. At the bottom the value of the Kullback-Leibler divergence is given, with its standard deviation. The exact numeric probabilities are given in Table \ref{tab:1D_42_0_15}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/KLDvsfInput_fPrior0tau15.png}
-  \caption{\textbf{KL divergence for different $f_{input} values$} $f_{prior} = 0 Hz, \tau_{decay} = 15 ms$}
+  \caption{\textbf{KL divergence for different $f_{input}$ values. } Parameters: $f_{prior} = 0 Hz, \tau_{decay} = 15 ms$}
   \label{fig:1D_KLD_fPrior0_tau15}
 \end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_42_0_15.png}
-  \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
+  \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_42_0_15}
 \end{figure}
 
@@ -155,7 +150,7 @@ When $f_{input}$ was 70 Hz the results of the analysis and the simulation differ
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_70_0_15.png}
-    \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 70 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
+    \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 70 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_70_0_15}
 \end{figure}
 
@@ -186,17 +181,17 @@ $y_3$                  & \multicolumn{1}{c|}{0.038}    & 0.018 $\pm$ 0.0022 & \m
 \end{table}
 
 \subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{prior} = 0 Hz$}
-For this parameter combination values between 50 and 150 Hz for $f_{input}$ in steps of 10 Hz were simulated. Analogously to the previous parameter set after finding the best input firing rate the search was performed in finer steps until the best value was determined as 88 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau4}. The result of the simulation with those parameters can be seen in Figure \ref{fig:1D_88_0_4} and Table \ref{tab:1D_88_0_4}.
+For this parameter combination values between 50 and 150 Hz for $f_{input}$ in steps of 10 Hz were simulated. Analogously to the previous parameter set after finding the best input firing rate the search was performed in finer steps until the best value was found at 88 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau4}. The result of the simulation with those parameters can be seen in Figure \ref{fig:1D_88_0_4} and Table \ref{tab:1D_88_0_4}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/KLDvsfInput_fPrior0tau4.png}
-  \caption{\textbf{KL divergence for different $f_{input} values$} $f_{prior} = 0 Hz, \tau_{decay} = 4 ms$}
+  \caption{\textbf{KL divergence for different $f_{input}$ values.} Parameters: $f_{prior} = 0 Hz, \tau_{decay} = 4 ms$}
   \label{fig:1D_KLD_fPrior0_tau4}
 \end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_0_4.png}
-   \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 88 Hz, f_{prior} = 0 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
+   \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 88 Hz, f_{prior} = 0 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_88_0_4}
 \end{figure}
 
@@ -226,20 +221,20 @@ $y_3$                  & \multicolumn{1}{c|}{0.038}    & 0.054 $\pm$ 0.0032 & \m
 \caption{\textbf{Analysis and simulation output probabilities. } Parameters: $f_{input} = 88 Hz, f_{prior} = 0 Hz, \tau_{decay} = 4 ms$}
 \end{table}
 
-\paragraph{Simulation results with prior}
-After determining the best input firing rates for two different values of $\tau_{decay}$, the prior neurons were activated and the best prior firing rate $f_{prior}$ was fitted.
+\paragraph{Simulation results with prior enabled}
+After determining the best input firing rates for two different values of $\tau_{decay}$, the prior neurons were activated and the best $f_{prior}$ was searched.
 \subparagraph{$\tau_{decay} = 0.015 seconds$, $f_{input} = 42 Hz$}
 The search for the best value of $f_{prior}$ was performed in the same manner as for $f_{input}$. Values between 140 and 240 Hz were simulated and a prior firing rate of 222 Hz performed the best. The result of this search can be seen in Figure \ref{fig:1D_KLD_fInput42_tau15}. The simulation results can be seen in Figure \ref{fig:1D_42_222_15} and Table \ref{tab:1D_42_222_15}. In Figure \ref{fig:1D_42_222_15} the value of the prior is indicated by the red border which is three pixels wide and centered at the center position of the corresponding output class.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/KLDvsfPrior_fInput42tau15.png}
-  \caption{\textbf{KL divergence for different $f_{prior} values$} $f_{input} = 42 Hz, \tau_{decay} = 15 ms$}
+  \caption{\textbf{KL divergence for different $f_{prior}$ values.} Parameters: $f_{input} = 42 Hz, \tau_{decay} = 15 ms$}
   \label{fig:1D_KLD_fInput42_tau15}
 \end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_42_222_15.png}
-     \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 42 Hz, f_{prior} = 222 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
+     \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 42 Hz, f_{prior} = 222 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_42_222_15}
 \end{figure}
 
@@ -274,13 +269,13 @@ The search for the best value of $f_{prior}$ was performed in the same manner as
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/KLDvsfPrior_fInput88tau4.png}
-  \caption{\textbf{KL divergence for different $f_{prior} values$} $f_{input} = 88 Hz, \tau_{decay} = 4 ms$}
+  \caption{\textbf{KL divergence for different $f_{prior}$ values.} Parameters: $f_{input} = 88 Hz, \tau_{decay} = 4 ms$}
   \label{fig:1D_KLD_fInput88_tau4}
 \end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_440_4.png}
-       \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 88 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
+       \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 88 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_88_440_4}
 \end{figure}
 
@@ -315,7 +310,7 @@ To demonstrate the impact of rising $f_{prior}$ it was set to 600 Hz and the res
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_600_4.png}
-  \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 88 Hz, f_{prior} = 600 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
+  \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 88 Hz, f_{prior} = 600 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_88_600_4}
 \end{figure}
 
@@ -346,17 +341,17 @@ $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.766 $\pm$ 0.0079 & \m
 \end{table}
 
 \subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{input} = 98$, $f_{prior} = 440 Hz$}
-Finally to it was tested if a increase of $f_{input}$ might decrease the Kullback-Leibler divergence even further. The network was simulated with increasing values of $f_{input}$ in steps of 2 Hz, beginning from 90 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior440_tau4}. The best result was obtained with an input firing rate of 98 Hz. The results of that simulation can be seen in Figure \ref{fig:1D_98_440_4} and Table \ref{tab:1D_98_440_4}.
+Finally it was tested if a increase of $f_{input}$ might decrease the Kullback-Leibler divergence even further. The network was simulated with increasing values of $f_{input}$ in steps of 2 Hz, beginning from 90 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior440_tau4}. The best result was obtained with an input firing rate of 98 Hz. The results of that simulation can be seen in Figure \ref{fig:1D_98_440_4} and Table \ref{tab:1D_98_440_4}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/KLDvsfInput_fPrior440tau4.png}
-  \caption{\textbf{KL divergence for different $f_{input} values$} $f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
+  \caption{\textbf{KL divergence for different $f_{input}$ values.} Parameters: $f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
   \label{fig:1D_KLD_fPrior440_tau4}
 \end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_98_440_4.png}
-    \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
+    \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_98_440_4}
 \end{figure}
 
@@ -386,26 +381,26 @@ $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.523 $\pm$ 0.0084 & \m
 \caption{\textbf{Analysis and simulation output probabilities. } Parameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
 \end{table}
 
-In this experiment the impact of the three network parameters $f_{input}$, $f_{prior}$ and $\tau_{decay}$ was analysed.
-\paragraph{$f_{input}$} controls how strongly the information of the pixels of the input image is weighed. This means that by raising $f_{input}$ the impact of the active pixels increases, while the impact of the prior neuron decreases comparatively. This effect will be shown in the discussion about $f_{prior}$. However this is not the only impact this parameter has. When raising $f_{input}$ it was also observed that the probabilities for output classes adjacent to the active pixels decreased. This can be observed when comparing Tables \ref{tab:1D_42_0_15} and \ref{tab:1D_70_0_15} where $f_{input}$ was raised from 42 Hz to 70 Hz. For example when looking at Image 4 in the mentioned figures, it can be seen that for $f_{input} = 42 Hz$ the simulation output probability for class 1 is 0.245. This high probability is mostly due to the active pixel number 2, which belongs to class 1 and 2 at the same time. When now increasing $f_{input}$ to 70 Hz one might expect the probabilities for class 1 and 2 to rise. This however does not happen, instead the simulation output probability for class 1 fell to 0.207, while for class 2 it rose.
-It is assumed that this happens because the membrane potentials of the output neurons are never normalized. As the input neurons spike more quickly the membrane potential of output neuron 1 rises slower than the membrane potential of output neuron 2. This leads to shifted firing rates in favour of output neuron 2. However this behaviour might be expected, as faster spiking input neurons correspond statistically to taking more samples of a probability distribution. This means that the more samples the network takes, the more certain it becomes of the more likely option, which is output class 2.
-
-\paragraph{$f_{prior}$} When increasing the prior firing rate the impact on the result of the prior neurons increases, while the impact of the input neurons decreases comparatively. When comparing the Figures \ref{fig:1D_88_440_4} and \ref{fig:1D_88_600_4} which show the results for $f_{input} = 88 Hz$, $\tau_{decay} = 4 ms$ and $f_{prior} = 440$ and $600 Hz$ respectively it can be seen under B6 how the probability for output class 4 rose, while all other probabilities fell. The opposite behaviour can be observed when raising $f_{input}$ instead, but no separate figure will be provided for this case.
-
-\paragraph{$\tau_{decay}$} determines for how long and how strongly an input or prior spike contributes to the membrane potentials of the output neurons. The bigger $\tau_{decay}$ is, the smaller $f_{input}$ and $f_{prior}$ need to be, to minimize the Kullback-Leibler divergence. This is represented by the final parameters for $\tau_{decay}$ of 4 and 15 ms. While for $\tau_{decay} = 15 ms$ the best input firing rate was 42 Hz and the prior firing rate was 222 Hz, for $\tau_{decay} = 4 ms$ they had to be raised to 98 and 440 Hz to minimize the Kullback-Leibler divergence.
-
 \paragraph{Approximating the analytic solution}
 After first finding the optimal $f_{input}$ for disabled prior activity and then finding the optimal $f_{prior}$ with enabled prior activity for $\tau_{decay}$ the simulation was not yet approximating the analytical solution perfectly. Because of that it was tried to raise $f_{input}$ to further decrease the Kullback-Leibler divergence. The further search for a better $f_{input}$ was performed for $\tau_{decay} = 0.004 ms$ and $f_{prior} = 440 Hz$, as this set of parameters performed the best overall.
-When comparing the former optimal result in Figure \ref{fig:1D_88_440_4} with $f_{input} = 88 Hz$, to the result with $f_{input} = 98 Hz$ in Figure \ref{fig:1D_98_440_4}, it can be seen that the Kullback-Leibler divergence decreased from 0.0112 to 0.0101. When comparing Tables \ref{fig:1D_88_440_4} and \ref{fig:1D_98_440_4}, it can be seen that the higher $f_{input}$ did not perform strictly better. The simulation output probabilities for Image 3 improved, while for Image 5 the output probabilities of class 2 diverged more. A further increase of $f_{input}$ started to increase the Kullback-Leibler divergence again, thus the final optimum of the parameter set was reached. It was assumed that increasing $f_{input}$ after $f_{prior}$ was fitted was necessary because the proportion of the impact of $f_{input}$ on the simulation decreased due to the introduction of the prior activity.
+When comparing the former optimal result in Figure \ref{fig:1D_88_440_4} with $f_{input} = 88 Hz$, to the result with $f_{input} = 98 Hz$ in Figure \ref{fig:1D_98_440_4}, it can be seen that the Kullback-Leibler divergence decreased from 0.0112 to 0.0101. However, when comparing Tables \ref{tab:1D_88_440_4} and \ref{tab:1D_98_440_4}, it can be seen that the higher $f_{input}$ did not perform strictly better. The simulation output probabilities for Image 3 improved, while for Image 5 the output probability of $y_2$ diverged more. A further increase of $f_{input}$ started to increase the Kullback-Leibler divergence again, thus the final optimum of the parameter set was reached. It was assumed that increasing $f_{input}$ after $f_{prior}$ was fitted was necessary because the overall impact of $f_{input}$ on the simulation decreased due to the introduction of the prior activity.
+
+\subsection{Impact of the network parameters}
+
+\paragraph{$f_{input}$} controls how strongly the information of the pixels of the input image is weighed. This means that by raising $f_{input}$ the impact of the active pixels increases, while the impact of the prior neuron decreases comparatively. This effect will be shown in the following paragraph about $f_{prior}$. However this is not the only impact this parameter has. When raising $f_{input}$ it was also observed that the posteriors of output classes adjacent to the active pixels decreased. This can be observed when comparing Tables \ref{tab:1D_42_0_15} and \ref{tab:1D_70_0_15} where $f_{input}$ was raised from 42 Hz to 70 Hz. For example when looking at Image 4 in the mentioned tables, it can be seen that for $f_{input} = 42 Hz$ the simulation output probability of $y_1$ is 0.245. This probability is due to the active pixel at position 2, which belongs to class 1 and 2 at the same time. $y_2$ has a higher simulation output probability of 0.553, as it has two active pixels within its active area. When increasing $f_{input}$ to 70 Hz one might expect the probabilities for $y_1$ and $y_2$ to rise. This however does not happen, instead the simulation output probability for $y_1$ fell to 0.207, while for $y_2$ it rose to 0.685. It is assumed that this happened because the membrane potentials of the output neurons were never normalized. As the input neurons spike more quickly the membrane potential of $y_1$ rose less than the membrane potential of $y_2$, as there was one more active pixel within the active area of $y_2$. As given by Equation \ref{eqn:qk} the conditional firing probability depends exponentially on $u_k$. This means that its probability distribution changes if all membrane potentials are changed by the same percentage. However, this behaviour might be desired, as generating more input spikes correspond statistically to taking more samples of a probability distribution. This means that the more samples the network takes, the more certain it becomes of the more likely option, which is output class 2.
+
+\paragraph{$f_{prior}$} When increasing the prior firing rate the impact on the result of the prior neurons increased, while the impact of the input neurons decreased comparatively. When comparing the Figures \ref{fig:1D_88_440_4} and \ref{fig:1D_88_600_4} which show the results for $f_{input} = 88 Hz$, $\tau_{decay} = 4 ms$ and $f_{prior} = 440$ and $600 Hz$ respectively it can be seen under B6 how the simulation output probability for $y_4$ rose, while all other probabilities fell. The opposite behaviour can be observed when raising $f_{input}$ instead.
+
+\paragraph{$\tau_{decay}$} determines for how long and how strongly an input or prior spike contributes to the membrane potentials of the output neurons. The bigger $\tau_{decay}$ is, the smaller $f_{input}$ and $f_{prior}$ need to be, to minimize the Kullback-Leibler divergence. This is represented by the final parameters for $\tau_{decay}$ of 4 and 15 ms. While for $\tau_{decay} = 15 ms$ the best input firing rate was 42 Hz and the prior firing rate was 222 Hz, for $\tau_{decay} = 4 ms$ they had to be raised to 98 and 440 Hz to minimize the Kullback-Leibler divergence.
 
 \section{Experiment 3: Transferability of network parameters}
 \label{section:1DDoubleSize}
 
 \subsection{Introduction}
-In this experiment the optimal parameters determined in Experiment 2 were used, while doubling the size of the network and input images of Experiment 2. By doing this the applicability of parameters determined for one network to another network was to be examined.
+In this experiment the optimal network parameters determined in Experiment 2 were used, while doubling the size of the network and input images of Experiment 2. The goal was to determine if the network parameters are universally applicable, regardless of the network size.
 
 \subsection{Methods}
-The network of Experiment 2 was doubled in size by increasing the number of input neurons from 18 to 36 neurons. This resulted in input images with 18 pixels. Furthermore the matrix $P^{X|Y}$ was doubled in size by inserting each value of the matrix to the right of itself. The amount of the prior neurons was kept the same with 4 prior neurons. The rest of the methods were performed analogously to Experiment 2.
+The number input neurons was doubled from 18 to 36 neurons. This resulted in input images with 18 pixels. To double the effect of the prior neurons $f_{prior}$ was doubled to 880 Hz, while the amount of the prior neurons was kept the same with 4 prior neurons. Furthermore the matrix $P^{X|Y}$ was doubled in size by copying each value of the matrix to the right of itself.  The rest of the methods were performed analogously to Experiment 2.
 
 \subsection{Results}
 
@@ -427,42 +422,40 @@ P^{X|Y} = \\
 \end{matrix}
 \end{equation}
 
-The simulation result for $f_{input} = 98 Hz$, $f_{prior} = 440 Hz$ and $\tau_{decay} = 4 ms$ can be seen in Figure \ref{fig:doubleSize_98_440_4} and Table \ref{tab:doubleSize_98_440_4}. The Kullback-Leibler divergence was infinite in this result, because some simulation output probabilities were zero and the Kullback-Leibler divergence is not defined for probabilities of zero. To circumvent this an approximated Kullback-Leibler divergence was calculated by setting the simulation output probabilities that were 0 to 0.0000001. This yielded a Kullback-Leibler divergence of 0.1411.
+The simulation result for $f_{input} = 98 Hz$, $f_{prior} = 880 Hz$ and $\tau_{decay} = 4 ms$ can be seen in Figure \ref{fig:doubleSize_98_880_4} and Table \ref{tab:doubleSize_98_880_4}. Initially the Kullback-Leibler divergence was infinite in this result, because some simulation output probabilities were zero and the Kullback-Leibler divergence is not defined for probabilities of zero. To circumvent this an approximated Kullback-Leibler divergence was calculated by setting the simulation output probabilities that were 0 to 0.0000001. This yielded a Kullback-Leibler divergence of 0.2392.
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/1D/doubleSize/doubleSize_98_440_4.png}
-      \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 18 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}
-  \label{fig:doubleSize_98_440_4}
+  \includegraphics[width=\linewidth]{figures/1D/doubleSize/doubleSize_98_880_4.png}
+      \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 98 Hz, f_{prior} = 880 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 18 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+  \label{fig:doubleSize_98_880_4}
 \end{figure}
 
 \begin{table}[]
-\label{tab:doubleSize_98_440_4}
+\label{tab:doubleSize_98_880_4}
 \small
 \tabcolsep=0.11cm
 \begin{tabular}{|c|cc|cc|}
 \hline
                        & \multicolumn{2}{c|}{Image 1}                       & \multicolumn{2}{c|}{Image 2}                       \\ \hline
                        & \multicolumn{1}{c|}{Analysis} & Simulation         & \multicolumn{1}{c|}{Analysis} & Simulation         \\ \hline
-$y_0$                  & \multicolumn{1}{c|}{0.010}    & 0.002 $\pm$ 0.0008 & \multicolumn{1}{c|}{0.010}    & 0.002 $\pm$ 0.0007 \\ \hline
-$y_1$                  & \multicolumn{1}{c|}{0.977}    & 0.996 $\pm$ 0.0011 & \multicolumn{1}{c|}{0.967}    & 0.982 $\pm$ 0.0026 \\ \hline
-$y_2$                  & \multicolumn{1}{c|}{0.010}    & 0.002 $\pm$ 0.0007 & \multicolumn{1}{c|}{0.021}    & 0.016 $\pm$ 0.0025 \\ \hline
-$y_3$                  & \multicolumn{1}{c|}{0.002}    & 0.000 $\pm$ 0.0002 & \multicolumn{1}{c|}{0.002}    & 0.000 $\pm$ 0.0002 \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.010}    & 0.000 $\pm$ 0.0001 & \multicolumn{1}{c|}{0.010}    & 0.000 $\pm$ 0.0001 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.977}    & 1.000 $\pm$ 0.0002 & \multicolumn{1}{c|}{0.967}    & 1.000 $\pm$ 0.0003 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.010}    & 0.000 $\pm$ 0.0001 & \multicolumn{1}{c|}{0.021}    & 0.000 $\pm$ 0.0002 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.002}    & 0.000 $\pm$ 0.0000 & \multicolumn{1}{c|}{0.002}    & 0.000 $\pm$ 0.0001 \\ \hline
                        & \multicolumn{2}{c|}{Image 3}                       & \multicolumn{2}{c|}{Image 4}                       \\ \hline
-$y_0$                  & \multicolumn{1}{c|}{0.035}    & 0.089 $\pm$ 0.0058 & \multicolumn{1}{c|}{0.017}    & 0.016 $\pm$ 0.0021 \\ \hline
-$y_1$                  & \multicolumn{1}{c|}{0.957}    & 0.907 $\pm$ 0.0059 & \multicolumn{1}{c|}{0.977}    & 0.979 $\pm$ 0.0023 \\ \hline
-$y_2$                  & \multicolumn{1}{c|}{0.004}    & 0.001 $\pm$ 0.0004 & \multicolumn{1}{c|}{0.003}    & 0.002 $\pm$ 0.0006 \\ \hline
-$y_3$                  & \multicolumn{1}{c|}{0.004}    & 0.002 $\pm$ 0.0009 & \multicolumn{1}{c|}{0.003}    & 0.003 $\pm$ 0.0010 \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.035}    & 0.003 $\pm$ 0.0010 & \multicolumn{1}{c|}{0.017}    & 0.000 $\pm$ 0.0004 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.957}    & 0.997 $\pm$ 0.0010 & \multicolumn{1}{c|}{0.977}    & 1.000 $\pm$ 0.0004 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.004}    & 0.000 $\pm$ 0.0001 & \multicolumn{1}{c|}{0.003}    & 0.000 $\pm$ 0.0001 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.004}    & 0.000 $\pm$ 0.0001 & \multicolumn{1}{c|}{0.003}    & 0.000 $\pm$ 0.0001 \\ \hline
 						& \multicolumn{2}{c|}{Image 5}                       & \multicolumn{2}{c|}{Image 6}                       \\ \hline
-$y_0$                  & \multicolumn{1}{c|}{0.088}    & 0.022 $\pm$ 0.0025 & \multicolumn{1}{c|}{0.205}    & 0.356 $\pm$ 0.0088 \\ \hline
-$y_1$                  & \multicolumn{1}{c|}{0.308}    & 0.799 $\pm$ 0.0071 & \multicolumn{1}{c|}{0.205}    & 0.352 $\pm$ 0.0100 \\ \hline
-$y_2$                  & \multicolumn{1}{c|}{0.088}    & 0.019 $\pm$ 0.0018 & \multicolumn{1}{c|}{0.021}    & 0.007 $\pm$ 0.0013 \\ \hline
-$y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.160 $\pm$ 0.0066 & \multicolumn{1}{c|}{0.570}    & 0.285 $\pm$ 0.0081 \\ \hline
+$y_0$                  & \multicolumn{1}{c|}{0.088}    & 0.007 $\pm$ 0.0010 & \multicolumn{1}{c|}{0.205}    & 0.106 $\pm$ 0.0060 \\ \hline
+$y_1$                  & \multicolumn{1}{c|}{0.308}    & 0.369 $\pm$ 0.0096 & \multicolumn{1}{c|}{0.205}    & 0.109 $\pm$ 0.0042 \\ \hline
+$y_2$                  & \multicolumn{1}{c|}{0.088}    & 0.005 $\pm$ 0.0010 & \multicolumn{1}{c|}{0.021}    & 0.001 $\pm$ 0.0004 \\ \hline
+$y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.619 $\pm$ 0.0098 & \multicolumn{1}{c|}{0.570}    & 0.783 $\pm$ 0.0091 \\ \hline
 \end{tabular}
-\caption{\textbf{Analysis and simulation output probabilities. } Parameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
+\caption{\textbf{Analysis and simulation output probabilities. } Parameters: $f_{input} = 98 Hz, f_{prior} = 880 Hz, \tau_{decay} = 4 ms$}
 \end{table}
 
-\subsection{Discussion}
-
-When comparing Figures \ref{fig:1D_98_440_4} and \ref{fig:doubleSize_98_440_4} it can be seen that the analysis output probabilities stayed the same. This was expected, as by doubling the pixels of the input images the information within them does not change. The areas corresponding to an output class double in size, as do the active pixels shown in black. However when comparing the Kullback-Leibler divergences of the best parameter set in Experiment 2 and the network of this experiment with parameters of $f_{input} = 98 Hz$, $f_{prior} = 440 Hz$ and $\tau_{decay} = 4 ms$ it can be seen that the network with double size performed worse. The Kullback-Leibler divergence of the network with doubled size was 0.1411 compared to 0.0101 of the network the parameters were fitted to. This clearly indicated that the fitted parameters are not universal to every network size. This might be due to the fact that the membrane potentials of the output neurons were never normalized, which was already discussed in Experiment 2. However, if such a normalization was implemented, the fitted parameters of one network size could be universal to arbitrary sizes.
+When comparing Figures \ref{fig:1D_98_440_4} and \ref{fig:doubleSize_98_880_4} it can be seen that the analysis output probabilities stayed the same. This was expected, as by doubling the pixels of the input images the information within them does not change. The areas corresponding to an output class doubled in size, as did the active pixels shown in black. However when comparing the Kullback-Leibler divergences of the best parameter set in Experiment 2 and the network of this experiment with parameters of $f_{input} = 98 Hz$, $f_{prior} = 880 Hz$ and $\tau_{decay} = 4 ms$ it can be seen that the network with double size performed worse. The Kullback-Leibler divergence of the network with doubled size was 0.2392 compared to 0.0101 of the network the parameters were fitted to. This clearly indicated that the fitted parameters are not universal to every network size. This might be due to the fact that the membrane potentials of the output neurons were never normalized, which was already discussed in Experiment 2. However, if such a normalization was implemented, the fitted parameters of one network size could be universal to arbitrary sizes.
 
 \section{Experiment 4: Training of the network with 1-D images and predetermined parameters}
 \label{section:1DPreDetermined}
@@ -485,7 +478,7 @@ The Kullback-Leibler divergence for different values of c can be seen in Figure 
 
 The training and evaluation results for the best value of $c = 3$ can be seen in Figures \ref{fig:1DTrainingC3}, Figure \ref{fig:1DTrainingEvaluationC3} and Table \ref{tab:1DTrainingEvaluationC3}.
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/1D/training/trainingPlot_98_440_4_c3.png}
+  \includegraphics[width=\linewidth * 0.8]{figures/1D/training/trainingPlot_98_440_4_c3.png}
   \caption{\textbf{Training result.} Parameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms, c = 3$  \textbf{A} The learned probability matrix $P^{X|Y}$. It was determined by taking the weights to the power of e. \textbf{B} The calculated probability matrix $P^{X|Y}$. \textbf{C} The learned prior probability matrix $P^{Y|Z}$. \textbf{D} The calculated prior probability matrix $P^{Y|Z}$.
  \textbf{E, F} Spike activity expressed by the output neurons before and after the training of the network. \textbf{G} This shows the number of spikes the most active output neuron generated, relative to the number of spikes all other output neurons generated combined.}
   \label{fig:1DTrainingC3}
@@ -493,7 +486,7 @@ The training and evaluation results for the best value of $c = 3$ can be seen in
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/training/trainingEvaluation_98_440_4_c3.png}
-      \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms, c = 3$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and proportions of the number of output spikes during the simulation, standard deviations as black bars.}  
+      \caption{\textbf{Analysis and simulation result. } Parameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms, c = 3$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}  
   \label{fig:1DTrainingEvaluationC3}
 \end{figure}
 

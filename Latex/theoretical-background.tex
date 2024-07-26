@@ -22,7 +22,7 @@ We now define X as a binary random vector of the visual input, Y as a multinomia
 When plugging these variables into Equation \ref{eqn:bayesianInference} with the posterior given by $P(Y|X,Z)$, the likelihood given by $P(X|Y)$ and the prior given by $P(Y|Z)$ we get
 \begin{equation}
 \label{eqn:pYvorausgesetztXUndZ}
-P(Y = i|X = x, Z = j) = \frac{P(X=x|Y=i)P(Y = i|Z = j)}{\Sigma_{k}P(X=x|Y=k)P(Y=k|Z=j)}.
+P(Y = k|X = x, Z = j) = \frac{P(X=x|Y=k)P(Y = k|Z = j)}{\Sigma_{k'}P(X=x|Y=k')P(Y=k'|Z=j)}.
 \end{equation}
 
 \section{Network model}
@@ -137,6 +137,7 @@ To simulate the feedback from the inferior temporal cortex prior neurons $z_1,..
 
 \citet{nessler} hypothesized that the ensemble of weights of a neuron can be understood as a generative model. They further claimed that every synaptic weight, due to STDP-induced changes,  converges stochastically to the log of the conditional probability that the presynaptic neuron has fired just before the postsynaptic neuron, given that the postsynaptic neuron fires. This connection is given by
 \begin{equation}
+\label{eqn:weightProbLink}
  w^{I}_{ki} = log(p(x_i = 1 | y_k = 1))
 \end{equation}
 an will be analysed in Section \ref{section:1D}.
