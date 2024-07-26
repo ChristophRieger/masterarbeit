@@ -3,13 +3,13 @@
 
 \subsection{Introduction}
 
-For this experiment the WTA network will be shown images of either horizontal or vertical bars. Through unsupervised learning the output neurons will learn to cluster the images together, depending on the orientation and position of the bars. The unsupervised clustering process will be visualized and analysed.
+For this experiment images of either horizontal or vertical bars will be shown to the WTA network. Through unsupervised learning the output neurons will learn to cluster the images together, depending on the orientation and position of the bars. The the learning of the network will be visualized and analysed.
 Further, the effect of the prior neurons will be demonstrated by generating ambiguous images which show a horizontal and a vertical bar at the same time. The output of the network will be analysed, depending on the activity of the prior neurons. 
 
 \subsection{Methods}
 
 \paragraph{Input data}
-Black bars with a width of seven pixels were drawn onto a white background with a size of 35 x 35 pixels. The bars could be oriented either horizontally or vertically. The network is supposed to cluster ten different groups within these images, five horizontally and five vertically. With a given bar width of seven pixels, and five groups in each direction the image height and width were determined as 35 pixels, to yield equally sized groups. The orientation of the training images was chosen randomly via a uniform distribution. The position of the bars in the images were uniformly distributed along the 35 pixels of either axis. To simulate noise each pixel of an image had a chance of ten percent to have its color flipped after the generation.
+Black bars with a width of seven pixels were drawn onto a white background with a size of 35 x 35 pixels. The bars could be oriented either horizontally or vertically. The network was supposed to form ten different groups within these images, five with a horizontal orientation and five with a vertical orientation. With a given bar width of seven pixels the image height and width were determined as 35 pixels, to yield equally sized groups. The orientation of the training images was chosen randomly via a uniform distribution. The positions of the bars were uniformly distributed along the 35 pixels of either axis. To simulate noise each pixel of an image had a chance of ten percent to have its color flipped after the generation.
 During the training of the network random images were generated and presented for 200 ms. As the simulation had a duration of 800 seconds this resulted in 4000 images shown to the network. Examples of the input data can be seen in Figure \ref{fig:horvertImages}. To show the value of the added a-priori information, validation images with two bars forming a cross were also generated, seen in Figure \ref{fig:horvertTrainingCrossImage}. When shown to the network in the validation process the prior neurons were given the information that a cross is either of horizontal or vertical orientation.
 
 \begin{figure}

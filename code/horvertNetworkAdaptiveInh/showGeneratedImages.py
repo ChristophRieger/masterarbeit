@@ -21,9 +21,17 @@ image2, yPosition, prior, orientation = dataGenerator.generateHorizontalLineImag
 # Line plots
 ax1.set_title('Image in vertical orientation')
 ax1.imshow(image1, cmap='gray')
+ax1XAxis = ax1.get_xaxis()
+ax1XAxis.set_visible(False)
+ax1YAxis = ax1.get_yaxis()
+ax1YAxis.set_visible(False)
 ax2.set_title('Image in horizontal orientation')
 ax2.imshow(image2, cmap='gray')
-
+ax2XAxis = ax2.get_xaxis()
+ax2XAxis.set_visible(False)
+ax2YAxis = ax2.get_yaxis()
+ax2YAxis.set_visible(False)
+plt.savefig("horvertTrainingImages" + ".png", bbox_inches='tight', dpi=200)
 
 
 # generate vertical images
@@ -47,3 +55,6 @@ plt.imshow(image, cmap='gray')
 image, position, orientation = dataGenerator.generateRandomCrossLineImage()
 plt.figure()
 plt.imshow(image, cmap='gray')
+plt.axis('off')
+plt.title("Cross image")
+plt.savefig("horvertTrainingCrossImage" + ".png", bbox_inches='tight', dpi=200)
