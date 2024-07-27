@@ -40,7 +40,7 @@ numberYNeurons = 4 # output
 numberZNeurons = 4 # prior
 
 sigma = 0.01 # time frame in which spikes count as before output spike
-c = 3 # 10 seems good, scales weights to 0 ... 1
+c = 2.5 # 10 seems good, scales weights to 0 ... 1
 tauRise = 0.001
 tauDecay = 0.004  # might be onto something here, my problem gets better
 
