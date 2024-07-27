@@ -27,7 +27,7 @@ During the training of the network random images were generated and presented fo
 
 \paragraph{Network architecture}
 
-As every pixel of an image was connected to two input neurons the network had 2450 input neurons. Each of these neurons had a firing frequency of 20 Hz, when in the active state. Then there were ten output neurons, one for each possible group. Lastly, there were two equal sized groups of prior neurons. During training the first group $z^h$ was active when the image was of horizontal orientation and the other group $z^v$ was active for vertical orientation. The number of prior neurons and their firing frequency had to be determined via grid search, as they needed to be set at values where the impact of the a-priori information is neither too strong nor too weak.
+As every pixel of an image was connected to two input neurons the network had 2450 input neurons. Each of these neurons had a firing frequency $f_{input}$ of 20 Hz, when in the active state. Then there were ten output neurons, one for each possible group. Lastly, there were two equal sized groups of prior neurons with firing frequencies $f_{prior}$ of 200 Hz. This firing frequency was chose as high plausible value to keep the needed number of prior neurons small compared to the number of input neurons. During training the first group $z^h$ was active when the image was of horizontal orientation and the other group $z^v$ was active for vertical orientation. The number of prior neurons had to be determined via grid search, as they needed to be set at values where the impact of the a-priori information is neither too strong nor too weak.
 
 \paragraph{Network and hyperparameters}
 
