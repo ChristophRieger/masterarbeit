@@ -15,8 +15,8 @@ Bayesian inference is a process of data analysis to calculate the probability of
 \label{eqn:bayesianInference}
 P(H|E) = \frac{P(E|H)P(H)}{P(E)},
 \end{equation}
-where H represents a hypothesis and E some related evidence. P(H|E) is the posterior probability which signifies the probability of the hypothesis after the evidence was observed. P(E|H) is called likelihood and it is the probability of observing the evidence 	given the hypothesis. It is a measure of the compatibility of the observed evidence with the given hypothesis. P(H) is the prior probability which is the probability of the hypothesis before any evidence is considered or obtained. P(E) is called marginal likelihood that represents the probability of the evidence being observed. However it is the same independent of the chosen hypothesis. Thus, it is not factored in when comparing different hypotheses.
-Bayesian inference can be applied to the "face in shadow" example of Section \ref{section:feedbackInVisualCortex}. There a neuron in V1 sees a small part of the visual field and signals if it sees an edge or not. At first it has the evidence of the observed pixels available and from it can calculate the likelihood that an edge is present. At first it has no prior knowledge of how probable an edge being present is, meaning that the prior probabilities for there being an edge or no edge are equal. With that likelihood and the prior probabilities it can conclude the posterior probability for the hypothesis "there is an edge" and decides that there is no edge.
+where H represents a hypothesis and E some related evidence. P(H|E) is the posterior probability which signifies the probability of the hypothesis after the evidence was observed. P(E|H) is called likelihood and it is the probability of observing the evidence 	given the hypothesis. It is a measure of the compatibility of the observed evidence with the given hypothesis. P(H) is the prior probability which is the probability of the hypothesis before any evidence is considered or obtained. P(E) is called marginal likelihood that represents the probability of the evidence being observed. However, it is independent of the chosen hypothesis. Thus, it is not factored in when comparing different hypotheses.
+Bayesian inference can be applied to the "face in shadow" example of Section \ref{section:feedbackInVisualCortex}. There a neuron in V1 sees a small part of the visual field and signals if it sees an edge or not. At first it has the evidence of the observed pixels available and from it can calculate the likelihood that an edge is present. It has no prior knowledge of how probable an edge being present is, meaning that the prior probabilities for there being an edge or no edge are equal. With that likelihood and the prior probabilities it can conclude the posterior probability for the hypothesis "there is an edge" and decides that there is no edge.
 Later the inferior temporal cortex determines that there is a face in the picture and feeds this information back to V1. This influences the prior probabilities and changes the posterior probability in a way that the V1 neuron starts to see the hypothesis that there is an edge as more likely, in order to complete the contour of the face. 
 We now define X as a binary random vector of the visual input, Y as a multinomial variable of the output of V1 and Z as a multinomial variable of the feedback of the inferior temporal cortex.
 When plugging these variables into Equation \ref{eqn:bayesianInference} with the posterior given by $P(Y|X,Z)$, the likelihood given by $P(X|Y)$ and the prior given by $P(Y|Z)$ we get
@@ -29,8 +29,18 @@ P(Y = k|X = x, Z = j) = \frac{P(X=x|Y=k)P(Y = k|Z = j)}{\Sigma_{k'}P(X=x|Y=k')P(
 
 The network model used for the experiments in this thesis was taken from \citet{nessler} and expanded by an additional layer to include some hierarchical feedback information.
 
+\paragraph{Network architecture}
+Each pixel of an input image was connected to two neurons. The first of these neurons is in an active state when the pixel is black and in an inactive state otherwise. The second neuron expresses the opposite behaviour. As a consequence the network needs $width \cdot height \cdot 2$ excitatory input neurons $x_1,...,x_N$. These input neurons are fully connected to the excitatory output neurons $y_1,...,y_K$. This means that every input neuron $x_i$ is connected to each output neuron $y_k$. 
+To simulate the feedback from the inferior temporal cortex prior neurons $z_1,...,z_J$ were added to the network. The prior neurons were also fully connected to the output neurons. A visualization of the network architecture can be seen in Figure \ref{fig:networkArchitecture}.
+
+\begin{figure}
+  \label{fig:networkArchitecture}
+  \includegraphics[width=\linewidth]{figures/networkPlan.png}
+  \caption{Architecture of the network.}
+\end{figure}
+
 \paragraph{Neuron model}
-As in \citet{nessler} the input neurons $x_1,...,x_n$ are firing according to a poisson process with an average firing rate $f_{input}$ when active and with 0 Hz when in an inactive state. The input neurons receive a binary input, for example a black or white pixel of an image. The excitatory post synaptic potentials (EPSPs) $x_i(t)$ that these neurons produce can be seen in Figure \ref{fig:XSpike}. A double exponential kernel was used to generate the EPSP. The kernel has a time constant for the rise of the signal $\tau_{rise}$  and a time constant for the decay of the signal $\tau_{decay}$. The addition of the time step size $\delta t$ was necessary to get the time t at the end of the current simulation step. $t_f$ is the time at which the spike of $x_i$ occurred
+As in \citet{nessler} the input neurons $x_1,...,x_N$ are firing according to a poisson process with an average firing rate $f_{input}$ when active and with 0 Hz when in an inactive state. The input neurons receive a binary input, for example a black or white pixel of an image. The excitatory post synaptic potentials (EPSPs) $x_i(t)$ that these neurons produce can be seen in Figure \ref{fig:XSpike}. A double exponential kernel was used to generate the EPSP. The kernel has a time constant for the rise of the signal $\tau_{rise}$  and a time constant for the decay of the signal $\tau_{decay}$. The addition of the time step size $\delta t$ was necessary to get the time t at the end of the current simulation step. $t_f$ is the time at which the spike of $x_i$ occurred
 \begin{equation}
 \label{eqn:EPSP}
 x_i(t) = e^{-(t + \delta t - t_f) / \tau_{decay}} - e^{-(t + \delta t - t_f) / \tau_{rise}}.
@@ -43,7 +53,7 @@ z_j(t) = e^{-(t + \delta t - t_f) / \tau_{decay}} - e^{-(t + \delta t - t_f) / \
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/XSpike.png}
-  \caption{Form of an excitatory post synaptic potential generated by an input neuron over time. A double exponential kernel was used to generate this signal. These signals are fed to the next layer of the network. }
+  \caption{Form of an excitatory post synaptic potential generated by an input neuron over time. A double exponential kernel was used to generate this signal. Its value is passed on to the next layer of the network. }
   \label{fig:XSpike}
 \end{figure}
 
@@ -114,23 +124,13 @@ The input weights $w^{I}_{ki}$ between neurons $x_i$ and $y_k$ are updated whene
 \Delta w^{I}_{ki} = \begin{dcases*} \lambda \cdot (ce^{-w^{I}_{ki}} - 1) & if $x_{i}$ fired in $ [t^f - \sigma, t^f] $ \\
 \lambda \cdot (-1) & \text{if $ x_i $ did not fire in $ [t^f - \sigma, t^f] $, } \end{dcases*}
 \end{equation}
-where $\lambda$ is the learning rate, the hyperparameter c shifts the weight values, $t^f$ is the time when $y_k$ spiked and $\sigma$ is the time window in which input spikes are considered as "before" an output spike. As the membrane potentials $u_k$ of the output neurons result from the addition of the EPSPs of the input neurons times the corresponding weight, a way to control the average size of u is needed. If u is too small the output neurons will fire too sparsely and if u is too big it will impair the learning process. So to limit u, the size of the weights is controlled via the hyperparameter c. The learning rate $\lambda$ is needed to control the size of each weight update. If it is too big few output neurons will respond to multiple input classes and others will only respond too little or not at all. On the other hand if $\lambda$ is too small the network will learn very slowly and may never converge.
+where $\lambda$ is the learning rate, the hyperparameter c shifts the weight values, $t^f$ is the time when $y_k$ spiked and $\sigma$ is the time window in which input spikes are considered as "before" an output spike. As the membrane potentials $u_k$ of the output neurons result from the addition of the EPSPs of the input neurons times the corresponding weight, a way to control the average size of u is needed. If u is too small the output neurons will fire too sparsely and if u is too big it will impair the learning process. So to limit u, the size of the weights is controlled via the hyperparameter c. The learning rate $\lambda$ is needed to control the size of each weight update. If it is too big few output neurons will respond to too large parts of the input, while others might not respond at all. On the other hand if $\lambda$ is too small the network will learn very slowly and may never converge.
 The prior weights $w^{P}_{kj}$ are also updated whenever an output neuron fires, in the same way as $w^{I}_{ki}$
 \begin{equation}
 \label{deltawkj}
 \Delta w^{P}_{kj} = \begin{dcases*} \lambda \cdot (ce^{-w^{P}_{kj}} - 1) & if $z_{j}$ fired in $ [t^f - \sigma, t^f] $ \\
 \lambda \cdot (-1) & \text{if $ z_j $ did not fire in $ [t^f - \sigma, t^f] $, } \end{dcases*}
 \end{equation}
-
-\paragraph{Network architecture}
-Each pixel of an input image was connected to two neurons. The first of these neurons is in an active state when the pixel is black and in an inactive state otherwise. The second neuron expresses the opposite behaviour. As a consequence the network needs ($width \cdot height \cdot 2$) excitatory input neurons $x_1,...,x_N$. These input neurons are fully connected to the excitatory output neurons $y_1,...,y_K$. This means that every input neuron $x_i$ is connected to each output neuron $y_k$. 
-To simulate the feedback from the inferior temporal cortex prior neurons $z_1,...,z_J$ were added to the network. The prior neurons were also fully connected to the output neurons. A visualization of the network architecture can be seen in Figure \ref{fig:networkArchitecture}.
-
-\begin{figure}
-  \label{fig:networkArchitecture}
-  \includegraphics[width=\linewidth]{figures/networkPlan.png}
-  \caption{Architecture of the network.}
-\end{figure}
 
 \section{Mathematical link between the spiking Winner-Take-All network model and Bayesian inference}
 \label{linkNetworkBayes}
@@ -145,7 +145,7 @@ Furthermore they claimed that in a Bayesian inference context every input spike 
 
 To show the connection between the spiking Winner-Take-All network model and Bayesian inference it will be shown that the posterior probability of Bayesian inference given in Equation \ref{eqn:pYvorausgesetztXUndZ} is equal to the relative firing probability $q_k(t)$, given in Equation \ref{eqn:qk}.
 
-As explained in Section \ref{section:bayesianInference} the visual input, modelled by the input neurons can be thought of as the Bayesian likelihood and the feedback, modelled by the prior neurons, as the Bayesian prior. As defined in Equation \ref{eqn:pVonY} the firing probability of an output neuron is proportional to the exponent of its membrane potential minus the inhibition. To obtain the Bayesian likelihood and prior we first split the membrane potential into the contributions of the input and prior neurons. The first part that signifies the contribution of the input neurons is given by
+As explained in Section \ref{section:bayesianInference} the visual input, modelled by the input neurons, can be thought of as the Bayesian likelihood and the feedback, modelled by the prior neurons, as the Bayesian prior. As defined in Equation \ref{eqn:pVonY} the firing probability of an output neuron is proportional to the exponent of its membrane potential minus the inhibition. To obtain the Bayesian likelihood and prior we first split the membrane potential into the contributions of the input and prior neurons. The first part that signifies the contribution of the input neurons is given by
 \begin{equation}
 e^{u_x} = e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t)}.
 \end{equation}

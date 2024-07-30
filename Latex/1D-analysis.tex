@@ -74,7 +74,7 @@ The network was simulated for six different input images for each hyperparameter
 D_{KL}(P_{analysis}(Y = k|X, Z)||P_{simulation}(Y = k|X, Z)) = \\ \sum_{k=1}^K P_{analysis}(Y = k|X, Z) \cdot \ln( \frac{P_{analysis}(Y = k|X, Z)}{P_{simulation}(Y = k|X, Z)})
 \end{split}
 \end{equation}
-where K is the number of output neurons and $P_{analysis}(Y = k|X, Z)$ and $P_{simulation}(Y = k|X, Z)$ are the posteriors of the network, late called "analysis output probabilities" and "simulation output probabilities" in plots. The six resulting Kullback-Leibler divergences for each hyperparameter set were then averaged to create a single metric by which the performance of the different hyperparameter sets was compared. The three hyperparameters input firing rate $f_{input}$, prior firing rate $f_{prior}$ and the membrane constant $\tau_{decay}$ were varied to inspect their influence on the result, as well as to approximate the analytical solution as closely as possible. Each input image was presented to the network for 20 seconds to reduce the variance between runs. Furthermore each simulation was repeated 20 times with the same hyperparameter set to obtain the mean and standard deviation of the simulation output probabilities and of the Kullback-Leibler divergence.
+where K is the number of output neurons and $P_{analysis}(Y = k|X, Z)$ and $P_{simulation}(Y = k|X, Z)$ are the posteriors of the network, later called "analysis output probabilities" and "simulation output probabilities" in plots. The six resulting Kullback-Leibler divergences for each hyperparameter set were  averaged to create a single metric by which the performance of the different hyperparameter sets was compared. The three hyperparameters input firing rate $f_{input}$, prior firing rate $f_{prior}$ and the membrane constant $\tau_{decay}$ were varied to inspect their influence on the result, as well as to approximate the analytical solution as closely as possible. Each input image was presented to the network for 20 seconds to reduce the variance between runs. Furthermore each simulation was repeated 20 times with the same hyperparameter set to obtain the mean and standard deviation of the simulation output probabilities and of the Kullback-Leibler divergence.
 
 \subsection{Results}
 
@@ -109,7 +109,8 @@ To simplify the hyperparameter fitting process the network was at first simulate
 Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. After identifying the input firing rate with the smallest Kullback-Leibler divergence the network was simulated again for $f_{input}$ values $\pm$ 10 Hz in steps of 2 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau15}. This process yielded the best input firing rate of 42 Hz. The results of this hyperparameter combination can be seen in Figure \ref{fig:1D_42_0_15}. In this figure six different input images can be seen in A. The active pixels are shown in black. In B the posterior probabilities of the mathematical analysis are given by the red bars and the posterior probabilities of the simulation are given by the blue bars. Each simulation output probability has its standard deviation marked by a black bar. At the bottom the value of the Kullback-Leibler divergence is given, with its standard deviation. The exact numeric probabilities are given in Table \ref{tab:1D_42_0_15}.
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/1D/KLDvsfInput_fPrior0tau15.png}
+\centering
+  \includegraphics[width=0.75\linewidth]{figures/1D/KLDvsfInput_fPrior0tau15.png}
   \caption{\textbf{KL divergence for different $f_{input}$ values. } Hyperparameters: $f_{prior} = 0 Hz, \tau_{decay} = 15 ms$}
   \label{fig:1D_KLD_fPrior0_tau15}
 \end{figure}
@@ -184,7 +185,8 @@ $y_3$                  & \multicolumn{1}{c|}{0.038}    & 0.018 $\pm$ 0.0022 & \m
 For this hyperparameter combination values between 50 and 150 Hz for $f_{input}$ in steps of 10 Hz were simulated. Analogously to the previous hyperparameter set after finding the best input firing rate the search was performed in finer steps until the best value was found at 88 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau4}. The result of the simulation with those hyperparameters can be seen in Figure \ref{fig:1D_88_0_4} and Table \ref{tab:1D_88_0_4}.
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/1D/KLDvsfInput_fPrior0tau4.png}
+\centering
+  \includegraphics[width=0.75\linewidth]{figures/1D/KLDvsfInput_fPrior0tau4.png}
   \caption{\textbf{KL divergence for different $f_{input}$ values.} Hyperparameters: $f_{prior} = 0 Hz, \tau_{decay} = 4 ms$}
   \label{fig:1D_KLD_fPrior0_tau4}
 \end{figure}
@@ -227,7 +229,8 @@ After determining the best input firing rates for two different values of $\tau_
 The search for the best value of $f_{prior}$ was performed in the same manner as for $f_{input}$. Values between 140 and 240 Hz were simulated and a prior firing rate of 222 Hz performed the best. The result of this search can be seen in Figure \ref{fig:1D_KLD_fInput42_tau15}. The simulation results can be seen in Figure \ref{fig:1D_42_222_15} and Table \ref{tab:1D_42_222_15}. In Figure \ref{fig:1D_42_222_15} the value of the prior is indicated by the red border which is three pixels wide and centered at the center position of the corresponding output class.
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/1D/KLDvsfPrior_fInput42tau15.png}
+\centering
+  \includegraphics[width=0.75\linewidth]{figures/1D/KLDvsfPrior_fInput42tau15.png}
   \caption{\textbf{KL divergence for different $f_{prior}$ values.} Hyperparameters: $f_{input} = 42 Hz, \tau_{decay} = 15 ms$}
   \label{fig:1D_KLD_fInput42_tau15}
 \end{figure}
@@ -268,7 +271,8 @@ $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.587 $\pm$ 0.0105 & \m
 The search for the best value of $f_{prior}$ was performed in the same manner as for $f_{input}$. Values between 360 and 460 Hz were simulated and a prior firing rate of 440 Hz performed the best. The result of this search can be seen in Figure \ref{fig:1D_KLD_fInput88_tau4}. The results of this hyperparameter combination are given in Figure \ref{fig:1D_88_440_4} and Table \ref{tab:1D_88_440_4}.
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/1D/KLDvsfPrior_fInput88tau4.png}
+\centering
+  \includegraphics[width=0.75\linewidth]{figures/1D/KLDvsfPrior_fInput88tau4.png}
   \caption{\textbf{KL divergence for different $f_{prior}$ values.} Hyperparameters: $f_{input} = 88 Hz, \tau_{decay} = 4 ms$}
   \label{fig:1D_KLD_fInput88_tau4}
 \end{figure}
@@ -341,10 +345,11 @@ $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.766 $\pm$ 0.0079 & \m
 \end{table}
 
 \subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{input} = 98$, $f_{prior} = 440 Hz$}
-Finally it was tested if a increase of $f_{input}$ might decrease the Kullback-Leibler divergence even further. The network was simulated with increasing values of $f_{input}$ in steps of 2 Hz, beginning from 90 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior440_tau4}. The best result was obtained with an input firing rate of 98 Hz. The results of that simulation can be seen in Figure \ref{fig:1D_98_440_4} and Table \ref{tab:1D_98_440_4}.
+Finally, it was tested if a increase of $f_{input}$ might decrease the Kullback-Leibler divergence even further. The network was simulated with increasing values of $f_{input}$ in steps of 2 Hz, beginning from 90 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior440_tau4}. The best result was obtained with an input firing rate of 98 Hz. The results of that simulation can be seen in Figure \ref{fig:1D_98_440_4} and Table \ref{tab:1D_98_440_4}.
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/1D/KLDvsfInput_fPrior440tau4.png}
+\centering
+  \includegraphics[width=0.75\linewidth]{figures/1D/KLDvsfInput_fPrior440tau4.png}
   \caption{\textbf{KL divergence for different $f_{input}$ values.} Hyperparameters: $f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
   \label{fig:1D_KLD_fPrior440_tau4}
 \end{figure}
@@ -461,7 +466,8 @@ The network architecture was the same as in Experiment 2 and the training paradi
 
 The Kullback-Leibler divergence for different values of c can be seen in Figure \ref{fig:1DTrainingC}.
 \begin{figure}
-  \includegraphics[width=\linewidth]{figures/1D/training/KLD_cvsfInput98_fPrior440tau4.png}
+\centering
+  \includegraphics[width=0.75\linewidth]{figures/1D/training/KLD_cvsfInput98_fPrior440tau4.png}
   \caption{\textbf{KL divergence for different c values} $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
   \label{fig:1DTrainingC}
 \end{figure}
