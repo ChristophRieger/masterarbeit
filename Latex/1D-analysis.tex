@@ -426,7 +426,7 @@ P^{X|Y} = \\
 \end{matrix}
 \end{equation}
 
-The simulation result for $f_{input} = 98 Hz$, $f_{prior} = 880 Hz$ and $\tau_{decay} = 4 ms$ can be seen in Figure \ref{fig:doubleSize_98_880_4} and Table \ref{tab:doubleSize_98_880_4}. Initially, the Kullback-Leibler divergence was infinite in this result, because some simulation output probabilities were zero and the Kullback-Leibler divergence is not defined for probabilities of zero. To circumvent this, an approximated Kullback-Leibler divergence was calculated, by setting the simulation output probabilities that were 0 to 0.0000001. This yielded a Kullback-Leibler divergence of 0.2392.
+The simulation result for $f_{input} = 98 Hz$, $f_{prior} = 880 Hz$ and $\tau_{decay} = 4 ms$ can be seen in Figure \ref{fig:doubleSize_98_880_4} and Table \ref{tab:doubleSize_98_880_4}. Initially, the Kullback-Leibler divergence was infinite in this result, because some simulation output probabilities were zero and the Kullback-Leibler divergence is not defined for probabilities of zero. To circumvent this, an approximated Kullback-Leibler divergence was calculated, by setting the simulation output probabilities that were 0 to 0.0000001. This yielded a Kullback-Leibler divergence of 0.2392. This value was worse, compared to 0.0101 of the original network from Experiment 2. Thus, the hyperparameters were clearly not transferable to a network of double size.
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/doubleSize/doubleSize_98_880_4.png}
       \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 880 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 18 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
@@ -520,3 +520,5 @@ $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.727 $\pm$ 0.0063 & \m
 \end{tabular}
 \caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms, c = 3$}
 \end{table}
+
+The Kullback-Leibler divergence with $c = 3$ was 0.0342. It was worse, compared to the best performing network of Experiment 2 with a Kullback-Leibler divergence of 0.0101. This means, that the training was imperfect and the network with the trained weights performed worse, than the one with calculated weights.
