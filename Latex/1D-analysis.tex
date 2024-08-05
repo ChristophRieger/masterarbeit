@@ -1,23 +1,23 @@
-\section{Experiment 2: Mathematical analysis of the network with 1-D images}
+\section{Experiment 2: Mathematical analysis and simulation of the network with 1-D images}
 \label{section:1D}
 
 \subsection{Introduction}
 
-The purpose of this experiment was to analyse a smaller network and provide a definitive way to verify the performance of the simulation. Furthermore, the weights were not learned as in the previous experiment, but rather determined analytically. This was done to experimentally prove the relation given by \citet{nessler} that the weights stochastically converge toward the conditional probability that a presynaptic neuron fired shortly before the postsynaptic neuron.
-First, the network was scaled down to be one-dimensional with 18 input neurons, four prior neurons and four output neurons, making it easier to analyse. The weights were determined by utilizing the logarithmic connection between them and the corresponding conditional probabilities, as given by Equation \ref{eqn:weightProbLink}. The conditional probabilities of the input and output neurons of the network  were calculated and then used to determine the posterior probability of the network. After the simulation of the network the distribution of the output spikes was used to calculate the posterior probability. The posterior probabilities of both the mathematical analysis and the simulation were compared. By varying three network hyperparameters it was tuned to approximate the analytical solution as closely as possible.
+The purpose of this experiment was to analyse a smaller network and provide a definitive way to verify the performance of the simulation. Furthermore, the weights were not learned, as in the previous experiment, but rather determined analytically. This was done to experimentally prove the relation, given by \citet{nessler}, that the weights stochastically converge toward the conditional probability, that a presynaptic neuron fired shortly before the postsynaptic neuron.
+First, the network was scaled down to be one-dimensional with 18 input neurons, four prior neurons and four output neurons, making it easier to analyse. The weights were determined by utilizing the logarithmic connection between them and the corresponding conditional probabilities, as given by Equation \ref{eqn:weightProbLink}. The conditional probabilities of the input and output neurons of the network  were calculated and then used to determine the posterior probability of the network. After the simulation of the network, the distribution of the output spikes was used, to calculate the posterior probability. The posterior probabilities, of both the mathematical analysis and the simulation, were compared. It was tuned to approximate the analytical solution as closely as possible, by varying three network hyperparameters.
 
 \subsection{Methods}
 
 \paragraph{Input data}
-The input image consisted of nine pixels in a horizontal line. Within those nine pixels, going from position 0 to 8, four output classes could be represented. Each output class had of three pixels next to each other. This resulted in each output class overlapping its neighbour classes by one pixel. Thus, the centers of the output classes were at position 1, 3, 5 and 7.
+The input image consisted of nine pixels in a horizontal line. Within those nine pixels, going from position 0 to 8, four output classes could be represented. Each output class had three pixels next to each other. This resulted in each output class overlapping its neighbour classes, by one pixel. Thus, the centers of the output classes were at position 1, 3, 5 and 7.
  
 \paragraph{Network architecture}
-Compared to the architecture of the previous experiment only the amount of neurons was changed. As there have to be 2 input neurons for each pixel, one neuron being active if the pixel is white and one if the pixel is black, the network had 18 input neurons. Furthermore, four prior neurons were implemented, of which only one is being active for one of the output classes at a time. Lastly the network had four output neurons.
+Only the amount of neurons was changed, compared to the architecture of the previous experiment. As there have to be 2 input neurons for each pixel, one neuron being active if the pixel is white and one if the pixel is black, the network had 18 input neurons. Furthermore, four prior neurons were implemented, of which only one is being active for one of the output classes at a time. Lastly, the network had four output neurons.
 
 \paragraph{Mathematical Analysis}
 The posterior probability of the network was calculated by using Equation \ref{eqn:pYvorausgesetztXUndZ}.
-$P(X=x|Y=k)$ and $P(Y=k|Z=j)$ were derived corresponding to the paradigm of the experiment.
- The calculation of $P(X=x|Y=k)$ was split into two parts. First, the contribution of the active input neurons was calculated by determining the matrix $P^{X|Y}$. This matrix is of size 4 x 9 and contains the conditional probabilities of each input neuron $y_k$ being active, given that an output neuron $x_i$ is active. These probabilities were calculated by determining which input neurons are active depending on the output class and which input neurons are inactive, as dictated by the network architecture. Furthermore, the noise that was applied to the input neurons had to be taken into account. For input neurons belonging to the output class the conditional probability was determined as 1 and lowered by the noise level, while for the input neurons outside of the 3-wide pixel block belonging to the output class it was determined as 0 and raised by the noise level. According to this $P^{X|Y}$ is given by
+$P(X=x|Y=k)$ and $P(Y=k|Z=j)$ were derived, corresponding to the paradigm of the experiment.
+ The calculation of $P(X=x|Y=k)$ was split into two parts. First, the contribution of the active input neurons was calculated by determining the matrix $P^{X|Y}$. This matrix is of size 4 x 9 and contains the conditional probabilities of each input neuron $y_k$ being active, given that an output neuron $x_i$ is active. These probabilities were calculated, by determining which input neurons are active depending on the output class and which input neurons are inactive, as dictated by the network architecture. Furthermore, the noise that was applied to the input neurons had to be taken into account. For input neurons, belonging to the output class, the conditional probability was determined as 1 and lowered by the noise level. For the input neurons outside of the 3-wide pixel block, which belongs to the output class, it was determined as 0 and raised by the noise level. According to this $P^{X|Y}$ is given by
 \begin{equation}
 \label{eqn:PXvorausgesetztYIf}
 P_{k,i}^{X|Y} = \begin{dcases*} 1 - $noise level$ & if $x_i$ is in the active area of $y_k$, \\
@@ -27,8 +27,8 @@ P_{k,i}^{X|Y} = \begin{dcases*} 1 - $noise level$ & if $x_i$ is in the active ar
 \label{eqn:p1XvorausgesetztYMalX}
 P_1(X = x|Y = k) = P^{X|Y}_{k,*} \cdot x
 \end{equation}
-resulting in a conditional probability for each output class depending on the input vector. The input vector was given with entries of 1 for active pixels and with entries of 0 for inactive pixels.
-Next, to include the contribution of the input neurons that are spiking when a pixel is inactive, the conditional probability of the input neurons that are active for the entries, where $x_i = 0$ had to be calculated. To achieve this complementary conditional probability at first $P^{X|Y}$ was subtracted from one. To include the correct conditional probabilities for the complementary case the input image vector x was then also subtracted from one. $1 - P^{X|Y}$ and $1 - x$ were multiplied to yield
+resulting in a conditional probability that the input vector of the active pixels belongs to output class $k$. The input vector was given with entries of 1 for active pixels and with entries of 0 for inactive pixels.
+Next, to include the contribution of the input neurons that are spiking when a pixel is inactive, the conditional probability of the input neurons that are active for the entries, where $x_i = 0$, had to be calculated. To achieve this complementary conditional probability at first $P^{X|Y}$ was subtracted from one. To include the correct conditional probabilities for the complementary case the input image vector x was then also subtracted from one. $1 - P^{X|Y}$ and $1 - x$ were multiplied to yield
 \begin{equation}
 \label{eqn:p2minusXvorausgesetztYMalX}
 P_2(X = x|Y = k) = (1 - P^{X|Y}_{k,*}) \cdot (1 - x).
@@ -38,7 +38,7 @@ The results of both calculations were then multiplied element-wise to yield
 \label{eqn:pXvorausgesetztY}
 P(X = x|Y = k) = P_1(X = x|Y = k) \odot P_2(X = x|Y = k).
 \end{equation}
-$P(Y=k|Z=j)$ was determined by first calculating the matrix $P^{Y|Z}$. It has a dimension of 4 x 4 and contains the conditional probabilities for the output neuron $y_k$, given the prior neuron $z_j$ being active. For each output class there exists one corresponding prior neuron. As there can never be more than one active prior neuron at a time $P^{Y|Z}$ is given by
+$P(Y=k|Z=j)$ was determined by first calculating the matrix $P^{Y|Z}$. It has a dimension of 4 x 4 and contains the conditional probabilities for the output neuron $y_k$, given the prior neuron $z_j$ being active. For each output class, there exists one corresponding prior neuron. As there can never be more than one active prior neuron at a time, $P^{Y|Z}$ is given by
 \begin{equation}
 \label{eqn:PYvorausgesetztZIf}
 P_{k,j}^{Y|Z} = \begin{dcases*} 1 - $noise level$ & if $i = j$, \\
@@ -49,6 +49,7 @@ $P(Y=k|Z=j)$ was then obtained by
 P(Y=k|Z=j) = P^{Y|Z} \cdot z,
 \end{equation}
 where z is given by a 4 x 1 one-hot encoded vector of the prior.
+Finally, inserting $P(X = x|Y = k)$ and $P(Y=k|Z=j)$ into Equation \ref{eqn:pYvorausgesetztXUndZ} yields the analytical posterior $P_{analysis}(Y = k|X = x, Z = j)$.
 
 \paragraph{Simulation}
 The input weights for the simulation were calculated as two separate sets. First, weights $w^{I1}$ for the input neurons that are active for active input pixels were determined by 
@@ -67,14 +68,14 @@ The prior weights $w^P$ were derived by
 w^P = \ln(P^{Y|Z}).
 \end{equation}
 
-The network was simulated for six different input images for each hyperparameter set. These six images were hand-picked to include specific edge cases and to allow comparability of the results of different hyperparameter sets. After the image presentation period of each input image the numbers of output spikes of each class were counted and their proportions were calculated to yield the posterior $P_{simulation}(Y = k|X, Z)$. The Kullback-Leibler divergence was chosen to compare the divergence of the analytic and the simulated posteriors of the network. This metric indicates how much two probability distributions diverge from each other. The goal of the hyperparameter search of the simulation was to minimize the Kullback-Leibler divergence. After showing an output image to the network the Kullback-Leibler divergence was calculated as
+The network was simulated for six different input images for each hyperparameter set. These six images were hand-picked, to include specific edge cases and to allow comparability of the results of different hyperparameter sets. After the image presentation period of each input image, the numbers of output spikes of each class were counted and their proportions were calculated to yield the posterior $P_{simulation}(Y = k|X, Z)$. The Kullback-Leibler divergence was chosen, to compare the divergence of the analytic and the simulated posteriors of the network. This divergence is a type of statistical distance and indicates how much two probability distributions diverge from each other. In the context of Bayesian inference it gives the amount of information lost, when $P_{simulation}(Y = k|X, Z)$ is used to approximate $P_{analysis}(Y = k|X, Z)$. The goal of the hyperparameter search of the simulation, was to minimize the Kullback-Leibler divergence. After showing an output image to the network, the Kullback-Leibler divergence was calculated as
 \begin{equation}
 \begin{split}
 \label{eqn:KLDivergence}
 D_{KL}(P_{analysis}(Y = k|X, Z)||P_{simulation}(Y = k|X, Z)) = \\ \sum_{k=1}^K P_{analysis}(Y = k|X, Z) \cdot \ln( \frac{P_{analysis}(Y = k|X, Z)}{P_{simulation}(Y = k|X, Z)}),
 \end{split}
 \end{equation}
-where K is the number of output neurons and $P_{analysis}(Y = k|X, Z)$ and $P_{simulation}(Y = k|X, Z)$ are the posteriors of the network, later called "analysis output probabilities" and "simulation output probabilities" in plots. The six resulting Kullback-Leibler divergences for each hyperparameter set were  averaged to create a single metric, by which the performance of the different hyperparameter sets was compared. The three hyperparameters input firing rate $f_{input}$, prior firing rate $f_{prior}$ and the membrane constant $\tau_{decay}$ were varied to inspect their influence on the result, as well as to approximate the analytical solution as closely as possible. Each input image was presented to the network for 20 seconds to reduce the variance between runs. Furthermore, each simulation was repeated 20 times with the same hyperparameter set to obtain the mean and standard deviation of the simulation output probabilities and of the Kullback-Leibler divergence.
+where K is the number of output neurons and $P_{analysis}(Y = k|X, Z)$ and $P_{simulation}(Y = k|X, Z)$ are the posteriors of the network, later called "analysis output probabilities" and "simulation output probabilities" in plots. The six resulting Kullback-Leibler divergences for each hyperparameter set were  averaged, to create a single metric, by which the performance of the different hyperparameter sets was compared. The three hyperparameters input firing rate $f_{input}$, prior firing rate $f_{prior}$ and the membrane constant $\tau_{decay}$ were varied, to inspect their influence on the result, as well as to approximate the analytical solution as closely as possible. Each input image was presented to the network for 20 seconds, to reduce the variance between runs. Furthermore, each simulation was repeated 20 times, with the same hyperparameter set, to obtain the mean and standard deviation of the simulation output probabilities and of the Kullback-Leibler divergence.
 
 \subsection{Results}
 
@@ -100,13 +101,12 @@ P^{Y|Z} = \begin{bmatrix}
 0.0333 & 0.0333 & 0.0333 & 0.9\\
 \end{bmatrix}.
 \end{equation} 
-For each input image these two matrices were multiplied with the input vector and prior vector as described Equations \ref{eqn:p1XvorausgesetztYMalX}, \ref{eqn:p2minusXvorausgesetztYMalX},  \ref{eqn:pXvorausgesetztY} and \ref{eqn:pYvorausgesetztZ} to yield $P(X = x|Y = i)$ and $P(Y=i|Z=j)$. Using \ref{eqn:pYvorausgesetztXUndZ}  finally yielded the analytical $P(Y = i|X = x, Z = j)$.
 
 \paragraph{Simulation results with prior disabled}
-To simplify the hyperparameter fitting process the network was at first simulated with inactive prior neurons. Only after determining the best values for $f_{input}$ and $\tau_{decay}$ the prior neurons were reactivated and $f_{prior}$ was fitted. The values 0.015 seconds and 0.004 seconds for $\tau_{decay}$ were used for the simulation and compared. For each of these values an optimal value for $f_{input}$ was found by looking for the value that yielded the smallest Kullback-Leibler divergence.
+The network was at first simulated with inactive prior neurons, to simplify the hyperparameter fitting process. The prior neurons were reactivated and $f_{prior}$ was fitted, after determining the best values for $f_{input}$ and $\tau_{decay}$. The values 0.015 seconds and 0.004 seconds for $\tau_{decay}$ were used for the simulation and compared. For each of these values, an optimal value for $f_{input}$ was found, by looking for the value that yielded the smallest Kullback-Leibler divergence.
 
 \subparagraph{$\tau_{decay} = 0.015 seconds$, $f_{prior} = 0 Hz$}
-Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. After identifying the input firing rate with the smallest Kullback-Leibler divergence the network was simulated again for $f_{input}$ values $\pm$ 10 Hz in steps of 2 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau15}. This process yielded the best input firing rate of 42 Hz. The results of this hyperparameter combination can be seen in Figure \ref{fig:1D_42_0_15}. In this figure six different input images can be seen in A. The active pixels are shown in black. In B the posterior probabilities of the mathematical analysis are given by the red bars and the posterior probabilities of the simulation are given by the blue bars. Each simulation output probability has its standard deviation marked by a black bar. At the bottom the value of the Kullback-Leibler divergence is given, with its standard deviation. The exact numeric probabilities are given in Table \ref{tab:1D_42_0_15}.
+Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. After identifying the input firing rate with the smallest Kullback-Leibler divergence, the network was simulated again for $f_{input}$ values $\pm$ 10 Hz in steps of 2 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau15}. This process yielded the best input firing rate of 42 Hz. The results of this hyperparameter combination can be seen in Figure \ref{fig:1D_42_0_15}. In this figure six different input images can be seen in A. The active pixels are shown in black. In B the posterior probabilities of the mathematical analysis are given by the red bars and the posterior probabilities of the simulation are given by the blue bars. Each simulation output probability has its standard deviation marked by a black bar. At the bottom the value of the Kullback-Leibler divergence is given, with its standard deviation. The exact numeric probabilities are given in Table \ref{tab:1D_42_0_15}.
 
 \begin{figure}
 \centering
@@ -117,7 +117,7 @@ Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. A
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_42_0_15.png}
-  \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+  \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_42_0_15}
 \end{figure}
 
@@ -152,7 +152,7 @@ When $f_{input}$ was 70 Hz the results of the analysis and the simulation differ
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_70_0_15.png}
-    \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 70 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+    \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 70 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_70_0_15}
 \end{figure}
 
@@ -184,7 +184,7 @@ $y_3$                  & \multicolumn{1}{c|}{0.038}    & 0.018 $\pm$ 0.0022 & \m
 \end{table}
 
 \subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{prior} = 0 Hz$}
-For this hyperparameter combination values between 50 and 150 Hz for $f_{input}$ in steps of 10 Hz were simulated. Analogously to the previous hyperparameter set after finding the best input firing rate the search was performed in finer steps until the best value was found at 88 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau4}. The result of the simulation with those hyperparameters can be seen in Figure \ref{fig:1D_88_0_4} and Table \ref{tab:1D_88_0_4}.
+For this hyperparameter combination values between 50 and 150 Hz for $f_{input}$ in steps of 10 Hz were simulated. Analogously to the previous hyperparameter set, after finding the best input firing rate, the search was performed in finer steps, until the best value was found at 88 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau4}. The result of the simulation, with those hyperparameters, can be seen in Figure \ref{fig:1D_88_0_4} and Table \ref{tab:1D_88_0_4}.
 
 \begin{figure}
 \centering
@@ -195,7 +195,7 @@ For this hyperparameter combination values between 50 and 150 Hz for $f_{input}$
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_0_4.png}
-   \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 0 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+   \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 0 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_88_0_4}
 \end{figure}
 
@@ -240,7 +240,7 @@ The search for the best value of $f_{prior}$ was performed in the same manner as
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_42_222_15.png}
-     \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 42 Hz, f_{prior} = 222 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+     \caption{\textbf{Analysis and simulation result, active pixels in black. } Hyperparameters: $f_{input} = 42 Hz, f_{prior} = 222 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_42_222_15}
 \end{figure}
 
@@ -283,7 +283,7 @@ The search for the best value of $f_{prior}$ was performed in the same manner as
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_440_4.png}
-       \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+       \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_88_440_4}
 \end{figure}
 
@@ -315,11 +315,11 @@ $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.573 $\pm$ 0.0089 & \m
 \end{table}
 
 
-To demonstrate the impact of rising $f_{prior}$ it was set to 600 Hz and the results can be seen in Figure \ref{fig:1D_88_600_4} and Table \ref{tab:1D_88_600_4}.
+To demonstrate the impact of rising $f_{prior}$, it was set to 600 Hz and the results can be seen in Figure \ref{fig:1D_88_600_4} and Table \ref{tab:1D_88_600_4}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_600_4.png}
-  \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 600 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+  \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 600 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_88_600_4}
 \end{figure}
 
@@ -351,7 +351,7 @@ $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.766 $\pm$ 0.0079 & \m
 \end{table}
 
 \subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{input} = 98$, $f_{prior} = 440 Hz$}
-Finally, it was tested if a increase of $f_{input}$ might decrease the Kullback-Leibler divergence even further. The network was simulated with increasing values of $f_{input}$ in steps of 2 Hz, beginning from 90 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior440_tau4}. The best result was obtained with an input firing rate of 98 Hz. The results of that simulation can be seen in Figure \ref{fig:1D_98_440_4} and Table \ref{tab:1D_98_440_4}.
+Finally, it was tested if an increase of $f_{input}$ might decrease the Kullback-Leibler divergence even further. The network was simulated with increasing values of $f_{input}$, in steps of 2 Hz, beginning from 90 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior440_tau4}. The best result was obtained with an input firing rate of 98 Hz. The results of that simulation can be seen in Figure \ref{fig:1D_98_440_4} and Table \ref{tab:1D_98_440_4}.
 
 \begin{figure}
 \centering
@@ -362,7 +362,7 @@ Finally, it was tested if a increase of $f_{input}$ might decrease the Kullback-
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_98_440_4.png}
-    \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+    \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_98_440_4}
 \end{figure}
 
@@ -394,8 +394,8 @@ $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.523 $\pm$ 0.0084 & \m
 \end{table}
 
 \paragraph{Approximating the analytic solution}
-After first finding the optimal $f_{input}$ for disabled prior activity and then finding the optimal $f_{prior}$ with enabled prior activity for $\tau_{decay}$ the simulation was not yet approximating the analytical solution perfectly. Because of that it was tried to raise $f_{input}$ to further decrease the Kullback-Leibler divergence. The further search for a better $f_{input}$ was performed for $\tau_{decay} = 0.004 ms$ and $f_{prior} = 440 Hz$, as this set of hyperparameters performed the best overall.
-When comparing the former optimal result in Figure \ref{fig:1D_88_440_4} with $f_{input} = 88 Hz$, to the result with $f_{input} = 98 Hz$ in Figure \ref{fig:1D_98_440_4}, it can be seen that the Kullback-Leibler divergence decreased from 0.0112 to 0.0101. However, when comparing Tables \ref{tab:1D_88_440_4} and \ref{tab:1D_98_440_4}, it can be seen that the higher $f_{input}$ did not perform strictly better. The simulation output probabilities for Image 3 improved, while for Image 5 the output probability of $y_2$ diverged more. A further increase of $f_{input}$ started to increase the Kullback-Leibler divergence again, thus the final optimum of the hyperparameter set was reached. It was assumed that increasing $f_{input}$ after $f_{prior}$ was fitted was necessary because the overall impact of $f_{input}$ on the simulation decreased due to the introduction of the prior activity.
+After first finding the optimal $f_{input}$ for disabled prior activity and then finding the optimal $f_{prior}$ with enabled prior activity for $\tau_{decay}$ the simulation was not yet approximating the analytical solution perfectly. Because of that, it was tried to raise $f_{input}$, to further decrease the Kullback-Leibler divergence. The search for a better $f_{input}$ was performed for $\tau_{decay} = 0.004 ms$ and $f_{prior} = 440 Hz$, as this set of hyperparameters performed the best overall.
+When comparing the former optimal result in Figure \ref{fig:1D_88_440_4} with $f_{input} = 88 Hz$, to the result with $f_{input} = 98 Hz$ in Figure \ref{fig:1D_98_440_4}, it can be seen that the Kullback-Leibler divergence decreased from 0.0112 to 0.0101. However, when comparing Tables \ref{tab:1D_88_440_4} and \ref{tab:1D_98_440_4}, it can be seen that the higher $f_{input}$ did not perform strictly better. The simulation output probabilities for Image 3 improved, while for Image 5 the output probability of $y_2$ diverged more. A further increase of $f_{input}$ started to increase the Kullback-Leibler divergence again, thus the final optimum of the hyperparameter set was reached. It was necessary to increase $f_{input}$, after $f_{prior}$ was fitted, because the overall impact of $f_{input}$ on the simulation decreased, due to the introduction of the prior activity.
 
 \section{Experiment 3: Transferability of hyperparameters}
 \label{section:1DDoubleSize}
@@ -404,7 +404,7 @@ When comparing the former optimal result in Figure \ref{fig:1D_88_440_4} with $f
 In this experiment the optimal hyperparameters determined in Experiment 2 were used, while doubling the size of the network and input images of Experiment 2. The goal was to determine if the hyperparameters are universally applicable, regardless of the network size.
 
 \subsection{Methods}
-The number input neurons was doubled from 18 to 36 neurons. This resulted in input images with 18 pixels. To double the effect of the prior neurons $f_{prior}$ was doubled to 880 Hz, while the amount of the prior neurons was kept the same with 4 prior neurons. Furthermore, the matrix $P^{X|Y}$ was doubled in size by copying each value of the matrix to the right of itself.  The rest of the methods were performed analogously to Experiment 2.
+The number of input neurons was doubled from 18 to 36 neurons. This resulted in input images with 18 pixels. To double the effect of the prior neurons $f_{prior}$ was doubled to 880 Hz, while the amount of the prior neurons was kept the same with 4 prior neurons. Furthermore, the matrix $P^{X|Y}$ was doubled in size, by copying each value of the matrix to the right of itself.  The rest of the methods were performed analogously to Experiment 2.
 
 \subsection{Results}
 
@@ -426,10 +426,10 @@ P^{X|Y} = \\
 \end{matrix}
 \end{equation}
 
-The simulation result for $f_{input} = 98 Hz$, $f_{prior} = 880 Hz$ and $\tau_{decay} = 4 ms$ can be seen in Figure \ref{fig:doubleSize_98_880_4} and Table \ref{tab:doubleSize_98_880_4}. Initially the Kullback-Leibler divergence was infinite in this result, because some simulation output probabilities were zero and the Kullback-Leibler divergence is not defined for probabilities of zero. To circumvent this an approximated Kullback-Leibler divergence was calculated by setting the simulation output probabilities that were 0 to 0.0000001. This yielded a Kullback-Leibler divergence of 0.2392.
+The simulation result for $f_{input} = 98 Hz$, $f_{prior} = 880 Hz$ and $\tau_{decay} = 4 ms$ can be seen in Figure \ref{fig:doubleSize_98_880_4} and Table \ref{tab:doubleSize_98_880_4}. Initially, the Kullback-Leibler divergence was infinite in this result, because some simulation output probabilities were zero and the Kullback-Leibler divergence is not defined for probabilities of zero. To circumvent this, an approximated Kullback-Leibler divergence was calculated, by setting the simulation output probabilities that were 0 to 0.0000001. This yielded a Kullback-Leibler divergence of 0.2392.
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/doubleSize/doubleSize_98_880_4.png}
-      \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 880 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 18 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+      \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 880 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 18 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:doubleSize_98_880_4}
 \end{figure}
 
@@ -465,7 +465,7 @@ $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.619 $\pm$ 0.0098 & \m
 
 \subsection{Introduction}
 
-In this Experiment the network of Experiment 2 was used, but the weights of the network were not derived from the matrices $P^{X|Y}$ and $P^{Y|Z}$, but they were learned from the input images. This was done to analyse how well the optimal weights and the posterior could be approximated with the predetermined hyperparameters.
+In this Experiment the network of Experiment 2 was used, but the weights of the network were not derived from the matrices $P^{X|Y}$ and $P^{Y|Z}$. Instead, they were learned from the input images. Through that, it could be analysed, how well the training process could approximate the analytical optimal weights and the posterior, when given the best hyperparameters. The goal of this experiment was to verify the training process, as well as to identify potential improvements to the training paradigm.
 
 \subsection{Methods}
 
@@ -490,7 +490,7 @@ The training and evaluation results for the best value of $c = 3$ can be seen in
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/training/trainingEvaluation_98_440_4_c3.png}
-      \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms, c = 3$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}  
+      \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms, c = 3$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}  
   \label{fig:1DTrainingEvaluationC3}
 \end{figure}
 
