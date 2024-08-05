@@ -67,6 +67,12 @@ In \citet{nessler} each output neuron $y_k$ also had an intrinsic excitability $
 
 The output neurons are modelled in a winner-takes-all (WTA) circuit. The WTA behaviour was implemented via an adaptive inhibition signal. The adaptive inhibition is used to regulate the membrane potentials of the output neurons so that all of them together fire with a total firing rate $R(t) = 200 Hz$ on average. Due to that there never is a time window in which no output neuron may fire. However, it is unlikely for an output neuron to fire right after another output neuron has fired.
 
+The total firing rate of the output neurons is obtained when summing up the firing rates of all output neurons, yielding 
+\begin{equation}
+\label{eqn:R}
+R(t) = \sum_{k=1}^K e^{u_k(t) - I(t)}.
+\end{equation}
+
 The inhibition signal was chosen to depend on the current membrane potential of the output neurons. 
 Solving Equation \ref{eqn:R} for I(t) yields
 \begin{equation}
@@ -97,12 +103,6 @@ This stochastic firing model is supported by experimental biological evidence \c
 r_k(t) = e^{u_k(t) - I(t)}.
 \end{equation}
 At every timestep of the simulation the inhibition signal I(t) is subtracted from the membrane potential $u_k(t)$ of every output neuron. By that, the membrane potentials are altered to always yield a spiking frequency of 200 Hz, regardless if it would be lower or higher without it. This means that the adaptive inhibition signal can also function as an excitatory signal. 
-
-The total firing rate of the output neurons is obtained when summing up the firing rates of all output neurons, yielding 
-\begin{equation}
-\label{eqn:R}
-R(t) = \sum_{k=1}^K e^{u_k(t) - I(t)}.
-\end{equation}
 
 The probability of an individual output neuron to fire within a time step $\delta t$ is given by
 \begin{equation}
