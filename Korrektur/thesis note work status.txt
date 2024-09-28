@@ -1,1 +1,0 @@
-stopped at explaining and improving generative model section. Re-read that section before moving on

@@ -3,15 +3,15 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau _{decay} = 15 ms$}}{42}{table.4.1}%
-\contentsline {table}{\numberline {4.2}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 70 Hz, f_{prior} = 0 Hz, \tau _{decay} = 15 ms$}}{42}{table.4.2}%
-\contentsline {table}{\numberline {4.3}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 0 Hz, \tau _{decay} = 4 ms$}}{46}{table.4.3}%
-\contentsline {table}{\numberline {4.4}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 42 Hz, f_{prior} = 222 Hz, \tau _{decay} = 15 ms$}}{48}{table.4.4}%
-\contentsline {table}{\numberline {4.5}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 440 Hz, \tau _{decay} = 4 ms$}}{49}{table.4.5}%
-\contentsline {table}{\numberline {4.6}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 600 Hz, \tau _{decay} = 4 ms$}}{52}{table.4.6}%
-\contentsline {table}{\numberline {4.7}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau _{decay} = 4 ms$}}{54}{table.4.7}%
-\contentsline {table}{\numberline {4.8}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 880 Hz, \tau _{decay} = 4 ms$}}{56}{table.4.8}%
-\contentsline {table}{\numberline {4.9}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau _{decay} = 4 ms, c = 3$}}{59}{table.4.9}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau _{decay} = 15 ms$}}{44}{table.4.1}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 70 Hz, f_{prior} = 0 Hz, \tau _{decay} = 15 ms$}}{44}{table.4.2}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 0 Hz, \tau _{decay} = 4 ms$}}{48}{table.4.3}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 42 Hz, f_{prior} = 222 Hz, \tau _{decay} = 15 ms$}}{50}{table.4.4}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 440 Hz, \tau _{decay} = 4 ms$}}{51}{table.4.5}%
+\contentsline {table}{\numberline {4.6}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 600 Hz, \tau _{decay} = 4 ms$}}{54}{table.4.6}%
+\contentsline {table}{\numberline {4.7}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau _{decay} = 4 ms$}}{56}{table.4.7}%
+\contentsline {table}{\numberline {4.8}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 880 Hz, \tau _{decay} = 4 ms$}}{58}{table.4.8}%
+\contentsline {table}{\numberline {4.9}{\ignorespaces \textbf {Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau _{decay} = 4 ms, c = 3$}}{61}{table.4.9}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 
