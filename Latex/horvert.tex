@@ -3,13 +3,13 @@
 
 \subsection{Introduction}
 
-For this experiment images of either horizontal or vertical bars will be shown to the WTA network. The network will train its weights through unsupervised learning. Through that, it will learn to cluster the images together, depending on the orientation and position of the bars. The learning of the network will be visualized and analysed.
-Further, the effect of the prior neurons will be demonstrated. Ambiguous images, which show a horizontal and a vertical bar at the same time, will be generated and given to the network. Through that, the network's capability to shift its attention to specific parts of the image, depending on the prior will be demonstrated.
+For this experiment images of either horizontal or vertical bars were shown to the WTA network. The network trained its weights through unsupervised learning. Through that, it learned to cluster the images together, depending on the orientation and position of the bars. The learning of the network was visualized and analysed.
+Further, the effect of the prior neurons was demonstrated. Ambiguous images, which showed a horizontal and a vertical bar at the same time, were generated and given to the network. Through that, the network's capability to shift its attention to specific parts of the image, depending on the prior was demonstrated.
 
 \subsection{Methods}
 
 \paragraph{Input data}
-Black bars, with a width of seven pixels, were drawn onto a white background, with a size of 35 x 35 pixels. The bars could be oriented either horizontally or vertically. The network was supposed to identify ten different groups within these images, five with a horizontal orientation and five with a vertical orientation. With a given bar width of seven pixels the image height and width were determined as 35 pixels, to yield equally sized groups. Assuming equally sized groups and starting to count from position 0, the centers of the groups should be at positions 3, 10, 17, 24, 31. The orientation of the training images was chosen randomly, via a uniform distribution. The positions of the bars in the training images were also distributed randomly, via a uniform distribution, along the 35 pixels of either axis. To simulate noise, each pixel of an image had a chance of ten percent to have its color flipped after the generation.
+Black bars, with a width of seven pixels, were drawn onto a white background, with a size of 35 x 35 pixels. The bars could be oriented either horizontally or vertically and be shifted in position. The network was supposed to identify ten different groups within these images, five with a horizontal orientation and five with a vertical orientation. With a chosen bar width of seven pixels the image height and width were determined as 35 pixels, as five bars should have place next to each other, without overlap, in each orientation. Each of those bars represented one group of bars. Thus, each group had a size of seven pixels. Starting to count from position 0, the centers of the groups should be at positions 3, 10, 17, 24, 31. The orientation of the training images was chosen randomly, via a uniform distribution. The positions of the bars in the training images were also distributed randomly, via a uniform distribution, along the 35 pixels of either axis. To simulate noise, each pixel of an image had a chance of ten percent to have its color flipped after the generation.
 During the training of the network, random images were generated and presented for 200 ms. As the simulation had a duration of 800 seconds this resulted in 4000 images, which were shown to the network. Examples of the input data can be seen in Figure \ref{fig:horvertImages}. To show the value of the added a-priori information, validation images with two bars forming a cross were also generated, seen in Figure \ref{fig:horvertTrainingCrossImage}. When shown to the network in the validation process the prior neurons were given the information that a cross is either of horizontal or vertical orientation.
 
 \begin{figure}
@@ -35,7 +35,7 @@ The simulation of the experiment was performed in time steps of 1 ms. This step 
 
 \subsection{Results}
 
-First, different numbers of prior neurons were tested. Simulations with 10, 20, 50, 100 and 200 prior neurons were performed. For 50, 100 and 200 prior neurons the training process was impaired, by the activity of the prior neurons. Some output neurons were responding to too large areas, while other prior neurons were not responding to any specific areas at all. This happened, for example, because the first output neuron that generated a spike for a horizontal bar got reinforced by the prior neurons to respond to all horizontal bars, no matter the position. Thus, other output neurons were less likely to respond to horizontal bars, resulting in output neurons that were not responding to any specific orientation or area at all. With a number of 10 and 20 prior neurons, each of the output neurons learned to respond to coherent areas of the images. The prior neurons also learned to respond to either horizontal or vertical images. To maximize the impact of the a-priori information the validation of the network was performed with 20 prior neurons, as it was the largest number that resulted in a properly trained network. The results of the training process can be seen in Figure \ref{fig:horvertAdaptiveInhibitionTraining}. In Figure \ref{fig:horvertAdaptiveInhibitionTraining} A examples of input images are shown. The bars were positioned without overlapping each other, thus showing the optimal areas output neurons should learn to respond to. The areas that output neurons did learn to respond to, can be seen in the visualization of the input weights in Figure \ref{fig:horvertAdaptiveInhibitionTraining} B. It can be seen, that the training was successful, as five output neurons responded to horizontal bars and the other five to vertical bars. Furthermore, each output neuron responded to different areas of the input image and there was little overlap between each other. The training progress of the network is given in Figure \ref{fig:horvertAdaptiveInhibitionTraining} E. When the network has completed the training it should mostly have only one or two output neurons being active for any input image. Although, there may be more active output neurons sporadically, due to the stochastic nature of the model. According to this plot, the training process could have been stopped earlier after 2000 shown images. However, as there was no danger of overfitting the data, more images were shown, to ensure that the network had always finished the training when the simulation stopped. In Figure \ref{fig:horvertAdaptiveInhibitionTraining} F the relative activity of the most active output neuron can be seen. First, it can also be used to judge the progress of the training process, as it increased over time. Furthermore, it can also be seen as a measure of how clearly an image belonged to the area the most active output neuron responded to. If the position of an image was exactly in the middle of the learned area of the most active output neuron, then the relative activity should be one. However, when the position was on the border between two learned areas of output neurons, then the relative activity should only be 0.5, as the image belonged to both areas. The learned prior weights can be seen in Figure \ref{fig:horvertAdaptiveInhibitionpriorWeights}. There it can be seen, that the first 10 prior neurons learned the same pattern, as all of them were in an active state whenever vertical bars were shown to the network. When comparing these prior weights to the input weights in Figure \ref{fig:horvertAdaptiveInhibitionTraining} B it can be seen that the five highest prior weights of each prior neuron are between themselves and output neurons that learned to respond to vertical bars. The last 10 prior weights showed exactly the opposite pattern, having their five highest weight values between themselves and output neurons that responded to horizontal bars.
+First, different numbers of prior neurons were tested. Simulations with 10, 20, 50, 100 and 200 prior neurons were performed. For 50, 100 and 200 prior neurons the training process was impaired, by the activity of the prior neurons. Some output neurons were responding to too large areas, while other prior neurons were not responding to any specific areas at all. This happened, for example, because the first output neuron that generated a spike for a horizontal bar got reinforced by the prior neurons to respond to all horizontal bars, no matter the position. Thus, other output neurons were less likely to respond to horizontal bars, resulting in output neurons that were not responding to any specific orientation or area at all. With a number of 10 and 20 prior neurons, each of the output neurons learned to respond to coherent areas of the images. The prior neurons also learned to respond to either horizontal or vertical images. To maximize the impact of the a-priori information the validation of the network was performed with 20 prior neurons, as it was the largest number that resulted in a properly trained network. The results of the training process can be seen in Figure \ref{fig:horvertAdaptiveInhibitionTraining}. In Figure \ref{fig:horvertAdaptiveInhibitionTraining}A examples of input images are shown. The bars were positioned without overlapping each other, thus showing the optimal areas output neurons should learn to respond to. The areas that output neurons did learn to respond to, can be seen in the visualization of the input weights in Figure \ref{fig:horvertAdaptiveInhibitionTraining}B. It can be seen, that the training was successful, as five output neurons responded to horizontal bars and the other five to vertical bars. Furthermore, each output neuron responded to different areas of the input image and there was little overlap between each other. The training progress of the network is given in Figure \ref{fig:horvertAdaptiveInhibitionTraining}E. When the network has completed the training it should mostly have only one or two output neurons being active for any input image. Although, there may be more active output neurons sporadically, due to the stochastic nature of the model. According to this plot, the training process could have been stopped earlier after 2000 shown images. However, as there was no danger of overfitting the data, more images were shown, to ensure that the network had always finished the training when the simulation stopped. In Figure \ref{fig:horvertAdaptiveInhibitionTraining}F the relative activity of the most active output neuron can be seen. First, it can also be used to judge the progress of the training process, as it increased over time. Furthermore, it can also be seen as a measure of how clearly an image belonged to the area the most active output neuron responded to. If the position of an image was exactly in the middle of the learned area of the most active output neuron, then the relative activity should be one. However, when the position was on the border between two learned areas of output neurons, then the relative activity should only be 0.5, as the image belonged to both areas. The learned prior weights can be seen in Figure \ref{fig:horvertAdaptiveInhibitionpriorWeights}. There it can be seen, that the first 10 prior neurons learned the same pattern, as all of them were in an active state whenever vertical bars were shown to the network. When comparing these prior weights to the input weights in Figure \ref{fig:horvertAdaptiveInhibitionTraining}B it can be seen that the five highest prior weights of each prior neuron are between themselves and output neurons that learned to respond to vertical bars. The last 10 prior weights showed exactly the opposite pattern, having their five highest weight values between themselves and output neurons that responded to horizontal bars.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/trainingPlot.png}
@@ -49,9 +49,9 @@ First, different numbers of prior neurons were tested. Simulations with 10, 20, 
   \label{fig:horvertAdaptiveInhibitionpriorWeights}
 \end{figure}
 
-To validate the learned patterns, the network was shown horizontal bars with a height of seven pixels, with their centers at every possible position, beginning at position zero and incrementing in steps of one. Each image was shown for 200 ms each, while recording the output neuron activity. To visualize which output neuron is the most active for each position, a horizontal bar with a height of one was drawn into a 35 x 35 pixel image, color-coded to represent the most active output neuron for that position. This can be seen in Figure \ref{fig:horvertAdaptiveInhibitionHorizontalValResults} A. $y_7$ and $y_{10}$ claimed areas with heights of eight pixels, while the areas of $y_9$ and $y_4$ had only a height of six pixels. Only $y_2$ had an area height of the expected seven pixels. These varying heights were expected to happen, due to the stochastic nature of the model and the unsupervised learning method applied in this thesis. Depending on the randomly generated images the network received during the training process, there may be more images on one side of the border between two output neurons, than on the other side. This would result in the favoured neuron having stronger weights around the border area. Because of that, the favoured neuron might end up claiming a larger active area.
-The output spikes of the network can be seen in Figure  \ref{fig:horvertAdaptiveInhibitionHorizontalValResults} B. It can be seen, that outside of the border areas between the output neurons there was mostly only one neuron active. However, shortly after two seconds $y_8$ was active. The time frame between 2 seconds and 2.2 seconds corresponds to position 10. $y_8$ should mostly be active for vertical bars, however, its learned area has some overlap with a horizontal bar at position ten and thus there is always a small chance for it to generate a spike. 
-In Figure \ref{fig:horvertAdaptiveInhibitionHorizontalValResults} C the number of active output neurons for each position is given.  The validation process was repeated ten times and the mean and standard deviation of the number were calculated. In this plot four peaks appeared. These peaks are around the borders between the adjacent active areas of output neurons seen in Figure \ref{fig:horvertAdaptiveInhibitionHorizontalValResults} A. Around the border areas a number of active output neurons bigger than one was expected, as the horizontal bars reach into the areas of two output neurons at once. When looking at the number of active output neurons at position 10, which is approximately 1.1 with a high standard deviation, it shows that $y_8$ did not falsely learn to be active for horizontal bars, but rather that it was a stochastic outlier. Figure \ref{fig:horvertAdaptiveInhibitionHorizontalValResults} D shows the relative activity of the most active output neuron. Compared to Figure \ref{fig:horvertAdaptiveInhibitionHorizontalValResults} C, it provides the additional information of how split the activity of neighbouring output neurons is in the border areas. For example, it can be seen that at position 22 $y_4$ had a relative activity of 0.62. It was only barely able to be the most active neuron and might almost have had only an active area with a height of five pixels.
+To validate the learned patterns, the network was shown horizontal bars with a height of seven pixels, with their centers at every possible position, beginning at position zero and incrementing in steps of one. Each image was shown for 200 ms each, while recording the output neuron activity. To visualize which output neuron is the most active for each position, a horizontal bar with a height of one was drawn into a 35 x 35 pixel image, color-coded to represent the most active output neuron for that position. This can be seen in Figure \ref{fig:horvertAdaptiveInhibitionHorizontalValResults}A. $y_7$ and $y_{10}$ claimed areas with heights of eight pixels, while the areas of $y_9$ and $y_4$ had only a height of six pixels. Only $y_2$ had an area height of the expected seven pixels. These varying heights were expected to happen, due to the stochastic nature of the model and the unsupervised learning method applied in this thesis. Depending on the randomly generated images the network received during the training process, there may be more images on one side of the border between two output neurons, than on the other side. This would result in the favoured neuron having stronger weights around the border area. Because of that, the favoured neuron might end up claiming a larger active area.
+The output spikes of the network can be seen in Figure  \ref{fig:horvertAdaptiveInhibitionHorizontalValResults}B. It can be seen, that outside of the border areas between the output neurons there was mostly only one neuron active. However, shortly after two seconds $y_8$ was active. The time frame between 2 seconds and 2.2 seconds corresponds to position 10. $y_8$ should mostly be active for vertical bars, however, its learned area has some overlap with a horizontal bar at position ten and thus there is always a small chance for it to generate a spike. 
+In Figure \ref{fig:horvertAdaptiveInhibitionHorizontalValResults}C the number of active output neurons for each position is given.  The validation process was repeated ten times and the mean and standard deviation of the number were calculated. In this plot four peaks appeared. These peaks are around the borders between the adjacent active areas of output neurons seen in Figure \ref{fig:horvertAdaptiveInhibitionHorizontalValResults}A. Around the border areas a number of active output neurons bigger than one was expected, as the horizontal bars reach into the areas of two output neurons at once. When looking at the number of active output neurons at position 10, which is approximately 1.1 with a high standard deviation, it shows that $y_8$ did not falsely learn to be active for horizontal bars, but rather that it was a stochastic outlier. Figure \ref{fig:horvertAdaptiveInhibitionHorizontalValResults}D shows the relative activity of the most active output neuron. Compared to Figure \ref{fig:horvertAdaptiveInhibitionHorizontalValResults}C, it provides the additional information of how split the activity of neighbouring output neurons is in the border areas. For example, it can be seen that at position 22 $y_4$ had a relative activity of 0.62. It was only barely able to be the most active neuron and might almost have had only an active area with a height of five pixels.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/horizontal_validation.png}
@@ -75,179 +75,10 @@ Next, the impact of the prior was analysed. An image with a horizontal bar at po
   \label{fig:horvertAdaptiveInhibitionPriorValResults}
 \end{figure}
 
-To further illustrate the dependence of the output on the prior, the firing frequencies of the prior neurons were gradually changed. The starting firing frequency of $z^h$ was set to 200 Hz and to 0 Hz for $z^v$. For those firing frequencies a cross image was shown to the network for 200 ms. It had a horizontal bar at position 31 and a vertical bar at position 3. These position are as far at the edge of the image as possible, while still displaying the whole width of the bars. After each image presentation duration the firing frequency of $z^h$ was decreased by 1 Hz and increased by 1 Hz for $z^v$. The used cross image can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorResults} A. The firing frequency of the 2 most active output neurons, depending on the firing frequency of $z^v$, can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorResults} B. At the beginning $y_2$, which represents the horizontal part of the cross image, was the most active neuron, which is correct as the prior neurons fully supported the horizontal interpretation of the input image. With rising firing frequency of $z^v$, the activity of $y_2$ decreased and the activity of $y_8$ increased. This happened, because the prior neurons gradually supported the interpretation of the image as vertical more and more. It was expected, that the crossing point of the two graphs in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorResults} B would be at a firing frequency of $z^v$ of 100 Hz, however, the graphs crossed at 58.6 Hz. In Figure \ref{fig:horvertAdaptiveInhibitionHorizontalValResults} D the relative activity of $y_2$ at the edge of the bar, at position 28, was 0.79. In Figure \ref{fig:horvertAdaptiveInhibitionVerticalValResults} D the relative activity of $y_8$ at the edge of the bar, at position 6, was 1.0. $y_8$ has a higher relative activity at that position than $y_2$ at position 28, because $y_8$ has an  active area of width 8, making position 6 not the border of the active area. Due to the larger active area of $y_8$ the crossing point shifted in favour of $y_8$.
+To further illustrate the dependence of the output on the prior, the firing frequencies of the prior neurons were gradually changed. The starting firing frequency of $z^h$ was set to 200 Hz and to 0 Hz for $z^v$. For those firing frequencies a cross image was shown to the network for 200 ms. It had a horizontal bar at position 31 and a vertical bar at position 3. These position are as far at the edge of the image as possible, while still displaying the whole width of the bars. After each image presentation duration the firing frequency of $z^h$ was decreased by 1 Hz and increased by 1 Hz for $z^v$. The used cross image can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorResults}A. The firing frequency of the 2 most active output neurons, depending on the firing frequency of $z^v$, can be seen in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorResults}B. At the beginning $y_2$, which represents the horizontal part of the cross image, was the most active neuron, which is correct as the prior neurons fully supported the horizontal interpretation of the input image. With rising firing frequency of $z^v$, the activity of $y_2$ decreased and the activity of $y_8$ increased. This happened, because the prior neurons gradually supported the interpretation of the image as vertical more and more. It was expected, that the crossing point of the two graphs in Figure \ref{fig:horvertAdaptiveInhibitionVariablePriorResults}B would be at a firing frequency of $z^v$ of 100 Hz, however, the graphs crossed at 58.6 Hz. In Figure \ref{fig:horvertAdaptiveInhibitionHorizontalValResults}D the relative activity of $y_2$ at the edge of the bar, at position 28, was 0.79. In Figure \ref{fig:horvertAdaptiveInhibitionVerticalValResults}D the relative activity of $y_8$ at the edge of the bar, at position 6, was 1.0. $y_8$ has a higher relative activity at that position than $y_2$ at position 28, because $y_8$ has an  active area of width 8, making position 6 not the border of the active area. Due to the larger active area of $y_8$ the crossing point shifted in favour of $y_8$.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/horvertAdaptiveInh/YFrequency_prior.png}
   \caption{\textbf{Cross image with varying prior neuron activity.} \textbf{A} Validation cross image. \textbf{B} Firing frequency of the 2 most active output neurons, depending on the firing frequency of $z^v$. The output neuron firing frequencies were averaged over 10 runs to smooth the graphs.}
   \label{fig:horvertAdaptiveInhibitionVariablePriorResults}
 \end{figure}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-%%%
-%%%
-%%%
-%%%
-% unused exp, kept for looking up stuff
-
-\iffalse
-\section{Experiment 2: Horizontal and vertical bars}
-\label{section:horvert}
-
- \subsection{Introduction}
-
-For this experiment the impact of a neuron layer that encodes a-priori information should be analysed.
-
-\subsection{Methods}
-
-\paragraph{Input data}
-29 x 29 black and white images with either horizontal or vertical oriented bars on them were used, as it was more straightforward to express a-priori information. The orientation of the training images was chosen randomly via a uniform distribution. Also the positions of the bars in the images were uniformly distributed. The rest of the image generation process is analogous to experiment 1, except no circular mask was used. Examples of the input data can be seen in Figure \ref{fig:horvertImages}. To show the value of the a-priori information validation images with two bars forming a cross were also generated, seen in Figure \ref{fig:horvertTrainingCrossImage}. When shown to the network in the validation process the prior neurons were given the information that a cross is either in horizontal or vertical orientation.
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvert/horvertTrainingImages.png}
-  \caption{Training images generated for experiment 2. One image of each possible orientation at a random position.}
-\end{figure}
-
-\begin{figure}
-  \includegraphics[width=0.6\linewidth]{figures/horvert/horvertTrainingCrossImage.png}
-  \caption{Generated cross image which can represent either horizontal or vertical orientation.}
-  \label{fig:horvertTrainingCrossImage}
-\end{figure}
-
-
-\paragraph{Network architecture}
-
-This experiment used a expanded version of the network used in experiment 1. An additional layer of prior neurons $z_1,z_2$ was added. Whenever an image was oriented vertically $z_1$ was active and $z_2$ was inactive. For horizontal orientations $z_2$ was active and $z_1$ was inactive. Prior neurons in an active state had a firing frequency of 50 Hz and fired with 0 Hz when inactive.
-
-\paragraph{Neuron model}
-The input and output neurons functioned the same way as in the previous experiment. The prior neurons fire according to a poisson process with their firing rate. Each prior neuron $Z_l$ is connected to every output neuron $Y_k$ and thus has weights $w_{kl}$ that were learned by the network. 
-
-\paragraph{Parameters}
-As the number of input neurons and the average number of black pixels in an input image stayed roughly the same in this experiment, the same parameters $c=  20$ and $\lambda = 10^{-3}$ could be used.
-
-%% START
-%% this block was copied to Theoretical Background, cut this accordingly
-%% Zfactor does not exist, remove!!!
- However as there are only two prior neurons, a way to amplify their produced signals was needed, otherwise their impact on the membrane potential of the output neurons would not be distinctive enough. So the EPSPs $z_l(t)$ were multiplied by the factor $Z_{factor}$. This factor was determined via grid search. The additional prior layer resulted in an expanded version of the membrane potential $u_k(t)$
-
-\begin{equation}
-\label{eqn:ukHorvert}
-u_k(t) = \sum_{i=1}^n w_{ki} \cdot x_i(t) + \sum_{j=1}^n w_{kj} \cdot Z_{factor} \cdot z_j(t).
-\end{equation}
-
-%% END
-
-\subsection{Results} 
-
-The following values for $Z_{factor} $ were tried with $c = 20$ and $\lambda = 10^{-3}$:
-\begin{itemize}
-  \item $Z_{factor} = 3$
-  \item $Z_{factor} = 5$
-  \item $Z_{factor} = 7$  
-  \item $Z_{factor} = 10$ 
-  \item $Z_{factor} = 20$
-\end{itemize}
-
-For $Z_{factor} = 10$ and $20$ the prior neurons impacted the learning progress negatively and let single prior neurons respond to too much area. An example of this can be seen in Figure \ref{fig:horvert_c20_3_Zfactor20_horizontalLines}
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvert/horvert_c20_3_Zfactor20_horizontalLines.png}
-  \caption{Most active output neuron for horizontal orientation and position on the y-axis of the training image during the training process. $c = 20, \lambda = 10^{-3}, Z_{factor} = 20$}
-  \label{fig:horvert_c20_3_Zfactor20_horizontalLines}
-\end{figure}
-
-
-The best results were achieved with $Z_{factor} = 5$. When looking at the training progress in Figure \ref{fig:horvert_c20_3_Zfactor5_averageZ} it can be seen that the training accuracy is higher compared to experiment 1. This is due to the added a-priori information and the fact that less of each bar in an image is overlapping with multiple areas of output neurons. The network activity at the end of the training process can be seen in Figure \ref{fig:horvertLastSpikes}. In Figures \ref{fig:horvert_c20_3_Zfactor5_horizontalLines} and \ref{fig:horvert_c20_3_Zfactor5_verticalLines} the most active output neuron of the trained network is plotted for horizontal bars in every position and in the second plot for vertical bars in every position. Every one of the ten output neurons responds primarily to one coherent area in one orientation. The values of the learned prior weights $w_{kl}$ were plotted in Figures \ref{fig:wkl1} and \ref{fig:wkl2}. In these figures, in combination with Figures \ref{fig:horvert_c20_3_Zfactor5_horizontalLines} and \ref{fig:horvert_c20_3_Zfactor5_verticalLines}, can be seen that each prior neuron specialized on one orientation.
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvert/horvert_c20_3_Zfactor5_averageZ.png}
-  \caption{Proportion (accuracy) of most active output neuron  to activity of all other output neurons during the presentation duration of each training image. $c = 20, \lambda = 10^{-3}, Z_{factor} = 5$}
-  \label{fig:horvert_c20_3_Zfactor5_averageZ}
-\end{figure}
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvert/horvert_c20_3_Zfactor5_1000LastZSpikes.png}
-  \caption{Last 1000 output neuron spikes, $c = 20, \lambda = 10^{-3}$, $Z_{factor} = 5$}
-  \label{fig:horvertLastSpikes}
-\end{figure}
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvert/horvert_c20_3_Zfactor5_horizontalLines.png}
-  \caption{Most active output neuron for images of horizontal orientation and position on the x-axis of during the validation process. $c = 20, \lambda = 10^{-3}, Z_{factor} = 5$}
-  \label{fig:horvert_c20_3_Zfactor5_horizontalLines}
-\end{figure}
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvert/horvert_c20_3_Zfactor5_verticalLines.png}
-  \caption{Most active output neuron for images of vertical orientation and position on the x-axis of during the validation process. $c = 20, \lambda = 10^{-3}, Z_{factor} = 5$}
-  \label{fig:horvert_c20_3_Zfactor5_verticalLines}
-\end{figure}
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvert/horvert_c20_3_Zfactor5_priorWeight1.png}
-  \caption{Values of $w_k1$, darker color means higher value. $c = 20, \lambda = 10^{-3}, Z_{factor} = 5$}
-  \label{fig:wkl1}
-\end{figure}
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvert/horvert_c20_3_Zfactor5_priorWeight2.png}
-  \caption{Values of $w_k2$, darker color means higher value. $c = 20, \lambda = 10^{-3}, Z_{factor} = 5$}
-  \label{fig:wkl2}
-\end{figure}
-
-During the validation of all possible horizontal bar images the output spike activity was recorded and how many distinct output neurons were spiking during each image presentation period. For the parts where the 7 pixels high bar in the image did not overlap the areas of two output neurons only one output neuron was active. Only in the border areas there were two output neurons active. This can be seen in Figures \ref{fig:horvert_c20_3_Zfactor5_horizontalDistinctZ} and \ref{fig:horvert_c20_3_Zfactor5_horizontalZSpikes}. Compared to experiment 1 the activity is more homogeneous as each bar can only be in at most the area of four output neurons, when two of these areas are reinforced by the prior neurons.
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvert/horvert_c20_3_Zfactor5_horizontalDistinctZ.png}
-  \caption{Distinct output neurons spiking during the presentation of all possible horizontal oriented validation images, $c = 20, \lambda = 10^{-3}$, $Z_{factor} = 5$}
-  \label{fig:horvert_c20_3_Zfactor5_horizontalDistinctZ}
-\end{figure}
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvert/horvert_c20_3_Zfactor5_horizontalZSpikes.png}
-  \caption{Output neuron spikes during the presentation of all possible horizontal oriented validation images, $c = 20, \lambda = 10^{-3}$, $Z_{factor} = 5$}
-  \label{fig:horvert_c20_3_Zfactor5_horizontalZSpikes}
-\end{figure}
-
-
-To show the impact of the prior neurons an image with two bars on it forming a cross (Figure \ref{fig:horvertValidationCross}) was generated and $z_2$ was set active indicating that the orientation is supposed to be horizontal. This resulted in the spiking pattern seen in Figure \ref{fig:horvert_c20_3_Zfactor5_crossZSpikes}. In it $Y_1$ is more active than $Y_9$ due to the influence of the prior neuron $Z_2$.
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvert/horvert_c20_3_Zfactor5_validationCross.png}
-  \caption{Generated validation cross image, with orientation defined as horizontal. $c = 20, \lambda = 10^{-3}, Z_{factor} = 5$}
-  \label{fig:horvertValidationCross}
-\end{figure}
-
-\begin{figure}
-  \includegraphics[width=\linewidth]{figures/horvert/horvert_c20_3_Zfactor5_crossZSpikes.png}
-  \caption{Output spikes during the presentation of the validation cross image. $c = 20, \lambda = 10^{-3}, Z_{factor} = 5$}
-  \label{fig:horvert_c20_3_Zfactor5_crossZSpikes}
-\end{figure}
-
-\fi

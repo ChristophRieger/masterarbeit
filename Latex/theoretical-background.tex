@@ -186,30 +186,26 @@ q_k^Z(t) = \frac{e^{u_k^Z(t)}}{\sum_{k'=1}^K e^{u_{k'}^Z(t)}} = P(Y=k|Z=j).
 \end{equation}
 
 When inserting the likelihood and the prior into Equation \ref{eqn:pYvorausgesetztXUndZ} we get
-
-
 \begin{equation}
+\label{eqn:posteriorFull}
 \begin{split}
-P(Y=k|X=x,Z=j) &= \frac{e^{\sum_{i=1}^N w{i}_{ki} \cdot x_i(t) - I(t)} \cdot e^{\sum_{j=1}^J w^{P}_{kj} \cdot z_j(t) - I(t)}}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t) - I(t)} \cdot e^{\sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t) - I(t)}}\\
-&= \frac{e^{-I(t) \cdot N + \sum_{i=1}^N w^{I}_{ki} \cdot x_i(t)} \cdot e^{-I(t) \cdot J + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K  e^{-I(t) \cdot N + \sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t)} \cdot e^{-I(t) \cdot J + \sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}}\\
-&= \frac{e^{-I(t) \cdot N} \cdot e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t)} \cdot e^{-I(t) \cdot J} \cdot e^{\sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)}}{e^{-I(t) \cdot N} \cdot e^{-I(t) \cdot J} \cdot \sum_{k'=1}^K  e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t)} \cdot e^{\sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}}\\
-&= \frac{e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}}\\
-&= \frac{e^{U_k(t)}}{\sum_{k'=1}^K e^{U_k'(t)}}\\
-&= q_k(t)
+P(Y=k|X=x,Z=j) &= \frac{e^{u_k^X(t)} \cdot e^{u_k^Z(t)} }{\sum_{k'=1}^K  e^{u_{k'}^X(t)} \cdot e^{u_{k'}^Z(t)}} \\
+&= \frac{e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t)} \cdot e^{\sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)} }{\sum_{k'=1}^K  e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t)} \cdot e^{\sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}} \\
+&= \frac{e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t) }}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}}
 \end{split}
 \end{equation}
 
-
-%TODO OLD!!!
+According to Equation \ref{eqn:qk} and \ref{eqn:uk}
 \begin{equation}
+\label{eqn:qpExpanded}
 \begin{split}
-P(Y=k|X=x,Z=j) &= \frac{e^{\sum_{i=1}^N w{i}_{ki} \cdot x_i(t) - I(t)} \cdot e^{\sum_{j=1}^J w^{P}_{kj} \cdot z_j(t) - I(t)}}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t) - I(t)} \cdot e^{\sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t) - I(t)}}\\
-&= \frac{e^{-I(t) \cdot N + \sum_{i=1}^N w^{I}_{ki} \cdot x_i(t)} \cdot e^{-I(t) \cdot J + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K  e^{-I(t) \cdot N + \sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t)} \cdot e^{-I(t) \cdot J + \sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}}\\
-&= \frac{e^{-I(t) \cdot N} \cdot e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t)} \cdot e^{-I(t) \cdot J} \cdot e^{\sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)}}{e^{-I(t) \cdot N} \cdot e^{-I(t) \cdot J} \cdot \sum_{k'=1}^K  e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t)} \cdot e^{\sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}}\\
-&= \frac{e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}}\\
-&= \frac{e^{U_k(t)}}{\sum_{k'=1}^K e^{U_k'(t)}}\\
-&= q_k(t)
+q_k(t) &= \frac{e^{u_k(t)}}{\sum_{k'=1}^K e^{u_{k'}(t)}} \\
+&= \frac{e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}}.
 \end{split}
 \end{equation}
 
-
+From Equations \ref{eqn:posteriorFull} and \ref{eqn:qpExpanded} we can conclude that
+\begin{equation}
+P(Y=k|X=x,Z=j) = q_k(t).
+\end{equation}
+This showed, that the Bayesian posterior is equal to the conditional probability $q_k(t)$. Furthermore, it showed that the extension of $u_k(t)$ in Equation \ref{eqn:uk} with the prior term was correct.
