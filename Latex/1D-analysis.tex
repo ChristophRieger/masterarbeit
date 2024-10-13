@@ -4,7 +4,7 @@
 \subsection{Introduction}
 
 The purpose of this experiment was to analyse a smaller network and to provide a definitive way to verify the performance of the simulation. Furthermore, the weights were not learned, as in the previous experiment, but rather determined analytically. This was done to experimentally prove the relation, given by \citet{nessler}, that the weights stochastically converge toward the conditional probability, that a presynaptic neuron fired shortly before the postsynaptic neuron.
-First, the network was scaled down to be one-dimensional with 18 input neurons, four prior neurons and four output neurons, making it easier to analyse. The weights were determined by utilizing the logarithmic connection between them and the corresponding conditional probabilities, as given by Equation \ref{eqn:weightProbLink}. The conditional probabilities of the input and output neurons of the network  were calculated and then used to determine the posterior probability of the network. After the simulation of the network, the distribution of the output spikes was used, to calculate the posterior probability. The posterior probabilities, of both the mathematical analysis and the simulation, were compared. It was tuned to approximate the analytical solution as closely as possible, by varying three network hyperparameters.
+First, the network was scaled down to be one-dimensional with 18 input neurons, four prior neurons and four output neurons, making it easier to analyse. The weights were determined by utilizing the logarithmic relation between them and the corresponding conditional probabilities, as given by Equation \ref{eqn:weightProbLink}. The conditional probabilities of the input and output neurons of the network  were calculated and then used to determine the posterior probability of the network. After the simulation of the network, the distribution of the output spikes was used, to calculate the posterior probability. The posterior probabilities, of both the mathematical analysis and the simulation, were compared. It was tuned to approximate the analytical solution as closely as possible, by varying three network hyperparameters.
 
 \subsection{Methods}
 
@@ -105,19 +105,20 @@ P^{Y|Z} = \begin{bmatrix}
 \paragraph{Simulation results with prior disabled}
 The network was at first simulated with inactive prior neurons, to simplify the hyperparameter fitting process. The prior neurons were reactivated and $f_{prior}$ was fitted, after determining the best values for $f_{input}$ and $\tau_{decay}$. The values 0.015 seconds and 0.004 seconds for $\tau_{decay}$ were used for the simulation and compared. For each of these values, an optimal value for $f_{input}$ was found, by looking for the value that yielded the smallest Kullback-Leibler divergence.
 
-\subparagraph{$\tau_{decay} = 0.015 seconds$, $f_{prior} = 0 Hz$}
+%TODO AAAAAAAAA
+\subparagraph{$\boldsymbol{\tau_{decay} = 0.015\text{ seconds}$, $f_{prior} = 0\text{ Hz}}$}
 Values for $f_{input}$ between 10 and 110 Hz in steps of 10 Hz were simulated. After identifying the input firing rate with the smallest Kullback-Leibler divergence, the network was simulated again for $f_{input}$ values $\pm$ 10 Hz in steps of 2 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau15}. This process yielded the best input firing rate of 42 Hz. The results of this hyperparameter combination can be seen in Figure \ref{fig:1D_42_0_15}. In this figure six different input images can be seen in A. The active pixels are shown in black. In B the posterior probabilities of the mathematical analysis are given by the red bars and the posterior probabilities of the simulation are given by the blue bars. Each simulation output probability has its standard deviation marked by a black bar. At the bottom the value of the Kullback-Leibler divergence is given, with its standard deviation. The exact numeric probabilities are given in Table \ref{tab:1D_42_0_15}.
 
 \begin{figure}
 \centering
   \includegraphics[width=0.75\linewidth]{figures/1D/KLDvsfInput_fPrior0tau15.png}
-  \caption{\textbf{KL divergence for different $f_{input}$ values. } Hyperparameters: $f_{prior} = 0 Hz, \tau_{decay} = 15 ms$}
+  \caption{\textbf{KL divergence for different $f_{input}$ values. } Hyperparameters: $f_{prior} = 0\text{ Hz}, \tau_{decay} = 15\text{ ms}$}
   \label{fig:1D_KLD_fPrior0_tau15}
 \end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_42_0_15.png}
-  \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+  \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 42\text{ Hz}, f_{prior} = 0\text{ Hz}, \tau_{decay} = 15\text{ ms}$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_42_0_15}
 \end{figure}
 
@@ -145,14 +146,14 @@ $y_1$                  & \multicolumn{1}{c|}{0.612}    & 0.697 $\pm$ 0.0069 & \m
 $y_2$                  & \multicolumn{1}{c|}{0.175}    & 0.123 $\pm$ 0.0050 & \multicolumn{1}{c|}{0.047}    & 0.070 $\pm$ 0.0034 \\ \hline
 $y_3$                  & \multicolumn{1}{c|}{0.038}    & 0.056 $\pm$ 0.0043 & \multicolumn{1}{c|}{0.047}    & 0.081 $\pm$ 0.0047 \\ \hline
 \end{tabular}
-\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 42 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$}
+\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 42\text{ Hz}, f_{prior} = 0\text{ Hz}, \tau_{decay} = 15\text{ ms}$}
 \end{table}
 
 When $f_{input}$ was 70 Hz the results of the analysis and the simulation differed more as can be seen in Figure \ref{fig:1D_70_0_15} and Table \ref{tab:1D_70_0_15}.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_70_0_15.png}
-    \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 70 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+    \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 70\text{ Hz}, f_{prior} = 0\text{ Hz}, \tau_{decay} = 15\text{ ms}$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_70_0_15}
 \end{figure}
 
@@ -180,22 +181,22 @@ $y_1$                  & \multicolumn{1}{c|}{0.612}    & 0.864 $\pm$ 0.0062 & \m
 $y_2$                  & \multicolumn{1}{c|}{0.175}    & 0.057 $\pm$ 0.0036 & \multicolumn{1}{c|}{0.047}    & 0.028 $\pm$ 0.0018 \\ \hline
 $y_3$                  & \multicolumn{1}{c|}{0.038}    & 0.018 $\pm$ 0.0022 & \multicolumn{1}{c|}{0.047}    & 0.038 $\pm$ 0.0032 \\ \hline
 \end{tabular}
-\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 70 Hz, f_{prior} = 0 Hz, \tau_{decay} = 15 ms$}
+\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 70\text{ Hz}, f_{prior} = 0\text{ Hz}, \tau_{decay} = 15\text{ ms}]$}
 \end{table}
 
-\subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{prior} = 0 Hz$}
+\subparagraph{$\tau_{decay} = 0.004\text{ seconds}$, $f_{prior} = 0\text{ Hz}$}
 For this hyperparameter combination values between 50 and 150 Hz for $f_{input}$ in steps of 10 Hz were simulated. Analogously to the previous hyperparameter set, after finding the best input firing rate, the search was performed in finer steps, until the best value was found at 88 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior0_tau4}. The result of the simulation, with those hyperparameters, can be seen in Figure \ref{fig:1D_88_0_4} and Table \ref{tab:1D_88_0_4}.
 
 \begin{figure}
 \centering
   \includegraphics[width=0.75\linewidth]{figures/1D/KLDvsfInput_fPrior0tau4.png}
-  \caption{\textbf{KL divergence for different $f_{input}$ values.} Hyperparameters: $f_{prior} = 0 Hz, \tau_{decay} = 4 ms$}
+  \caption{\textbf{KL divergence for different $f_{input}$ values.} Hyperparameters: $f_{prior} = 0\text{ Hz}, \tau_{decay} = 4\text{ ms}$}
   \label{fig:1D_KLD_fPrior0_tau4}
 \end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_0_4.png}
-   \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 0 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+   \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 88\text{ Hz}, f_{prior} = 0\text{ Hz}, \tau_{decay} = 4\text{ ms}$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_88_0_4}
 \end{figure}
 
@@ -223,24 +224,24 @@ $y_1$                  & \multicolumn{1}{c|}{0.612}    & 0.697 $\pm$ 0.0072 & \m
 $y_2$                  & \multicolumn{1}{c|}{0.175}    & 0.124 $\pm$ 0.0038 & \multicolumn{1}{c|}{0.047}    & 0.072 $\pm$ 0.0031 \\ \hline
 $y_3$                  & \multicolumn{1}{c|}{0.038}    & 0.054 $\pm$ 0.0032 & \multicolumn{1}{c|}{0.047}    & 0.078 $\pm$ 0.0047 \\ \hline
 \end{tabular}
-\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 0 Hz, \tau_{decay} = 4 ms$}
+\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 88\text{ Hz}, f_{prior} = 0\text{ Hz}, \tau_{decay} = 4\text{ ms}$}
 \end{table}
 
 \paragraph{Simulation results with prior enabled}
 After determining the best input firing rates for two different values of $\tau_{decay}$, the prior neurons were activated and the best $f_{prior}$ was searched.
-\subparagraph{$\tau_{decay} = 0.015 seconds$, $f_{input} = 42 Hz$}
+\subparagraph{$\tau_{decay} = 0.015\text{ seconds}$, $f_{input} = 42\text{ Hz}$}
 The search for the best value of $f_{prior}$ was performed in the same manner as for $f_{input}$. Values between 140 and 240 Hz were simulated and a prior firing rate of 222 Hz performed the best. The result of this search can be seen in Figure \ref{fig:1D_KLD_fInput42_tau15}. The simulation results can be seen in Figure \ref{fig:1D_42_222_15} and Table \ref{tab:1D_42_222_15}. In Figure \ref{fig:1D_42_222_15} the value of the prior is indicated by the red border, which is three pixels wide and centered at the center position of the corresponding output class.
 
 \begin{figure}
 \centering
   \includegraphics[width=0.75\linewidth]{figures/1D/KLDvsfPrior_fInput42tau15.png}
-  \caption{\textbf{KL divergence for different $f_{prior}$ values.} Hyperparameters: $f_{input} = 42 Hz, \tau_{decay} = 15 ms$}
+  \caption{\textbf{KL divergence for different $f_{prior}$ values.} Hyperparameters: $f_{input} = 42\text{ Hz}, \tau_{decay} = 15\text{ ms}$}
   \label{fig:1D_KLD_fInput42_tau15}
 \end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_42_222_15.png}
-     \caption{\textbf{Analysis and simulation result, active pixels in black. } Hyperparameters: $f_{input} = 42 Hz, f_{prior} = 222 Hz, \tau_{decay} = 15 ms$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+     \caption{\textbf{Analysis and simulation result, active pixels in black. } Hyperparameters: $f_{input} = 42\text{ Hz}, f_{prior} = 222\text{ Hz}, \tau_{decay} = 15\text{ ms}$ \textbf{A} Input images with 9 x 1 pixels. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_42_222_15}
 \end{figure}
 
@@ -268,22 +269,22 @@ $y_1$                  & \multicolumn{1}{c|}{0.308}    & 0.321 $\pm$ 0.0087 & \m
 $y_2$                  & \multicolumn{1}{c|}{0.088}    & 0.043 $\pm$ 0.0039 & \multicolumn{1}{c|}{0.021}    & 0.021 $\pm$ 0.0018 \\ \hline
 $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.587 $\pm$ 0.0105 & \multicolumn{1}{c|}{0.570}    & 0.632 $\pm$ 0.0158 \\ \hline
 \end{tabular}
-\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 42 Hz, f_{prior} = 222 Hz, \tau_{decay} = 15 ms$}
+\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 42\text{ Hz}, f_{prior} = 222\text{ Hz}, \tau_{decay} = 15\text{ ms}$}
 \end{table}
 
-\subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{input} = 88 Hz$}
+\subparagraph{$\tau_{decay} = 0.004\text{ seconds}$, $f_{input} = 88\text{ Hz}$}
 The search for the best value of $f_{prior}$ was performed in the same manner as for $f_{input}$. Values between 360 and 460 Hz were simulated and a prior firing rate of 440 Hz performed the best. The result of this search can be seen in Figure \ref{fig:1D_KLD_fInput88_tau4}. The results of this hyperparameter combination are given in Figure \ref{fig:1D_88_440_4} and Table \ref{tab:1D_88_440_4}.
 
 \begin{figure}
 \centering
   \includegraphics[width=0.75\linewidth]{figures/1D/KLDvsfPrior_fInput88tau4.png}
-  \caption{\textbf{KL divergence for different $f_{prior}$ values.} Hyperparameters: $f_{input} = 88 Hz, \tau_{decay} = 4 ms$}
+  \caption{\textbf{KL divergence for different $f_{prior}$ values.} Hyperparameters: $f_{input} = 88\text{ Hz}, \tau_{decay} = 4\text{ ms}$}
   \label{fig:1D_KLD_fInput88_tau4}
 \end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_440_4.png}
-       \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+       \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 88\text{ Hz}, f_{prior} = 440\text{ Hz}, \tau_{decay} = 4\text{ ms}$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_88_440_4}
 \end{figure}
 
@@ -311,7 +312,7 @@ $y_1$                  & \multicolumn{1}{c|}{0.308}    & 0.328 $\pm$ 0.0085 & \m
 $y_2$                  & \multicolumn{1}{c|}{0.088}    & 0.046 $\pm$ 0.0031 & \multicolumn{1}{c|}{0.021}    & 0.025 $\pm$ 0.0025 \\ \hline
 $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.573 $\pm$ 0.0089 & \multicolumn{1}{c|}{0.570}    & 0.630 $\pm$ 0.0095 \\ \hline
 \end{tabular}
-\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
+\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 88\text{ Hz}, f_{prior} = 440\text{ Hz}, \tau_{decay} = 4\text{ ms}$}
 \end{table}
 
 
@@ -319,7 +320,7 @@ To demonstrate the impact of rising $f_{prior}$, it was set to 600 Hz and the re
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_88_600_4.png}
-  \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 600 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+  \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 88\text{ Hz}, f_{prior} = 600\text{ Hz}, \tau_{decay} = 4\text{ ms}$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_88_600_4}
 \end{figure}
 
@@ -347,22 +348,22 @@ $y_1$                  & \multicolumn{1}{c|}{0.308}    & 0.182 $\pm$ 0.0077 & \m
 $y_2$                  & \multicolumn{1}{c|}{0.088}    & 0.023 $\pm$ 0.0025 & \multicolumn{1}{c|}{0.021}    & 0.010 $\pm$ 0.0016 \\ \hline
 $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.766 $\pm$ 0.0079 & \multicolumn{1}{c|}{0.570}    & 0.813 $\pm$ 0.0081 \\ \hline
 \end{tabular}
-\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 88 Hz, f_{prior} = 600 Hz, \tau_{decay} = 4 ms$}
+\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 88\text{ Hz}, f_{prior} = 600\text{ Hz}, \tau_{decay} = 4\text{ ms}$}
 \end{table}
 
-\subparagraph{$\tau_{decay} = 0.004 seconds$, $f_{input} = 98$, $f_{prior} = 440 Hz$}
+\subparagraph{$\tau_{decay} = 0.004\text{ seconds}$, $f_{input} = 98\text{ Hz}$, $f_{prior} = 440\text{ Hz}$}
 Finally, it was tested if an increase of $f_{input}$ might decrease the Kullback-Leibler divergence even further. The network was simulated with increasing values of $f_{input}$, in steps of 2 Hz, beginning from 90 Hz. The result of this search can be seen in Figure \ref{fig:1D_KLD_fPrior440_tau4}. The best result was obtained with an input firing rate of 98 Hz. The results of that simulation can be seen in Figure \ref{fig:1D_98_440_4} and Table \ref{tab:1D_98_440_4}.
 
 \begin{figure}
 \centering
   \includegraphics[width=0.75\linewidth]{figures/1D/KLDvsfInput_fPrior440tau4.png}
-  \caption{\textbf{KL divergence for different $f_{input}$ values.} Hyperparameters: $f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
+  \caption{\textbf{KL divergence for different $f_{input}$ values.} Hyperparameters: $f_{prior} = 440\text{ Hz}, \tau_{decay} = 4\text{ ms}$}
   \label{fig:1D_KLD_fPrior440_tau4}
 \end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/1D_98_440_4.png}
-    \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+    \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 98\text{ Hz}, f_{prior} = 440\text{ Hz}, \tau_{decay} = 4\text{ ms}$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:1D_98_440_4}
 \end{figure}
 
@@ -390,12 +391,12 @@ $y_1$                  & \multicolumn{1}{c|}{0.308}    & 0.379 $\pm$ 0.0084 & \m
 $y_2$                  & \multicolumn{1}{c|}{0.088}    & 0.046 $\pm$ 0.0027 & \multicolumn{1}{c|}{0.021}    & 0.022 $\pm$ 0.0021 \\ \hline
 $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.523 $\pm$ 0.0084 & \multicolumn{1}{c|}{0.570}    & 0.600 $\pm$ 0.0116 \\ \hline
 \end{tabular}
-\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
+\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 98\text{ Hz}, f_{prior} = 440\text{ Hz}, \tau_{decay} = 4\text{ ms}$}
 \end{table}
 
 \paragraph{Approximating the analytic solution}
-After first finding the optimal $f_{input}$ for disabled prior activity and then finding the optimal $f_{prior}$ with enabled prior activity for $\tau_{decay}$ the simulation was not yet approximating the analytical solution perfectly. Because of that, it was tried to raise $f_{input}$, to further decrease the Kullback-Leibler divergence. The search for a better $f_{input}$ was performed for $\tau_{decay} = 0.004 ms$ and $f_{prior} = 440 Hz$, as this set of hyperparameters performed the best overall.
-When comparing the former optimal result in Figure \ref{fig:1D_88_440_4} with $f_{input} = 88 Hz$, to the result with $f_{input} = 98 Hz$ in Figure \ref{fig:1D_98_440_4}, it can be seen that the Kullback-Leibler divergence decreased from 0.0112 to 0.0101. However, when comparing Tables \ref{tab:1D_88_440_4} and \ref{tab:1D_98_440_4}, it can be seen that the higher $f_{input}$ did not perform strictly better. The simulation output probabilities for Image 3 improved, while for Image 5 the output probability of $y_2$ diverged more. A further increase of $f_{input}$ started to increase the Kullback-Leibler divergence again, thus the final optimum of the hyperparameter set was reached. It was necessary to increase $f_{input}$, after $f_{prior}$ was fitted, because the overall impact of $f_{input}$ on the simulation decreased, due to the introduction of the prior activity.
+After first finding the optimal $f_{input}$ for disabled prior activity and then finding the optimal $f_{prior}$ with enabled prior activity for $\tau_{decay}$ the simulation was not yet approximating the analytical solution perfectly. Because of that, it was tried to raise $f_{input}$, to further decrease the Kullback-Leibler divergence. The search for a better $f_{input}$ was performed for $\tau_{decay} = 0.004\text{ ms}$ and $f_{prior} = 440\text{ Hz}$, as this set of hyperparameters performed the best overall.
+When comparing the former optimal result in Figure \ref{fig:1D_88_440_4} with $f_{input} = 88\text{ Hz}$, to the result with $f_{input} = 98\text{ Hz}$ in Figure \ref{fig:1D_98_440_4}, it can be seen that the Kullback-Leibler divergence decreased from 0.0112 to 0.0101. However, when comparing Tables \ref{tab:1D_88_440_4} and \ref{tab:1D_98_440_4}, it can be seen that the higher $f_{input}$ did not perform strictly better. The simulation output probabilities for Image 3 improved, while for Image 5 the output probability of $y_2$ diverged more. A further increase of $f_{input}$ started to increase the Kullback-Leibler divergence again, thus the final optimum of the hyperparameter set was reached. It was necessary to increase $f_{input}$, after $f_{prior}$ was fitted, because the overall impact of $f_{input}$ on the simulation decreased, due to the introduction of the prior activity.
 
 \section{Experiment 3: Transferability of hyperparameters}
 \label{section:1DDoubleSize}
@@ -426,10 +427,10 @@ P^{X|Y} = \\
 \end{matrix}
 \end{equation}
 
-The simulation result for $f_{input} = 98 Hz$, $f_{prior} = 880 Hz$ and $\tau_{decay} = 4 ms$ can be seen in Figure \ref{fig:doubleSize_98_880_4} and Table \ref{tab:doubleSize_98_880_4}. Initially, the Kullback-Leibler divergence was infinite in this result, because some simulation output probabilities were zero and the Kullback-Leibler divergence is not defined for probabilities of zero. To circumvent this, an approximated Kullback-Leibler divergence was calculated, by setting the simulation output probabilities that were 0 to 0.0000001. This yielded a Kullback-Leibler divergence of 0.2392. This value was worse, compared to 0.0101 of the original network from Experiment 2. Thus, the hyperparameters were clearly not transferable to a network of double size.
+The simulation result for $f_{input} = 98\text{ Hz}$, $f_{prior} = 880\text{ Hz}$ and $\tau_{decay} = 4\text{ ms}$ can be seen in Figure \ref{fig:doubleSize_98_880_4} and Table \ref{tab:doubleSize_98_880_4}. Initially, the Kullback-Leibler divergence was infinite in this result, because some simulation output probabilities were zero and the Kullback-Leibler divergence is not defined for probabilities of zero. To circumvent this, an approximated Kullback-Leibler divergence was calculated, by setting the simulation output probabilities that were 0 to 0.0000001. This yielded a Kullback-Leibler divergence of 0.2392. This value was worse, compared to 0.0101 of the original network from Experiment 2. Thus, the hyperparameters were clearly not transferable to a network of double size.
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/doubleSize/doubleSize_98_880_4.png}
-      \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 880 Hz, \tau_{decay} = 4 ms$ \textbf{A} Input images with 18 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
+      \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 98\text{ Hz}, f_{prior} = 880\text{ Hz}, \tau_{decay} = 4\text{ ms}$ \textbf{A} Input images with 18 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}
   \label{fig:doubleSize_98_880_4}
 \end{figure}
 
@@ -457,7 +458,7 @@ $y_1$                  & \multicolumn{1}{c|}{0.308}    & 0.369 $\pm$ 0.0096 & \m
 $y_2$                  & \multicolumn{1}{c|}{0.088}    & 0.005 $\pm$ 0.0010 & \multicolumn{1}{c|}{0.021}    & 0.001 $\pm$ 0.0004 \\ \hline
 $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.619 $\pm$ 0.0098 & \multicolumn{1}{c|}{0.570}    & 0.783 $\pm$ 0.0091 \\ \hline
 \end{tabular}
-\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 880 Hz, \tau_{decay} = 4 ms$}
+\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 98\text{ Hz}, f_{prior} = 880\text{ Hz}, \tau_{decay} = 4\text{ ms}$}
 \end{table}
 
 \section{Experiment 4: Training of the network with 1-D images and predetermined hyperparameters}
@@ -469,28 +470,28 @@ In this Experiment the network of Experiment 2 was used, but the weights of the 
 
 \subsection{Methods}
 
-The network architecture was the same as in Experiment 2 and the training paradigm was the same as in Experiment 1. The used hyperparameters were $f_{input} = 98 Hz$, $f_{prior} = 440 Hz$ and $\tau_{decay} = 4 ms$. The weight shifting hyperparameter c was determined via grid search.
+The network architecture was the same as in Experiment 2 and the training paradigm was the same as in Experiment 1. The used hyperparameters were $f_{input} = 98\text{ Hz}$, $f_{prior} = 440\text{ Hz}$ and $\tau_{decay} = 4\text{ ms}$. The weight shifting hyperparameter c was determined via grid search.
 \subsection{Results}
 
 The Kullback-Leibler divergence for different values of c can be seen in Figure \ref{fig:1DTrainingC}.
 \begin{figure}
 \centering
   \includegraphics[width=0.75\linewidth]{figures/1D/training/KLD_cvsfInput98_fPrior440tau4.png}
-  \caption{\textbf{KL divergence for different c values} $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms$}
+  \caption{\textbf{KL divergence for different c values} $f_{input} = 98\text{ Hz}, f_{prior} = 440\text{ Hz}, \tau_{decay} = 4\text{ ms}$}
   \label{fig:1DTrainingC}
 \end{figure}
 
 The training and evaluation results for the best value of $c = 3$ can be seen in Figures \ref{fig:1DTrainingC3}, Figure \ref{fig:1DTrainingEvaluationC3} and Table \ref{tab:1DTrainingEvaluationC3}.
 \begin{figure}
   \includegraphics[width=0.8\linewidth]{figures/1D/training/trainingPlot_98_440_4_c3.png}
-  \caption{\textbf{Training result.} Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms, c = 3$  \textbf{A} The learned probability matrix $P^{X|Y}$. It was determined by taking the weights to the power of e. \textbf{B} The calculated probability matrix $P^{X|Y}$. \textbf{C} The learned prior probability matrix $P^{Y|Z}$. \textbf{D} The calculated prior probability matrix $P^{Y|Z}$.
+  \caption{\textbf{Training result.} Hyperparameters: $f_{input} = 98\text{ Hz}, f_{prior} = 440\text{ Hz}, \tau_{decay} = 4\text{ ms}, c = 3$  \textbf{A} The learned probability matrix $P^{X|Y}$. It was determined by taking the weights to the power of e. \textbf{B} The calculated probability matrix $P^{X|Y}$. \textbf{C} The learned prior probability matrix $P^{Y|Z}$. \textbf{D} The calculated prior probability matrix $P^{Y|Z}$.
  \textbf{E, F} Spike activity expressed by the output neurons before and after the training of the network. \textbf{G} This shows the number of spikes the most active output neuron generated, relative to the number of spikes all other output neurons generated combined.}
   \label{fig:1DTrainingC3}
 \end{figure}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{figures/1D/training/trainingEvaluation_98_440_4_c3.png}
-      \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms, c = 3$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}  
+      \caption{\textbf{Analysis and simulation result. } Hyperparameters: $f_{input} = 98\text{ Hz}, f_{prior} = 440\text{ Hz}, \tau_{decay} = 4\text{ ms}, c = 3$ \textbf{A} Input images with 9 x 1 pixels, active pixels in black. Prior given as red border. \textbf{B} Analytically calculated posterior probabilities and simulated posterior probabilities. The standard deviations are given by the black bars.}  
   \label{fig:1DTrainingEvaluationC3}
 \end{figure}
 
@@ -518,7 +519,7 @@ $y_1$                  & \multicolumn{1}{c|}{0.308}    & 0.202 $\pm$ 0.0070 & \m
 $y_2$                  & \multicolumn{1}{c|}{0.088}    & 0.032 $\pm$ 0.0023 & \multicolumn{1}{c|}{0.021}    & 0.019 $\pm$ 0.0021 \\ \hline
 $y_3$                  & \multicolumn{1}{c|}{0.515}    & 0.727 $\pm$ 0.0063 & \multicolumn{1}{c|}{0.570}    & 0.738 $\pm$ 0.0074 \\ \hline
 \end{tabular}
-\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 98 Hz, f_{prior} = 440 Hz, \tau_{decay} = 4 ms, c = 3$}
+\caption{\textbf{Analysis and simulation output probabilities. } Hyperparameters: $f_{input} = 98\text{ Hz}, f_{prior} = 440\text{ Hz}, \tau_{decay} = 4\text{ ms}, c = 3$}
 \end{table}
 
 The Kullback-Leibler divergence with $c = 3$ was 0.0342. It was worse, compared to the best performing network of Experiment 2 with a Kullback-Leibler divergence of 0.0101. This means, that the training was imperfect and the network with the trained weights performed worse, than the one with calculated weights.

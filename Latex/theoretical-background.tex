@@ -18,7 +18,7 @@ P(H|E) = \frac{P(E|H)P(H)}{P(E)},
 where H represents a hypothesis and E some related evidence. P(H|E) is the posterior probability, which signifies the probability of the hypothesis after the evidence was observed. P(E|H) is called likelihood and it is the probability of observing the evidence, given the hypothesis. It is a measure of the compatibility of the observed evidence with the given hypothesis. P(H) is the prior probability, which is the probability of the hypothesis before any evidence is considered or obtained. P(E) is called marginal likelihood that represents the probability of the evidence being observed. However, it is independent of the chosen hypothesis. Thus, it is not factored in when comparing different hypotheses.
 Bayesian inference can be applied to the "face in shadow" example of Section \ref{section:feedbackInVisualCortex}. There a neuron in V1 sees a small part of the visual field and signals if it sees an edge or not. At first it has the evidence of the observed pixels available and from it can calculate the likelihood that an edge is present. It has no prior knowledge of how probable an edge being present is, meaning that the prior probabilities for there being an edge or no edge are equal. With that likelihood and the prior probabilities it can conclude the posterior probability for the hypothesis "there is an edge" and decides that there is no edge.
 Later, the inferior temporal cortex determines that there is a face in the picture and feeds this information back to V1. This influences the prior probabilities and changes the posterior probability. Through that, the V1 neuron starts to see the hypothesis  "there is an edge" as more likely, in order to complete the contour of the face. 
-We now define X as a binary random vector of the visual input, Y as a multinomial variable of the output of V1 and Z as a multinomial variable of the feedback of the inferior temporal cortex. X is assumed independent of Z, when Y is given, as the visual input is not influenced by the activity of the brain. This three node chain can be modelled as a generative probabilistic model and its visualization is given in Figure \ref{fig:generativeModel}. In Section 3.2.2 of \citet{bayesInferenceBook} it is shown how the chain rule can be applied to Bayesian Inference, when there are three nodes. When applying the chain rule and plugging the likelihood $P(X|Y)$, the prior $P(Y|Z)$ and the prior distribution $P(Z)$ into Equation \ref{eqn:bayesianInference}, we get the posterior $P(Y|X,Z)$ as
+We now define X as a binary random vector of the visual input, Y as a multinomial variable of the output of V1 and Z as a multinomial variable of the feedback of the inferior temporal cortex. X is assumed independent of Z, when Y is given. This three node chain can be modelled as a generative probabilistic model and its visualization is given in Figure \ref{fig:generativeModel}. The figure shows the conditional dependence of Y on Z and of X on Y. In Section 3.2.2 of \citet{bayesInferenceBook} it is shown how the chain rule can be applied to Bayesian Inference, when there are three nodes. When applying the chain rule and plugging the likelihood $P(X|Y)$, the prior $P(Y|Z)$ and the prior distribution $P(Z)$ into Equation \ref{eqn:bayesianInference}, we get the posterior $P(Y|X,Z)$ as
 \begin{equation}
 \label{eqn:pYvorausgesetztXUndZ}
 \begin{split}
@@ -31,7 +31,7 @@ P(Y = k|X = x, Z = j) &= \frac{P(X=x|Y=k)P(Y = k|Z = j)P(Z = j)}{\Sigma_{k'}P(X=
   \centering
   \label{fig:generativeModel}
   \includegraphics[width=0.075\linewidth]{figures/generativeModel.png}
-  \caption{Generative probabilistic model of the 3 node chain, representing the interaction of the inferior temporal cortex, V1 and the visual input. It represents a multinomial mixture of 3 variables. X is a binary random vector of the visual input. Y is a multinomial variable of the output of V1 and Z is a multinomial variable of the feedback of the inferior temporal cortex. X is assumed independent of Z, when Y is given, as the visual input is not influenced by the activity of the brain.}
+  \caption{Visual representation of the generative probabilistic model of the 3 node chain. It shows the interaction of the inferior temporal cortex, V1 and the visual input. It represents a multinomial mixture of 3 variables. X is a binary random vector of the visual input. Y is a multinomial variable of the output of V1 and Z is a multinomial variable of the feedback of the inferior temporal cortex. X is assumed independent of Z, when Y is given.}
 \end{figure}
 
 \section{Network model}
@@ -40,7 +40,7 @@ The network model used for the experiments in this thesis was taken from \citet{
 
 \paragraph{Network architecture}
 Rectangular images in black and white were given to the network. These images had varying sizes in the experiments, determined by their width $image_{width}$ and height $image_{height}$. Each pixel of an image was connected to two neurons. The first of these neurons is in an active state when the pixel is black and in an inactive state otherwise. The second neuron expresses the opposite behaviour. As a consequence the network needs $image_{width} \cdot image_{height} \cdot 2$ excitatory input neurons $x_1,...,x_N$. These input neurons are fully connected to the excitatory output neurons $y_1,...,y_K$. This means that every input neuron $x_i$ is connected to each output neuron $y_k$. 
-To simulate the feedback from the inferior temporal cortex prior neurons, $z_1,...,z_J$, were added to the network. The prior neurons were also fully connected to the output neurons. The output neurons are modelled in a soft winner-takes-all (soft-WTA) circuit. The WTA behaviour was implemented via an adaptive inhibition signal. The adaptive inhibition is used to regulate the membrane potentials of the output neurons so that all of them together fire with a total firing rate $R(t) = 200 Hz$ on average. Due to that, there never is a time window in which no output neuron may fire. However, it is unlikely for an output neuron to fire right after another output neuron has fired. A visualization of the network architecture can be seen in Figure \ref{fig:networkArchitecture}.
+To simulate the feedback from the inferior temporal cortex prior neurons, $z_1,...,z_J$, were added to the network. The prior neurons were also fully connected to the output neurons. The output neurons are modelled in a soft winner-takes-all (soft-WTA) circuit. The WTA behaviour was implemented via an adaptive inhibition signal $I(t)$. The adaptive inhibition is used to regulate the membrane potentials of the output neurons, so that all of them together fire with a total firing rate $R(t) = 200\text{ Hz}$ on average. A visualization of the network architecture can be seen in Figure \ref{fig:networkArchitecture}.
 
 \begin{figure}
   \label{fig:networkArchitecture}
@@ -59,7 +59,7 @@ Multiplying $\theta(s)$ with the double exponential kernel yields the kernel fun
 \begin{equation}
 \varepsilon (s) = \theta (s) \cdot e^{-(s + \delta t) / \tau_{decay}} - e^{-(s + \delta t) / \tau_{rise}}.
 \end{equation}
-The kernel function has a time constant for the rise of the signal $\tau_{rise} = 1 ms$  and a time constant for the decay of the signal $\tau_{decay} = 15 ms$. The time step size of the simulation is $\delta t = 1 ms$. It had to be added to the double exponential kernel for numerical reasons, to evaluate the time at the end of the current simulation step, rather than at the beginning. A visualization of the kernel function can be seen in Figure \ref{fig:kernelFunction}. 
+The kernel function has a time constant for the rise of the signal $\tau_{rise} = 1\text{ ms}$ and a time constant for the decay of the signal $\tau_{decay} = 15\text{ ms}$. The time step size of the simulation is $\delta t = 1\text{ ms}$. It had to be added to the double exponential kernel for numerical reasons, to evaluate the time at the end of the current simulation step, rather than at the beginning. A visualization of the kernel function can be seen in Figure \ref{fig:kernelFunction}. 
 
 \begin{figure}
   \centering
@@ -76,7 +76,7 @@ x_i(t) = \sum_{t_i^{(f)}} \varepsilon (t - t_i^{(f)}),
 with $t$ being the current simulation time and $t_i^{(f)}$ the time at which the input spike occurred.
 Analogously, the unweighed membrane potential response of the prior neurons is given by
 \begin{equation}
-z_j(t) = \sum_{t_p^{(f)}} \varepsilon (t - t_p^{(f)}),
+z_j(t) = \sum_{t_p^{(f)}} \varepsilon (t - t_p^{(f)}).
 \end{equation}
  
 The membrane potential $u_k$ of each output neuron is calculated by multiplying the unweighed membrane potential response of each input neuron times the input weight $w^{I}_{ki}$ of the connection between them, plus the unweighed membrane potential response of each prior neuron times the prior weight $w^{P}_{kj}$
