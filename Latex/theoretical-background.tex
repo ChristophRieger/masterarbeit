@@ -157,11 +157,61 @@ The prior weights $w^{P}_{kj}$ are also updated whenever an output neuron fires,
 \citet{nessler} hypothesized that the ensemble of weights of a neuron can be understood as a generative model. They further claimed, that every synaptic weight, due to STDP-induced changes,  converges stochastically to the log of the conditional probability that the presynaptic neuron has fired just before the postsynaptic neuron, given that the postsynaptic neuron fires. This connection is given by
 \begin{equation}
 \label{eqn:weightProbLink}
- w^{I}_{ki} = log(p(x_i = 1 | y_k = 1))
+ w^{I}_{ki} = log(p(x_i = 1 | Y = k))
 \end{equation}
-an will be analysed in Section \ref{section:1D}.
+and will be analysed in Section \ref{section:1D}.
 Furthermore, they claimed that in a Bayesian inference context, every input spike provides evidence for an observed variable and every output spike represents one stochastic sample from the posterior distribution over hidden causes, which are encoded in the circuit. 
 
+%TODO WIP: abschreiben von Legi
+
+1. Modellannahme
+%TODO "i" bei prod und summer richtigstellen (bis N oder so...)
+%TODO u^X_k usw... zuerst X
+%TODO Legi mag X = \underline{x}  .... symbolisiert vector... vielleicht überall anpassen, oder ignorieren?
+%TODO Legi sagt mein Bayes 3.3 anders argumentieren... machen...
+%auch Z=j durch Z ersetzen auf der linken seite von equations...
+\begin{equation}
+\begin{split}
+P(X=x|Y=k) &= \prod_i P(x_i=1|Y=k)^{x_i} \cdot P(x_i=0|Y=k)^{1-x_i}\\
+log P(X=x|Y=k) &= \sum_i (x_i log P(x_i=1|Y=k) + (1-x_i) log (1 - P(x_i=1|Y=k)))
+\end{split}
+\end{equation}
+With Equation \ref{eqn:weightProbLink}
+\begin{equation}
+P(X=x|Y=k) = \sum_i (x_i w_{ki} + (1-x_i)\overline{w_{ki}}) = u^X_k
+\end{equation}
+\begin{equation}
+\Rightarrow P(X=x|Y=k) = e^{u^X_k}
+\end{equation}
+
+2. Modellannahme
+
+\begin{equation}
+\begin{split}
+P(Y=k|Z) &= \prod_j P(Y=k|Z=j)^{z_j}\\
+log P(Y=k|Z) &= \sum_j (z_j log P(Y=k|Z=j))
+\end{split}
+\end{equation}
+With Equation \ref{eqn:weightProbLink}
+\begin{equation}
+P(Y=k|Z) = \sum_j (z_j w^P_{kj}) = u^Z_k
+\end{equation}
+\begin{equation}
+\Rightarrow P(Y=k|Z) = e^{u^Z_k}
+\end{equation}
+
+Die 2 einsetzen in Equation \ref{eqn:pYvorausgesetztXUndZ}
+
+\begin{equation}
+\begin{split}
+P(Y=k|X=x,Z) &= \frac{e^{u^X_k} e^{u^Z_k}}{\sum_{k'} e^{u^X_{k'}} e^{u^Z_{k'}}}\\
+&= \frac{e^{u^X_k + u^Z_k}}{\sum_{k'} e^{u^X_{k'} + u^Z_{k'}}}
+\end{split}
+\end{equation}
+and this shows why for uk the 2 terms were added.
+
+%TODO Das danach wegschmeißen... werd neues
+%darüber einfügen
 To explain the connection between the spiking Winner-Take-All network model and Bayesian inference it will be demonstrated, that the posterior probability of Bayesian inference given in Equation \ref{eqn:pYvorausgesetztXUndZ} is equal to the relative firing probability $q_k(t)$, given in Equation \ref{eqn:qk}.
 
 As explained in Section \ref{section:bayesianInference}, the visual input, modelled by the input neurons, can be thought of as the Bayesian likelihood $P(X|Y)$ and the feedback, modelled by the prior neurons, as the Bayesian prior $P(Y|Z)$.

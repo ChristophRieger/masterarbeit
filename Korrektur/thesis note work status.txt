@@ -1,6 +1,4 @@
 !!! in nächster Mail fragen, wen ich als 2. und 3. Betreuer wählen soll.
 
 mathe teil auswechseln laut notes.
-
-über PDF scrollen und schauen, ob vor allen einheiten ein space ist und 
-ob sie wohl nicht rekursiv sind  => bin bis %TODO AAAAAAAAA gekommen. Muss subparagraphs mit formeln drin lösen, so dass alles bold ist
+danach schauen ob es noch mit Diskussion zusammenpasst.
