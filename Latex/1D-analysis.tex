@@ -9,7 +9,8 @@ First, the network was scaled down to be one-dimensional with 18 input neurons, 
 \subsection{Methods}
 
 \paragraph{Input data}
-The input image consisted of nine pixels in a horizontal line. Within those nine pixels, going from position 0 to 8, four output classes could be represented. Each output class had three pixels next to each other. This resulted in each output class overlapping its neighbour classes, by one pixel. Thus, the centers of the output classes were at position 1, 3, 5 and 7.
+The input image consisted of nine pixels in a horizontal line. The pixels of the image were either black or white. White pixels were encoded as ones and black pixels as zero. This resulted in the encoded input image vector $\underline{x}$. Within the nine pixels, going from position 0 to 8, four output classes could be represented. Each output class had three pixels next to each other. This resulted in each output class overlapping its neighbour classes, by one pixel. Thus, the centers of the output classes were at position 1, 3, 5 and 7.
+
  
 \paragraph{Network architecture}
 Only the amount of neurons was changed, compared to the architecture of the previous experiment. As there have to be two input neurons for each pixel, one neuron being active if the pixel is white and one if the pixel is black, the network had 18 input neurons. Furthermore, four prior neurons were implemented, of which only one is being active for one of the output classes at a time. Lastly, the network had four output neurons.
@@ -17,18 +18,18 @@ Only the amount of neurons was changed, compared to the architecture of the prev
 \paragraph{Mathematical Analysis}
 The posterior probability of the network was calculated by using Equation \ref{eqn:pYvorausgesetztXUndZ}.
 $P(X=\underline{x}|Y=k)$ and $P(Y=k|Z)$ were derived, corresponding to the paradigm of the experiment.
- The calculation of $P(X=\underline{x}|Y=k)$ was split into two parts. First, the contribution of the input neurons that were active for white pixels was calculated by determining the matrix $P^{X|Y}$. This matrix is of size 4 x 9 and contains the conditional probabilities of each input neuron $x_i$ being active, given that an output neuron $y_k$ is active. These probabilities were calculated, by determining which input neurons are active depending on the output class and which input neurons are inactive, as dictated by the network architecture. Furthermore, the noise that was applied to the input neurons had to be taken into account. For input neurons, belonging to the output class, the conditional probability was determined as 1 and lowered by the noise level. For the input neurons outside of the 3-wide pixel block, which belongs to the output class, it was determined as 0 and raised by the noise level. According to this $P^{X|Y}$ is given by
+ The calculation of the Bayesian likelihood $P(X=\underline{x}|Y=k)$ was split into two parts. First, the contribution of the input neurons that were active for white pixels was calculated by determining the matrix $P^{X|Y}$. This matrix is of size 4 x 9 and contains the conditional probabilities of each input neuron $x_i$ being active, given that an output neuron $y_k$ is active. These probabilities were calculated, by determining which input neurons are active depending on the output class and which input neurons are inactive, as dictated by the network architecture. Furthermore, the noise that was applied to the input neurons had to be taken into account. For input neurons, belonging to the output class, the conditional probability was determined as 1 and lowered by the noise level. For the input neurons outside of the 3-wide pixel block, which belongs to the output class, it was determined as 0 and raised by the noise level. According to this $P^{X|Y}$ is given by
 \begin{equation}
 \label{eqn:PXvorausgesetztYIf}
 P_{k,i}^{X|Y} = \begin{dcases*} 1 - $noise level$ & if $x_i$ is in the active area of $y_k$, \\
 0 + $noise level$ & \text{if $x_i$ is not in the active area of $ y_k $ } \end{dcases*}.\end{equation}
-After calculating all entries of $P^{X|Y}$, according to the first term of Equation \ref{eqn:P1}, its rows were element-wise taken to the power the input image vector
+After calculating all entries of $P^{X|Y}$, according to the first term of Equation \ref{eqn:P1}, its rows were element-wise taken to the power the encoded input image vector
 \begin{equation}
 \label{eqn:p1XvorausgesetztYMalX}
 P_1(X = \underline{x}|Y = k) = (P^{X|Y}_{k,*})^{\underline{x}} 
 \end{equation}
-resulting in a conditional probability that the input vector of the active pixels belongs to output class $k$. The input vector was given with entries of 1 for white pixels and with entries of 0 for black pixels.
-Next, to include the contribution of the input neurons that are spiking when a pixel is black, the conditional probability of the input neurons that are active for the entries, where $x_i = 0$, had to be calculated. To achieve this complementary conditional probability at first $P^{X|Y}$ was subtracted from one. To include the correct conditional probabilities for the complementary case the input image vector x was then also subtracted from one. $1 - P^{X|Y}$ was element-wise taken to the power of $1 - \underline{x}$ to yield
+resulting in a conditional probability that the input vector of the white pixels belongs to output class $k$.
+Next, to include the contribution of the input neurons that are spiking when a pixel is black, the conditional probability of the input neurons that are active for the entries, where $x_i = 0$, had to be calculated. To obtain this complementary conditional probability at first $P^{X|Y}$ was subtracted from one. To consider black instead of white pixels for the complementary case $\underline{x}$ was then also subtracted from one. $1 - P^{X|Y}$ was element-wise taken to the power of $1 - \underline{x}$ to yield
 \begin{equation}
 \label{eqn:p2minusXvorausgesetztYMalX}
 P_2(X = \underline{x}|Y = k) = (1 - P^{X|Y}_{k,*})^{(1 - \underline{x})}.
@@ -38,18 +39,18 @@ According to Equation \ref{eqn:P1} the results of both calculations were then mu
 \label{eqn:pXvorausgesetztY}
 P(X = \underline{x}|Y = k) = P_1(X = \underline{x}|Y = k) \odot P_2(X = \underline{x}|Y = k).
 \end{equation}
-$P(Y=k|Z=j)$ was determined by first calculating the matrix $P^{Y|Z}$. It has a dimension of 4 x 4 and contains the conditional probabilities for the output neuron $y_k$, given the prior neuron $z_j$ being active. For each output class, there exists one corresponding prior neuron. As there can never be more than one active prior neuron at a time, $P^{Y|Z}$ is given by
+The Bayesian prior $P(Y=k|Z)$ was determined by first calculating the matrix $P^{Y|Z}$. It has a dimension of 4 x 4 and contains the conditional probabilities for the output neuron $y_k$ being active, given the prior activity. For each output class, there exists one corresponding prior neuron. As there can never be more than one active prior neuron at a time, $P^{Y|Z}$ is given by
 \begin{equation}
 \label{eqn:PYvorausgesetztZIf}
 P_{k,j}^{Y|Z} = \begin{dcases*} 1 - $noise level$ & if $i = j$, \\
 0 +  \frac{1}{3}  $noise level$ & \text{if $i \neq j$. } \end{dcases*}\end{equation} 
-According to Equation \ref{eqn:P2} $P(Y=k|Z=j)$ was then obtained by
+According to Equation \ref{eqn:P2} the prior was then obtained by
 \begin{equation}
 \label{eqn:pYvorausgesetztZ}
-P(Y=k|Z=j) = (P^{Y|Z})^z,
+P(Y=k|Z=z) = \prod_{j=1}^J (P^{Y|Z}_{k,j})^{z_j},
 \end{equation}
 where z is given by a 4 x 1 one-hot encoded vector of the prior.
-Finally, inserting $P(X = \underline{x}|Y = k)$ and $P(Y=k|Z)$ into Equation \ref{eqn:pYvorausgesetztXUndZ} yields the analytical posterior $P_{analysis}(Y = k|X = \underline{x}, Z)$.
+Finally, inserting $P(X = \underline{x}|Y = k)$ and $P(Y=k|Z=z)$ into Equation \ref{eqn:pYvorausgesetztXUndZ} yields the analytical posterior $P_{analysis}(Y = k|X = \underline{x}, Z = z)$.
 
 \paragraph{Simulation}
 The input weights for the simulation were calculated as two separate sets. First, weights $w^{I1}$ for the input neurons that are active for active input pixels were determined by 
