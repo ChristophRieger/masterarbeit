@@ -18,13 +18,10 @@ P(H|E) = \frac{P(E|H)P(H)}{P(E)},
 where H represents a hypothesis and E some related evidence. P(H|E) is the posterior probability, which signifies the probability of the hypothesis after the evidence was observed. P(E|H) is called likelihood and it is the probability of observing the evidence, given the hypothesis. It is a measure of the compatibility of the observed evidence with the given hypothesis. P(H) is the prior probability, which is the probability of the hypothesis before any evidence is considered or obtained. P(E) is called marginal likelihood that represents the probability of the evidence being observed. However, it is independent of the chosen hypothesis. Thus, it is not factored in when comparing different hypotheses.
 Bayesian inference can be applied to the "face in shadow" example of Section \ref{section:feedbackInVisualCortex}. There a neuron in V1 sees a small part of the visual field and signals if it sees an edge or not. At first it has the evidence of the observed pixels available and from it can calculate the likelihood that an edge is present. It has no prior knowledge of how probable an edge being present is, meaning that the prior probabilities for there being an edge or no edge are equal. With that likelihood and the prior probabilities it can conclude the posterior probability for the hypothesis "there is an edge" and decides that there is no edge.
 Later, the inferior temporal cortex determines that there is a face in the picture and feeds this information back to V1. This influences the prior probabilities and changes the posterior probability. Through that, the V1 neuron starts to see the hypothesis  "there is an edge" as more likely, in order to complete the contour of the face. 
-We now define X as a binary random vector of the visual input, Y as a multinomial variable of the output of V1 and Z as a multinomial variable of the feedback of the inferior temporal cortex. X is assumed independent of Z, when Y is given. This three node chain can be modelled as a generative probabilistic model and its visualization is given in Figure \ref{fig:generativeModel}. The figure shows the conditional dependence of Y on Z and of X on Y. In Section 3.2.2 of \citet{bayesInferenceBook} it is shown how the chain rule can be applied to Bayesian Inference, when there are three nodes. When applying the chain rule and plugging the likelihood $P(X|Y)$, the prior $P(Y|Z)$ and the prior distribution $P(Z)$ into Equation \ref{eqn:bayesianInference}, we get the posterior $P(Y|X,Z)$ as
+We now define X as a binary random vector of the visual input, Y as a multinomial variable of the output of V1 and Z as a multinomial variable of the feedback of the inferior temporal cortex. X is assumed independent of Z, when Y is given. This three node chain can be modelled as a generative probabilistic model and its visualization is given in Figure \ref{fig:generativeModel}. The figure shows the conditional dependence of Y on Z and of X on Y. In our case the prior is not constant as in Equation \ref{eqn:bayesianInference}, but it depends on Z. Thus, the prior is given by $P(Y|Z)$. The likelihood is given by $P(X|Y)$. By plugging them into Equation \ref{eqn:bayesianInference}, we get the posterior $P(Y=k|X,Z)$ as
 \begin{equation}
 \label{eqn:pYvorausgesetztXUndZ}
-\begin{split}
-P(Y = k|X = x, Z = j) &= \frac{P(X=x|Y=k)P(Y = k|Z = j)P(Z = j)}{\Sigma_{k'}P(X=x|Y=k')P(Y=k'|Z=j)P(Z=j)}\\
-&= \frac{P(X=x|Y=k)P(Y = k|Z = j)}{\Sigma_{k'}P(X=x|Y=k')P(Y=k'|Z=j)}.
-\end{split}
+P(Y = k|X, Z) = \frac{P(X|Y=k)P(Y = k|Z)}{\Sigma_{k'}P(X|Y=k')P(Y=k'|Z)}.
 \end{equation}
 
 \begin{figure}
@@ -154,108 +151,58 @@ The prior weights $w^{P}_{kj}$ are also updated whenever an output neuron fires,
 \section{Mathematical link between the spiking Winner-Take-All network model and Bayesian inference}
 \label{linkNetworkBayes}
 
-\citet{nessler} hypothesized that the ensemble of weights of a neuron can be understood as a generative model. They further claimed, that every synaptic weight, due to STDP-induced changes,  converges stochastically to the log of the conditional probability that the presynaptic neuron has fired just before the postsynaptic neuron, given that the postsynaptic neuron fires. This connection is given by
+\citet{nessler} hypothesized that the ensemble of weights of a neuron can be understood as a generative model. They claimed that in a Bayesian inference context, every input spike provides evidence for an observed variable and every output spike represents one stochastic sample from the posterior distribution over hidden causes, which are encoded in the circuit. They further claimed, that every synaptic weight, due to STDP-induced changes,  converges stochastically to the log of the conditional probability that the presynaptic neuron has fired just before the postsynaptic neuron, given that the postsynaptic neuron fires. This connection is given by
 \begin{equation}
 \label{eqn:weightProbLink}
  w^{I}_{ki} = log(p(x_i = 1 | Y = k))
 \end{equation}
 and will be analysed in Section \ref{section:1D}.
-Furthermore, they claimed that in a Bayesian inference context, every input spike provides evidence for an observed variable and every output spike represents one stochastic sample from the posterior distribution over hidden causes, which are encoded in the circuit. 
 
-%TODO WIP: abschreiben von Legi
+The first model assumption is, that the Bayesian likelihood can be analytically calculated by
+\begin{equation}
+\label{eqn:P1}
+P(X=\underline{x}|Y=k) = \prod_i P(x_i=1|Y=k)^{x_i} \cdot P(x_i=0|Y=k)^{(1-x_i)},
+\end{equation}
+where $\underline{x}$ is the encoded binary input vector. It has zeros where the input image has black pixels, and ones where there are white pixels. The conditional probability $P(x_i=1|Y=k)$ of an input pixel being white, given the output, is taken to the power of the encoded pixel value $x_i$. This introduces a non-linear dependency on $x_i$, which fits biological data. $P(x_i=0|Y=k)$ also has to be considered, as for each input pixel there are two input neurons, the first active for white pixels and the second active for black pixels. It represents the conditional probability that a pixel is black, given the output. It is taken to the power of one minus the encoded pixel value, as the term should now be greatest, when $x_i = 0$.
 
-1. Modellannahme
-%TODO "i" bei prod und summer richtigstellen (bis N oder so...)
-%TODO u^X_k usw... zuerst X
-%TODO Legi mag X = \underline{x}  .... symbolisiert vector... vielleicht überall anpassen, oder ignorieren?
-%TODO Legi sagt mein Bayes 3.3 anders argumentieren... machen...
-%auch Z=j durch Z ersetzen auf der linken seite von equations...
+$P(x_i=0|Y=k)$ can also be expressed as $1 - P(x_i=1|Y=k)$, as both together sum up to one. By utilizing this dependency and  expanding the equation by the natural logarithm we get
+\begin{equation}
+log P(X=\underline{x}|Y=k) = \sum_i (x_i log P(x_i=1|Y=k) + (1-x_i) log (1 - P(x_i=1|Y=k))).
+\end{equation}
+Utilizing Equation \ref{eqn:weightProbLink} yields
+\begin{equation}
+log(P(X=\underline{x}|Y=k)) = \sum_i (x_i w_{ki} + (1-x_i)\overline{w_{ki}}) = u^X_k
+\end{equation}
+\begin{equation}
+\Rightarrow P(X=\underline{x}|Y=k) = e^{u^X_k},
+\end{equation}
+where $u^X_k$ can be thought of as a partial membrane potential, caused by the activity of the input neurons.
+
+According to the second model assumption, the Bayesian prior is given by
+\begin{equation}
+\label{eqn:P2}
+P(Y=k|Z) = \prod_j P(Y=k|Z=j)^{z_j},
+\end{equation}
+where $P(Y=k|Z=j)$ is the conditional probability of the output, given the prior being of class j. $z_j$ is the unweighed membrane potential response of the prior neuron j. As for the likelihood, rearranging the equation yields
+\begin{equation}
+log P(Y=k|Z) = \sum_j (z_j log P(Y=k|Z=j)).
+\end{equation}
+Utilizing Equation \ref{eqn:weightProbLink} yields
+\begin{equation}
+log P(Y=k|Z) = \sum_j z_j w^P_{kj} = u^Z_k
+\end{equation}
+\begin{equation}
+\Rightarrow P(Y=k|Z) = e^{u^Z_k},
+\end{equation}
+where $u^Z_k$ can be thought of as a partial membrane potential, caused by the activity of the prior neurons.
+
+Inserting $P(X=\underline{x}|Y=k)$ and $P(Y=k|Z)$ into Equation \ref{eqn:pYvorausgesetztXUndZ} yields
 \begin{equation}
 \begin{split}
-P(X=x|Y=k) &= \prod_i P(x_i=1|Y=k)^{x_i} \cdot P(x_i=0|Y=k)^{1-x_i}\\
-log P(X=x|Y=k) &= \sum_i (x_i log P(x_i=1|Y=k) + (1-x_i) log (1 - P(x_i=1|Y=k)))
+P(Y=k|X=\underline{x},Z) &= \frac{e^{u^X_k} e^{u^Z_k}}{\sum^K_{k'} e^{u^X_{k'}} e^{u^Z_{k'}}}\\
+&= \frac{e^{u^X_k + u^Z_k}}{\sum^K_{k'} e^{u^X_{k'} + u^Z_{k'}}}\\
+&= \frac{e^{u_k}}{\sum^K_{k'} e^{u_{k'}}}\\
+&= q_k(t),
 \end{split}
 \end{equation}
-With Equation \ref{eqn:weightProbLink}
-\begin{equation}
-P(X=x|Y=k) = \sum_i (x_i w_{ki} + (1-x_i)\overline{w_{ki}}) = u^X_k
-\end{equation}
-\begin{equation}
-\Rightarrow P(X=x|Y=k) = e^{u^X_k}
-\end{equation}
-
-2. Modellannahme
-
-\begin{equation}
-\begin{split}
-P(Y=k|Z) &= \prod_j P(Y=k|Z=j)^{z_j}\\
-log P(Y=k|Z) &= \sum_j (z_j log P(Y=k|Z=j))
-\end{split}
-\end{equation}
-With Equation \ref{eqn:weightProbLink}
-\begin{equation}
-P(Y=k|Z) = \sum_j (z_j w^P_{kj}) = u^Z_k
-\end{equation}
-\begin{equation}
-\Rightarrow P(Y=k|Z) = e^{u^Z_k}
-\end{equation}
-
-Die 2 einsetzen in Equation \ref{eqn:pYvorausgesetztXUndZ}
-
-\begin{equation}
-\begin{split}
-P(Y=k|X=x,Z) &= \frac{e^{u^X_k} e^{u^Z_k}}{\sum_{k'} e^{u^X_{k'}} e^{u^Z_{k'}}}\\
-&= \frac{e^{u^X_k + u^Z_k}}{\sum_{k'} e^{u^X_{k'} + u^Z_{k'}}}
-\end{split}
-\end{equation}
-and this shows why for uk the 2 terms were added.
-
-%TODO Das danach wegschmeißen... werd neues
-%darüber einfügen
-To explain the connection between the spiking Winner-Take-All network model and Bayesian inference it will be demonstrated, that the posterior probability of Bayesian inference given in Equation \ref{eqn:pYvorausgesetztXUndZ} is equal to the relative firing probability $q_k(t)$, given in Equation \ref{eqn:qk}.
-
-As explained in Section \ref{section:bayesianInference}, the visual input, modelled by the input neurons, can be thought of as the Bayesian likelihood $P(X|Y)$ and the feedback, modelled by the prior neurons, as the Bayesian prior $P(Y|Z)$.
-
-It is argued that $P(X=x|Y=k)$ equals $q_k^X(t)$. $q_k^X(t)$ is the conditional probability of an output neuron $Y_k$ for the given input vector $X=x$. It can be calculated similarly to $q_k(t)$, but without the contribution of the prior neurons. Thus, the partial membrane potential, caused by the input neurons, is needed and given by 
-\begin{equation}
-u_k^X(t) = \sum_{i=1}^N w^{I}_{ki} \cdot x_i(t).
-\end{equation}
-Inserting $u_k^X(t)$, instead of $u_k(t)$ into Equation \ref{eqn:qk} yields
-\begin{equation}
-q_k^X(t) = \frac{e^{u_k^X(t)}}{\sum_{k'=1}^K e^{u_{k'}^X(t)}} = P(X=x|Y=k).
-\end{equation}
-
-Similarly, it is argued that $P(Y=k|Z=j)$ equals $q_k^Z(t)$. $q_k^Z(t)$ is the conditional probability of an output neuron $y_k$, given the activity of a prior neuron $z_j$.  
-Analogously to $u_k^X(t)$, the partial membrane potential, caused by the prior neurons, is given by
-\begin{equation}
-u_k^Z(t) = \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t).
-\end{equation}
-Inserting $u_k^Z(t)$, instead of $u_k(t)$, into Equation\ref{eqn:qk} yields
-\begin{equation}
-q_k^Z(t) = \frac{e^{u_k^Z(t)}}{\sum_{k'=1}^K e^{u_{k'}^Z(t)}} = P(Y=k|Z=j).
-\end{equation}
-
-When inserting the likelihood and the prior into Equation \ref{eqn:pYvorausgesetztXUndZ} we get
-\begin{equation}
-\label{eqn:posteriorFull}
-\begin{split}
-P(Y=k|X=x,Z=j) &= \frac{e^{u_k^X(t)} \cdot e^{u_k^Z(t)} }{\sum_{k'=1}^K  e^{u_{k'}^X(t)} \cdot e^{u_{k'}^Z(t)}} \\
-&= \frac{e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t)} \cdot e^{\sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)} }{\sum_{k'=1}^K  e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t)} \cdot e^{\sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}} \\
-&= \frac{e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t) }}{\sum_{k'=1}^K  e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}}
-\end{split}
-\end{equation}
-
-According to Equation \ref{eqn:qk} and \ref{eqn:uk}
-\begin{equation}
-\label{eqn:qpExpanded}
-\begin{split}
-q_k(t) &= \frac{e^{u_k(t)}}{\sum_{k'=1}^K e^{u_{k'}(t)}} \\
-&= \frac{e^{\sum_{i=1}^N w^{I}_{ki} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)}}{\sum_{k'=1}^K e^{\sum_{i=1}^N w^{I}_{k'i} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{k'j} \cdot z_j(t)}}.
-\end{split}
-\end{equation}
-
-From Equations \ref{eqn:posteriorFull} and \ref{eqn:qpExpanded} we can conclude that
-\begin{equation}
-P(Y=k|X=x,Z=j) = q_k(t).
-\end{equation}
-This showed, that the Bayesian posterior is equal to the conditional probability $q_k(t)$. Furthermore, it showed that the extension of $u_k(t)$, in Equation \ref{eqn:uk}, with the prior term was correct.
+which shows the connection between the Bayesian posterior and the conditional probability $q_k(t)$ of Equation \ref{eqn:qk}.
