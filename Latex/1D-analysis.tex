@@ -4,7 +4,7 @@
 \subsection{Introduction}
 
 The purpose of this experiment was to analyse a smaller network and to provide a definitive way to verify the performance of the simulation. Furthermore, the weights were not learned, as in the previous experiment, but rather determined analytically. This was done to experimentally prove the relation, given by \citet{nessler}, that the weights stochastically converge toward the conditional probability, that a presynaptic neuron fired shortly before the postsynaptic neuron.
-First, the network was scaled down to be one-dimensional with 18 input neurons, four prior neurons and four output neurons, making it easier to analyse. The weights were determined by utilizing the logarithmic relation between them and the corresponding conditional probabilities, as given by Equation \ref{eqn:weightProbLink}. The conditional probabilities of the input and output neurons of the network  were calculated and then used to determine the posterior probability of the network. After the simulation of the network, the distribution of the output spikes was used, to calculate the posterior probability. The posterior probabilities, of both the mathematical analysis and the simulation, were compared. It was tuned to approximate the analytical solution as closely as possible, by varying three network hyperparameters.
+First, the network was scaled down to be one-dimensional with 18 input neurons, four prior neurons and four output neurons, making it easier to analyse. The weights were determined by utilizing the logarithmic relation between them and the corresponding conditional probabilities, as given by Equation \ref{eqn:weightProbLink}. The conditional probabilities of the input and output neurons of the network  were calculated and then used to determine the posterior probability of the network. After the simulation of the network, the distribution of the output spikes was used to calculate the posterior probability. The posterior probabilities, of both the mathematical analysis and the simulation, were compared. It was tuned to approximate the analytical solution as closely as possible, by varying three network hyperparameters.
 
 \subsection{Methods}
 
@@ -23,16 +23,16 @@ $P(X=\underline{x}|Y=k)$ and $P(Y=k|Z)$ were derived, corresponding to the parad
 \label{eqn:PXvorausgesetztYIf}
 P_{k,i}^{X|Y} = \begin{dcases*} 1 - $noise level$ & if $x_i$ is in the active area of $y_k$, \\
 0 + $noise level$ & \text{if $x_i$ is not in the active area of $ y_k $ } \end{dcases*}.\end{equation}
-After calculating all entries of $P^{X|Y}$, according to the first term of Equation \ref{eqn:P1}, its rows were element-wise taken to the power the encoded input image vector
+After calculating all entries of $P^{X|Y}$, according to the first term of Equation \ref{eqn:P1}, the conditional probability that the encoded input vector of the white pixels belongs to output class $k$ is given by
 \begin{equation}
 \label{eqn:p1XvorausgesetztYMalX}
-P_1(X = \underline{x}|Y = k) = (P^{X|Y}_{k,*})^{\underline{x}} 
+P_1(X = \underline{x}|Y = k) = \prod_{i = 1}^N(P^{X|Y}_{k,i})^{x_i},
 \end{equation}
-resulting in a conditional probability that the input vector of the white pixels belongs to output class $k$.
-Next, to include the contribution of the input neurons that are spiking when a pixel is black, the conditional probability of the input neurons that are active for the entries, where $x_i = 0$, had to be calculated. To obtain this complementary conditional probability at first $P^{X|Y}$ was subtracted from one. To consider black instead of white pixels for the complementary case $\underline{x}$ was then also subtracted from one. $1 - P^{X|Y}$ was element-wise taken to the power of $1 - \underline{x}$ to yield
+where $x_i$ an encoded pixel value.
+Next, to include the contribution of the input neurons that are spiking when a pixel is black, the conditional probability of the input neurons that are active for $x_i = 0$, had to be calculated. To obtain this complementary conditional probability $P_2(X = \underline{x}|Y = k)$ at first $P^{X|Y}$ was subtracted from one. To consider black instead of white pixels for the complementary case $\underline{x}$ was then also subtracted from one. This yielded
 \begin{equation}
 \label{eqn:p2minusXvorausgesetztYMalX}
-P_2(X = \underline{x}|Y = k) = (1 - P^{X|Y}_{k,*})^{(1 - \underline{x})}.
+P_2(X = \underline{x}|Y = k) = \prod_{i = 1}^N(1 - P^{X|Y}_{k,i})^{(1 - x_i)}.
 \end{equation}
 According to Equation \ref{eqn:P1} the results of both calculations were then multiplied element-wise to yield
 \begin{equation}
@@ -49,7 +49,7 @@ According to Equation \ref{eqn:P2} the prior was then obtained by
 \label{eqn:pYvorausgesetztZ}
 P(Y=k|Z=z) = \prod_{j=1}^J (P^{Y|Z}_{k,j})^{z_j},
 \end{equation}
-where z is given by a 4 x 1 one-hot encoded vector of the prior.
+where z is given by a 4 x 1 one-hot encoded vector of the prior and $z_j$ is one of its values.
 Finally, inserting $P(X = \underline{x}|Y = k)$ and $P(Y=k|Z=z)$ into Equation \ref{eqn:pYvorausgesetztXUndZ} yields the analytical posterior $P_{analysis}(Y = k|X = \underline{x}, Z = z)$.
 
 \paragraph{Simulation}
