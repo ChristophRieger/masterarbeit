@@ -170,12 +170,12 @@ log P(X=\underline{x}|Y=k) = \sum_i (x_i log P(x_i=1|Y=k) + (1-x_i) log (1 - P(x
 \end{equation}
 Utilizing Equation \ref{eqn:weightProbLink} and \ref{eqn:uk}  yields
 \begin{equation}
-log(P(X=\underline{x}|Y=k)) = \sum_i (x_i w^I_{ki} + (1-x_i)\overline{w^I_{ki}}) = u^X_k
+log(P(X=\underline{x}|Y=k)) = \sum_i (x_i w^I_{ki} + (1-x_i)\overline{w}^I_{ki}) = u^X_k
 \end{equation}
 \begin{equation}
 \Rightarrow P(X=\underline{x}|Y=k) = e^{u^X_k},
 \end{equation}
-where $u^X_k$ can be thought of as a partial membrane potential, caused by the activity of the input neurons.
+where $w^I$ are the weights for neurons, that are active for white pixels and $\overline{w}^I$ are the weights of input neurons, that are active for black pixels. $\overline{w}^I_{ki}$ is given by $log(1 - P(x_i = 1 | Y = k))$. $u^X_k$ can be thought of as a partial membrane potential, caused by the activity of the input neurons.
 
 According to the second model assumption, the Bayesian prior is given by
 \begin{equation}

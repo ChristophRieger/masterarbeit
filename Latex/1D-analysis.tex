@@ -53,15 +53,15 @@ where z is given by a 4 x 1 one-hot encoded vector of the prior and $z_j$ is one
 Finally, inserting $P(X = \underline{x}|Y = k)$ and $P(Y=k|Z=z)$ into Equation \ref{eqn:pYvorausgesetztXUndZ} yields the analytical posterior $P_{analysis}(Y = k|X = \underline{x}, Z = z)$.
 
 \paragraph{Simulation}
-The input weights for the simulation were calculated as two separate sets. First, weights $w^{I1}$ for the input neurons that are active for active input pixels were determined by 
+The input weights for the simulation were calculated as two separate sets. First, weights $w^{I}$ for the input neurons that are active for active input pixels were determined by 
 \begin{equation}
 \label{eqn:1DWeights}
-w^{I1} = \ln(P^{X|Y}).
+w^{I} = \ln(P^{X|Y}).
 \end{equation}
-Then, complementary input weights $w^{I2}$ were calculated for  input neurons representing non active input pixels with
+Then, complementary input weights $\overline{w}^{I}$ were calculated for  input neurons representing non active input pixels with
 \begin{equation}
 \label{eqn:1DWeightsComplementary}
-w^{I2} = \ln(1 - P^{X|Y}).
+\overline{w}^{I} = \ln(1 - P^{X|Y}).
 \end{equation} 
 The prior weights $w^P$ were derived by 
 \begin{equation}
