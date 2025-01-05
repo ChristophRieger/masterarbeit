@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.20)  26 DEC 2024 11:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.20)  5 JAN 2025 12:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1095,62 +1095,69 @@ e 59.
 [3
 
 ]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 63--63
+<../Latex/figures/kanizsaSquare.PNG, id=72, 116.23425pt x 117.43875pt>
+File: ../Latex/figures/kanizsaSquare.PNG Graphic file (type png)
+<use ../Latex/figures/kanizsaSquare.PNG>
+Package pdftex.def Info: ../Latex/figures/kanizsaSquare.PNG  used on input line
+ 80.
+(pdftex.def)             Requested size: 78.52834pt x 79.34656pt.
+
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 80--80
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 63.
+e 80.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [4
 
-]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 67--67
+ <../Latex/figures/kanizsaSquare.PNG>]
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 86--86
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 67.
+e 86.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [5
 
 ]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 78--78
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 97--97
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 78.
+e 97.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [6
 
 ]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 83--83
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 102--102
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 83.
+e 102.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [7
 
 ]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 95--95
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 114--114
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 95.
+e 114.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [8
 
@@ -1169,26 +1176,23 @@ e 95.
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package rerunfilecheck Info: File `presentation.out' has not changed.
 (rerunfilecheck)             Checksum: E48977F3ED5DD2BB87D67EBD9449A2DE;294.
  ) 
 Here is how much of TeX's memory you used:
- 28013 strings out of 476093
- 552054 string characters out of 5795582
+ 28022 strings out of 476093
+ 552327 string characters out of 5795582
  1863787 words of memory out of 5000000
- 47804 multiletter control sequences out of 15000+600000
+ 47810 multiletter control sequences out of 15000+600000
  538368 words of font info for 53 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  128i,20n,122p,1058b,1428s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {c:/texlive/2022/texmf-dist/fonts/enc/dvips/base/8r.enc}<c:/texlive/2022/texm
 f-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on presentation.pdf (8 pages, 325619 bytes).
+Output written on presentation.pdf (8 pages, 330641 bytes).
 PDF statistics:
- 126 PDF objects out of 1000 (max. 8388607)
- 91 compressed objects within 1 object stream
+ 129 PDF objects out of 1000 (max. 8388607)
+ 92 compressed objects within 1 object stream
  21 named destinations out of 1000 (max. 500000)
- 143 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 148 words of extra memory for PDF output out of 10000 (max. 10000000)
 
