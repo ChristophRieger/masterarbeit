@@ -87,19 +87,22 @@
       \begin{itemize}
         \item Probabilistic brain
         \item Synaptic plasticity
-        \item Spiking neural networks
-        \item Winner-Take-All networks
       \end{itemize}
 \end{frame}
 
 \begin{frame}{Theoretical background}
       \begin{itemize}
-        \item Bayesian inference and its relevance to neural networks
-        \item Explain model... (input image, input neurons, output neurons, prior neurons, spikes, doubleexpo kernel, membrane potential, firing rates (poisson, e hoch u - i(t)), adaptive inhibition... !!!AM BESTEN MIT DER ZEICHNUNG ERKLÄREN!
-         \item Nessler said that: Every synaptic weight converges to the log of the conditional probability that the presynaptic neuron has fired just before the postsynaptic neuron, given that the postsynaptic neuron fires.... Proven later in Experiment
-        \item q(k) = P(Y|X,Z) Mathematically proven  
+        \item Bayesian inference gives the probability of an hypothesis given related evidence
+        \item $P(H|E) = \frac{P(E|H) P(H)}{P(E)}$
+        \item Network model of Nessler et al. (2013) used and expanded
+        \item Nessler et al. (2013) claimed that synaptic weights converge towards the log of probability
+        \end{itemize}
+\end{frame}
 
-      \end{itemize}
+\begin{frame}{The network}
+        \begin{figure}
+        \includegraphics[width=0.80\linewidth]{../Latex/figures/networkPlan.png}
+      \end{figure} 
 \end{frame}
 
 
@@ -207,14 +210,19 @@
 \section{Results}
 
 \begin{frame}{Analysis of model}
+	\vspace{-0.5cm}
     \begin{itemize}
     \item Analysed impact of hyperparameters
 	\begin{itemize}
-	  \item fiNPUT
-	  \item fPrior
-	  \item tau decay
+	  \item Firing rate of input neurons
+	  \item Firing rate of prior neurons
+	  \item Decay time constant
     \end{itemize}	    
     \item Connection between model and Bayesian inference was shown
+    \begin{itemize}
+      \item Network outputs spike according to Bayesian posterior
+      \item Trained weights converge towards the log of their respective probabilities
+    \end{itemize}
     \item Importance of neural feedback was shown for 
     \begin{itemize}
 	  \item Attention / Ambiguity resolution
