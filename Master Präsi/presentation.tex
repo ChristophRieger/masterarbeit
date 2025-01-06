@@ -54,23 +54,21 @@
 
 \section{Introduction}
 
-\begin{frame}{Introduction}
+\begin{frame}{Goals}
   \begin{itemize}
-    \item Spiking vs common NN (energy efficient, more biologically plausible)
-    \item Importance of hierarchical architectures
-    \item Goals of this thesis
-    \begin{itemize}
-      \item Simulate feedback in the visual cortex
-      \item Show connection between Bayesian inference and network model
-    \end{itemize}
+    \item Further the understanding of the network model
+    \item Simulate feedback found in the visual cortex
+    \item Show connection between Bayesian inference and network model
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Biological background}
   \begin{columns}[onlytextwidth]
 	\begin{column}{0.5\textwidth}
+	\vspace{-1.0cm}
       \begin{itemize}
-        \item Winner-Take-All networks
+        \item Spiking neural networks 
+        \item Winner-Take-All networks 
         \item Modular structure of the brain
         \item Hierarchical structure of the brain
         \item Feedback mechanisms in cortical hierarchies
@@ -124,8 +122,9 @@
 \end{frame}
 
 \begin{frame}{Ambiguous visual stimuli 2}
+\vspace{-1.0cm}
         \begin{figure}
-        \includegraphics[width=0.4\linewidth]{../Latex/figures/horvertAdaptiveInh/trainingPlotCropped.png}
+        \includegraphics[width=0.40\linewidth]{../Latex/figures/horvertAdaptiveInh/trainingPlotCropped.png}
       \\   \footnotesize Training plot
       \end{figure} 
 \end{frame}
@@ -133,14 +132,16 @@
 \begin{frame}{Ambiguous visual stimuli 3}
    \begin{columns}[onlytextwidth]
 	\begin{column}{0.5\textwidth}
+	 \vspace{-1.5cm}
 	        \begin{figure}
-        \includegraphics[width=0.7\linewidth]{../Latex/figures/horvertAdaptiveInh/horizontal_validation.png}
+        \includegraphics[width=0.8\linewidth]{../Latex/figures/horvertAdaptiveInh/horizontal_validation.png}
       \\   \scriptsize Horizontal validation
       \end{figure} 
 	\end{column}
 	\begin{column}{0.5\textwidth}
+	\vspace{-1.5cm}
 		        \begin{figure}
-        \includegraphics[width=0.7\linewidth]{../Latex/figures/horvertAdaptiveInh/vertical_validation.png}
+        \includegraphics[width=0.8\linewidth]{../Latex/figures/horvertAdaptiveInh/vertical_validation.png}
       \\   \scriptsize Vertical validation
       \end{figure} 
 	\end{column}
@@ -154,7 +155,7 @@
       \end{figure} 
 \end{frame}
 
-\begin{frame}{Mathematical analysis and
+\begin{frame}{Analysis and
  simulation of the network 1}
 	\begin{itemize}
 	  \item usage of smaller 1-D images to make network easier to analyse 
@@ -165,56 +166,87 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Mathematical analysis and
+\begin{frame}{Analysis and
  simulation of the network 2}
-
+ \vspace{-1.0cm}
 		\begin{figure}
-        \includegraphics[width=0.3\linewidth]{../Latex/figures/1D/1D_98_440_4.png}
+        \includegraphics[width=0.35\linewidth]{../Latex/figures/1D/1D_98_440_4.png}
       \end{figure} 
+\end{frame}
+
+\begin{frame}{Transferability of hyperparameters 1}
+  \begin{itemize}
+    \item Input size and prior neuron firing rate  was doubled
+    \item Network was simulated with same hyperparameters of smaller network, to check if they are applicable to any network size
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Transferability of hyperparameters 2}
+ \vspace{-1.0cm}
+		\begin{figure}
+        \includegraphics[width=0.4\linewidth]{../Latex/figures/1D/doubleSize/doubleSize_98_880_4.png}
+      \end{figure} 
+\end{frame}
 
 
 
+\begin{frame}{Training with predetermined hyperparameters 1}
+  \begin{itemize}
+    \item Determined hyperparameters were used to train weights
+    \item Trained weights were compared to analytically determined weights
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Training with predetermined hyperparameters 2}
+ \vspace{-1.0cm}
+		\begin{figure}
+        \includegraphics[width=0.7\linewidth]{../Latex/figures/1D/training/weightComparison.png}
+      \end{figure} 
 \end{frame}
 
 \section{Results}
 
-
-
-\section*{}
-
-\begin{frame}{Conclusion}
+\begin{frame}{Analysis of model}
     \begin{itemize}
-    \item Biological effects could be reproduced
-    \item Connection between model and Bayesian Inference was shown
-    \item 
+    \item Analysed impact of hyperparameters
+	\begin{itemize}
+	  \item fiNPUT
+	  \item fPrior
+	  \item tau decay
+    \end{itemize}	    
+    \item Connection between model and Bayesian inference was shown
+    \item Importance of neural feedback was shown for 
+    \begin{itemize}
+	  \item Attention / Ambiguity resolution
+	  \item Illusory contour effect
+    \end{itemize}  
+    \item Optimal hyperparameters are dependent on network size
+    \item Training process could not achieve perfectly trained weights  
   \end{itemize}
 
 \end{frame}
+
+\section*{Conclusion}
+
+\begin{frame}{Conclusion}
+  \begin{itemize}
+	\item Thesis provided insight to hierarchical spiking Winner-Take-All network model
+	\item Showed that the network model can simulate effects like attention and changing beliefs through feedback
+	\item Provided ideas on how to further analyse and improve the model
+  \end{itemize}
+\end{frame}
+
 
 \begin{frame}{Sources}
     \begin{itemize}
     \item  Lee TS, Mumford D. (July 2003). “Hierarchical Bayesian inference in the
  visual cortex.” In: J Opt Soc Am A Opt Image Sci Vis. DOI: doi:10.1364/josaa.20.001434
-    \item 
-    \item 
+    \item Nessler, Bernhard et al. (Apr. 2013). “Bayesian Computation Emerges in
+ Generic Cortical Microcircuits through Spike-Timing-Dependent Plastic
+ity.” In: PLOS Computational Biology 9.4, pp. 1–30. doi: 10.1371/journal.
+ pcbi.1003037. url: https://doi.org/10.1371/journal.pcbi.1003037
   \end{itemize}
 
-\end{frame}
-
-\begin{frame}{a}
-   \begin{columns}[onlytextwidth]
-	\begin{column}{0.5\textwidth}
-	\end{column}
-	\begin{column}{0.5\textwidth}
-	\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}{a}
-	\begin{itemize}
-	  \item
-	  \item
-	\end{itemize}
 \end{frame}
 
 \end{document}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.20)  5 JAN 2025 17:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.20)  6 JAN 2025 17:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1083,14 +1083,14 @@ e 52.
 [2
 
 ]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 67--67
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 63--63
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 67.
+e 63.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [3
 
@@ -1099,69 +1099,69 @@ e 67.
 File: ../Latex/figures/kanizsaSquare.PNG Graphic file (type png)
 <use ../Latex/figures/kanizsaSquare.PNG>
 Package pdftex.def Info: ../Latex/figures/kanizsaSquare.PNG  used on input line
- 86.
+ 84.
 (pdftex.def)             Requested size: 78.52834pt x 79.34656pt.
 
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 86--86
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 84--84
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 86.
+e 84.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [4
 
  <../Latex/figures/kanizsaSquare.PNG>]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 95--95
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 93--93
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 95.
+e 93.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [5
 
 ]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 105--105
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 103--103
 [][][][]  
  []
 
 
-Overfull \vbox (40.07553pt too high) detected at line 105
+Overfull \vbox (40.07553pt too high) detected at line 103
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 105.
+e 103.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [6
 
 ]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 116--116
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 114--114
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 116.
+e 114.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [7
 
 ]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 124--124
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 122--122
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 124.
+e 122.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [8
 
@@ -1172,21 +1172,17 @@ File: ../Latex/figures/horvertAdaptiveInh/trainingPlotCropped.png Graphic file
 (type png)
 <use ../Latex/figures/horvertAdaptiveInh/trainingPlotCropped.png>
 Package pdftex.def Info: ../Latex/figures/horvertAdaptiveInh/trainingPlotCroppe
-d.png  used on input line 131.
+d.png  used on input line 130.
 (pdftex.def)             Requested size: 157.05667pt x 154.15268pt.
 
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 131--131
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 130--130
 [][][][]  
- []
-
-
-Overfull \vbox (28.50288pt too high) detected at line 131
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 131.
+e 130.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [9
 
@@ -1197,29 +1193,25 @@ File: ../Latex/figures/horvertAdaptiveInh/horizontal_validation.png Graphic fil
 e (type png)
 <use ../Latex/figures/horvertAdaptiveInh/horizontal_validation.png>
 Package pdftex.def Info: ../Latex/figures/horvertAdaptiveInh/horizontal_validat
-ion.png  used on input line 148.
-(pdftex.def)             Requested size: 137.42609pt x 114.38474pt.
+ion.png  used on input line 149.
+(pdftex.def)             Requested size: 157.05966pt x 130.72897pt.
 <../Latex/figures/horvertAdaptiveInh/vertical_validation.png, id=126, 646.8165p
 t x 542.56703pt>
 File: ../Latex/figures/horvertAdaptiveInh/vertical_validation.png Graphic file 
 (type png)
 <use ../Latex/figures/horvertAdaptiveInh/vertical_validation.png>
 Package pdftex.def Info: ../Latex/figures/horvertAdaptiveInh/vertical_validatio
-n.png  used on input line 148.
-(pdftex.def)             Requested size: 137.42609pt x 115.27533pt.
+n.png  used on input line 149.
+(pdftex.def)             Requested size: 157.05966pt x 131.74207pt.
 
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 148--148
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 149--149
 [][][][]  
- []
-
-
-Overfull \vbox (0.31314pt too high) detected at line 148
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 148.
+e 149.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [10
 
@@ -1231,29 +1223,29 @@ File: ../Latex/figures/horvertAdaptiveInh/YFrequency_prior.png Graphic file (ty
 pe png)
 <use ../Latex/figures/horvertAdaptiveInh/YFrequency_prior.png>
 Package pdftex.def Info: ../Latex/figures/horvertAdaptiveInh/YFrequency_prior.p
-ng  used on input line 155.
+ng  used on input line 156.
 (pdftex.def)             Requested size: 274.85217pt x 125.0898pt.
 
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 155--155
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 156--156
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 155.
+e 156.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [11
 
  <../Latex/figures/horvertAdaptiveInh/YFrequency_prior.png>]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 166--166
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 167--167
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 166.
+e 167.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [12
 
@@ -1262,71 +1254,133 @@ e 166.
 File: ../Latex/figures/1D/1D_98_440_4.png Graphic file (type png)
 <use ../Latex/figures/1D/1D_98_440_4.png>
 Package pdftex.def Info: ../Latex/figures/1D/1D_98_440_4.png  used on input lin
-e 177.
-(pdftex.def)             Requested size: 117.79549pt x 148.13283pt.
+e 175.
+(pdftex.def)             Requested size: 137.42908pt x 172.81796pt.
 
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 177--177
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 175--175
 [][][][]  
  []
 
 
-Overfull \vbox (7.0725pt too high) detected at line 177
+Overfull \vbox (3.30489pt too high) detected at line 175
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 177.
+e 175.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [13
 
  <../Latex/figures/1D/1D_98_440_4.png>]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 192--192
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 182--182
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 192.
+e 182.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [14
 
 ]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 202--202
+<../Latex/figures/1D/doubleSize/doubleSize_98_880_4.png, id=175, 574.3056pt x 6
+27.0627pt>
+File: ../Latex/figures/1D/doubleSize/doubleSize_98_880_4.png Graphic file (type
+ png)
+<use ../Latex/figures/1D/doubleSize/doubleSize_98_880_4.png>
+Package pdftex.def Info: ../Latex/figures/1D/doubleSize/doubleSize_98_880_4.png
+  used on input line 189.
+(pdftex.def)             Requested size: 157.05667pt x 171.48117pt.
+
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 189--189
 [][][][]  
+ []
+
+
+Overfull \vbox (1.9681pt too high) detected at line 189
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 202.
+e 189.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [15
 
-]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 211--211
+ <../Latex/figures/1D/doubleSize/doubleSize_98_880_4.png>]
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 198--198
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 211.
+e 198.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [16
 
 ]
-Overfull \hbox (17.06921pt too wide) in paragraph at lines 218--218
+<../Latex/figures/1D/training/weightComparison.png, id=193, 702.7053pt x 231.26
+4pt>
+File: ../Latex/figures/1D/training/weightComparison.png Graphic file (type png)
+
+<use ../Latex/figures/1D/training/weightComparison.png>
+Package pdftex.def Info: ../Latex/figures/1D/training/weightComparison.png  use
+d on input line 205.
+(pdftex.def)             Requested size: 274.85217pt x 90.45724pt.
+
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 205--205
 [][][][]  
  []
 
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
-e 218.
+e 205.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
 [17
+
+ <../Latex/figures/1D/training/weightComparison.png>]
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 227--227
+[][][][]  
+ []
+
+
+Overfull \vbox (71.4381pt too high) detected at line 227
+ []
+
+File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
+<use beamerthemetugraz/institute/igi.pdf>
+Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
+e 227.
+(pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
+[18
+
+]
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 237--237
+[][][][]  
+ []
+
+File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
+<use beamerthemetugraz/institute/igi.pdf>
+Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
+e 237.
+(pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
+[19
+
+]
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 250--250
+[][][][]  
+ []
+
+File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
+<use beamerthemetugraz/institute/igi.pdf>
+Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
+e 250.
+(pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
+[20
 
 ]
 \tf@nav=\write6
@@ -1343,23 +1397,26 @@ e 218.
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `presentation.out' has not changed.
-(rerunfilecheck)             Checksum: 035FFB417C0CF34BD6BBC0C7C540DED3;314.
+(rerunfilecheck)             Checksum: 8DE28730B64D3FFC2E3F77D52DEAEDC9;372.
  ) 
 Here is how much of TeX's memory you used:
- 28193 strings out of 476093
- 556958 string characters out of 5795582
- 1864787 words of memory out of 5000000
- 47956 multiletter control sequences out of 15000+600000
+ 28270 strings out of 476093
+ 558912 string characters out of 5795582
+ 1867787 words of memory out of 5000000
+ 48023 multiletter control sequences out of 15000+600000
  538368 words of font info for 53 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  128i,20n,122p,1058b,1428s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {c:/texlive/2022/texmf-dist/fonts/enc/dvips/base/8r.enc}<c:/texlive/2022/texm
 f-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on presentation.pdf (17 pages, 2499377 bytes).
+Output written on presentation.pdf (20 pages, 2815306 bytes).
 PDF statistics:
- 218 PDF objects out of 1000 (max. 8388607)
- 152 compressed objects within 2 object streams
- 39 named destinations out of 1000 (max. 500000)
- 227 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 248 PDF objects out of 1000 (max. 8388607)
+ 172 compressed objects within 2 object streams
+ 45 named destinations out of 1000 (max. 500000)
+ 255 words of extra memory for PDF output out of 10000 (max. 10000000)
 
