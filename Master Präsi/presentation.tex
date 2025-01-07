@@ -54,12 +54,26 @@
 
 \section{Introduction}
 
-\begin{frame}{Goals}
-  \begin{itemize}
-    \item Further the understanding of the network model
-    \item Simulate feedback found in the visual cortex
-    \item Show connection between Bayesian inference and network model
-  \end{itemize}
+\begin{frame}{Biological background}
+  \begin{columns}[onlytextwidth]
+	\begin{column}{0.5\textwidth}
+	\vspace{-1.0cm}
+      \begin{itemize}
+        \item Spiking neural networks 
+        \item Winner-Take-All networks
+        \item Probabilistic brain
+        \item Synaptic plasticity 
+ 	    \begin{itemize}
+ 	      \item Spike Timing Dependent Plasticity used as learning rule
+ 	    \end{itemize}
+      \end{itemize}
+	\end{column}
+	\begin{column}{0.5\textwidth}
+      \begin{figure}
+        \includegraphics[width=0.7\linewidth]{../Latex/figures/kernelFunction.png}
+      \end{figure} 
+  	\end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{Biological background}
@@ -67,12 +81,11 @@
 	\begin{column}{0.5\textwidth}
 	\vspace{-1.0cm}
       \begin{itemize}
-        \item Spiking neural networks 
-        \item Winner-Take-All networks 
-        \item Modular structure of the brain
-        \item Hierarchical structure of the brain
-        \item Feedback mechanisms in cortical hierarchies
-      \end{itemize}
+        \item Biological neural networks consist of many modules
+        \item Networks are organized in hierarchical structure
+        \item Feedback used for attention / biased competition
+        \item Lee TS (2003) found that feedback could let neurons see illusory lines
+   \end{itemize}
 	\end{column}
 	\begin{column}{0.5\textwidth}
       \begin{figure}
@@ -81,13 +94,6 @@
       \end{figure} 
   	\end{column}
   \end{columns}
-\end{frame}
-
-\begin{frame}{Biological background}
-      \begin{itemize}
-        \item Probabilistic brain
-        \item Synaptic plasticity
-      \end{itemize}
 \end{frame}
 
 \begin{frame}{Theoretical background}
@@ -103,6 +109,14 @@
         \begin{figure}
         \includegraphics[width=0.80\linewidth]{../Latex/figures/networkPlan.png}
       \end{figure} 
+\end{frame}
+
+\begin{frame}{Goals}
+  \begin{itemize}
+    \item Further the understanding of the network model
+    \item Simulate feedback found in the visual cortex
+    \item Show connection between Bayesian inference and network model
+  \end{itemize}
 \end{frame}
 
 
@@ -132,26 +146,26 @@
       \end{figure} 
 \end{frame}
 
-\begin{frame}{Ambiguous visual stimuli 3}
-   \begin{columns}[onlytextwidth]
-	\begin{column}{0.5\textwidth}
-	 \vspace{-1.5cm}
-	        \begin{figure}
-        \includegraphics[width=0.8\linewidth]{../Latex/figures/horvertAdaptiveInh/horizontal_validation.png}
-      \\   \scriptsize Horizontal validation
-      \end{figure} 
-	\end{column}
-	\begin{column}{0.5\textwidth}
-	\vspace{-1.5cm}
-		        \begin{figure}
-        \includegraphics[width=0.8\linewidth]{../Latex/figures/horvertAdaptiveInh/vertical_validation.png}
-      \\   \scriptsize Vertical validation
-      \end{figure} 
-	\end{column}
-  \end{columns}
-\end{frame}
+%\begin{frame}{Ambiguous visual stimuli 3}
+%   \begin{columns}[onlytextwidth]
+%	\begin{column}{0.5\textwidth}
+%	 \vspace{-1.5cm}
+%	        \begin{figure}
+ %       \includegraphics[width=0.8\linewidth]{../Latex/figures/horvertAdaptiveInh/horizontal_validation.png}
+%      \\   \scriptsize Horizontal validation
+%      \end{figure} 
+%	\end{column}
+%	\begin{column}{0.5\textwidth}
+%	\vspace{-1.5cm}
+%		        \begin{figure}
+ %       \includegraphics[width=0.8\linewidth]{../Latex/figures/horvertAdaptiveInh/vertical_validation.png}
+  %    \\   \scriptsize Vertical validation
+  %    \end{figure} 
+%	\end{column}
+ % \end{columns}
+%\end{frame}
 
-\begin{frame}{Ambiguous visual stimuli 4}
+\begin{frame}{Ambiguous visual stimuli 3}
 		\begin{figure}
         \includegraphics[width=0.7\linewidth]{../Latex/figures/horvertAdaptiveInh/YFrequency_prior.png}
       \\   \scriptsize Variable prior activity
@@ -201,6 +215,13 @@
 \end{frame}
 
 \begin{frame}{Training with predetermined hyperparameters 2}
+ \vspace{-1.0cm}
+		\begin{figure}
+        \includegraphics[width=0.35\linewidth]{../Latex/figures/1D/training/trainingEvaluation_98_440_4_c3.png}
+      \end{figure} 
+\end{frame}
+
+\begin{frame}{Training with predetermined hyperparameters 3}
  \vspace{-1.0cm}
 		\begin{figure}
         \includegraphics[width=0.7\linewidth]{../Latex/figures/1D/training/weightComparison.png}
