@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.20)  8 JAN 2025 18:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.20)  8 JAN 2025 20:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1423,12 +1423,16 @@ e 253.
 [19
 
 ]
+Overfull \hbox (17.06921pt too wide) in paragraph at lines 260--260
+[][][][]  
+ []
+
 File: beamerthemetugraz/institute/igi.pdf Graphic file (type pdf)
 <use beamerthemetugraz/institute/igi.pdf>
 Package pdftex.def Info: beamerthemetugraz/institute/igi.pdf  used on input lin
 e 260.
 (pdftex.def)             Requested size: 21.33955pt x 100.2957pt.
- [20
+[20
 
 ]
 Overfull \hbox (17.06921pt too wide) in paragraph at lines 270--270
@@ -1469,9 +1473,6 @@ e 283.
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package rerunfilecheck Info: File `presentation.out' has not changed.
 (rerunfilecheck)             Checksum: 8DE28730B64D3FFC2E3F77D52DEAEDC9;372.
  ) 
@@ -1490,7 +1491,7 @@ nts/type1/public/amsfonts/cm/cmss12.pfb><c:/texlive/2022/texmf-dist/fonts/type1
 msfonts/cm/cmsy6.pfb><c:/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm
 /cmsy9.pfb><c:/texlive/2022/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb><c:/
 texlive/2022/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on presentation.pdf (22 pages, 2461278 bytes).
+Output written on presentation.pdf (22 pages, 2461290 bytes).
 PDF statistics:
  299 PDF objects out of 1000 (max. 8388607)
  204 compressed objects within 3 object streams
