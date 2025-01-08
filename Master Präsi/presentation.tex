@@ -29,7 +29,8 @@
 
 %% Enter presentation metadata
 \title[Short Title]{ Hierarchical architectures for spiking \\ Winner-Take-All networks}
-\author{Christoph Rieger}
+\author{Christoph Rieger, \\ Supervisor: Univ.-Prof. Dipl.-Ing. Dr.techn. Robert Legenstein
+}
 \date{10.01.2025}
 \institute{IML}
 \instituteurl{www.iml.tugraz.at}
@@ -37,7 +38,8 @@
 %% Logos
 \institutelogo{beamerthemetugraz/institute/igi}  % graphical acronym for [institute] theme (left margin)
 % \additionallogo{figures/logo}  % additional institute/department logo (footline; optional)
-% \logobar{Supported by: ...}  % sponsors (titlepage; optional)
+%\logobar{Supervisor: Univ.-Prof. Dipl.-Ing. Dr.techn. Robert Legenstein
+%}  % sponsors (titlepage; optional)
 
 
 \begin{document}
@@ -56,21 +58,22 @@
 
 \begin{frame}{Biological background}
   \begin{columns}[onlytextwidth]
-	\begin{column}{0.5\textwidth}
+	\begin{column}{0.7\textwidth}
 	\vspace{-1.0cm}
       \begin{itemize}
-        \item Spiking neural networks 
+        \item Spiking neural networks
+        \begin{itemize}
+          \item resemble biological neural networks closely
+          \item generate and propagate neural spikes
+        \end{itemize}
         \item Winner-Take-All networks
         \item Probabilistic brain
-        \item Synaptic plasticity 
- 	    \begin{itemize}
- 	      \item Spike Timing Dependent Plasticity used as learning rule
- 	    \end{itemize}
+        \item Synaptic plasticity
       \end{itemize}
 	\end{column}
-	\begin{column}{0.5\textwidth}
+	\begin{column}{0.3\textwidth}
       \begin{figure}
-        \includegraphics[width=0.7\linewidth]{../Latex/figures/kernelFunction.png}
+        \includegraphics[width=1\linewidth]{../Latex/figures/kernelFunction.png}
       \end{figure} 
   	\end{column}
   \end{columns}
@@ -78,18 +81,17 @@
 
 \begin{frame}{Biological background}
   \begin{columns}[onlytextwidth]
-	\begin{column}{0.5\textwidth}
+	\begin{column}{0.7\textwidth}
 	\vspace{-1.0cm}
       \begin{itemize}
-        \item Biological neural networks consist of many modules
         \item Networks are organized in hierarchical structure
         \item Feedback used for attention / biased competition
         \item Lee TS (2003) found that feedback could let neurons see illusory lines
    \end{itemize}
 	\end{column}
-	\begin{column}{0.5\textwidth}
+	\begin{column}{0.3\textwidth}
       \begin{figure}
-        \includegraphics[width=0.4\linewidth]{../Latex/figures/kanizsaSquare.PNG}
+        \includegraphics[width=0.6\linewidth]{../Latex/figures/kanizsaSquare.PNG}
       \\   \footnotesize Kanizsa square, Lee TS (2003)
       \end{figure} 
   	\end{column}
@@ -99,7 +101,10 @@
 \begin{frame}{Theoretical background}
       \begin{itemize}
         \item Bayesian inference gives the probability of an hypothesis given related evidence
-        \item $P(H|E) = \frac{P(E|H) P(H)}{P(E)}$
+        \item \begin{equation}
+\label{eqn:pYvorausgesetztXUndZ}
+P(Y = k|X, Z) = \frac{P(X|Y=k)P(Y = k|Z)}{\Sigma_{k'}P(X|Y=k')P(Y=k'|Z)}
+\end{equation}
         \item Network model of Nessler et al. (2013) used and expanded
         \item Nessler et al. (2013) claimed that synaptic weights converge towards the log of probability
         \end{itemize}
@@ -127,6 +132,7 @@
 	\item Simulation was performed in Python
 	\item Simulation step size was 1 ms
 	\item Pixels of input images and the prior had a noise level of 10\%
+	\item Kullback-Leibler divergence was chosen to evaluate performance of model
 \end{itemize}
 \end{frame}
 
@@ -230,29 +236,27 @@
 
 \section{Results}
 
-\begin{frame}{Analysis of model}
+\begin{frame}{Results}
 	\vspace{-0.5cm}
-    \begin{itemize}
-    \item Analysed impact of hyperparameters
-	\begin{itemize}
-	  \item Firing rate of input neurons
-	  \item Firing rate of prior neurons
-	  \item Decay time constant
-    \end{itemize}	    
+    \begin{itemize}    
     \item Connection between model and Bayesian inference was shown
     \begin{itemize}
-      \item Network outputs spike according to Bayesian posterior
+      \item Network outputs spikes according to Bayesian posterior
       \item Trained weights converge towards the log of their respective probabilities
     \end{itemize}
     \item Importance of neural feedback was shown for 
     \begin{itemize}
 	  \item Attention / Ambiguity resolution
 	  \item Illusory contour effect
-    \end{itemize}  
-    \item Optimal hyperparameters are dependent on network size
-    \item Training process could not achieve perfectly trained weights  
+    \end{itemize}   
   \end{itemize}
+\end{frame}
 
+\begin{frame}{Results}
+  \begin{itemize}
+      \item Optimal hyperparameters are dependent on network size
+    \item Training process could not achieve perfectly trained weights 
+  \end{itemize}
 \end{frame}
 
 \section*{Conclusion}
