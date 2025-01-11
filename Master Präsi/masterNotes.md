@@ -18,17 +18,20 @@ The learning rule used in this model is spike timing dependent plasticity. This 
 
 ## 4 Biological Background 2
 
-Biological neural networks are organized in a hierarchical structure. This means, that what a network represents gets more complicated as you go up the hierarchy. For example V1 of the visual cortex represents horizontal and vertical bars at specific points in your visual field. The inferior temporal cortex which is high up in the hierarchy has neurons that specifically activiate when you look at a face.
+Biological neural networks are organized in a hierarchical structure. This means, that the concepts a network represents get more complicated as you go up the hierarchy. For example V1 of the visual cortex represents horizontal and vertical bars at specific points in your visual field. The inferior temporal cortex which is high up in the hierarchy has neurons that specifically activiate when you look at a face.
 
-It is well known that the information flows from the bottom of the hierarchy to the top. But there also exists feedback, that is passed from the top back to the bottom. This is needed for attention and biased competition. Lee TS (2003) performed experiments with monkeys, where they showed that feedback can also cause neurons to see illusions. For this they made monkeys look at Kanizsa squares, while measuring neuronal activity in V1 and V2 of the visual cortex. When you look at this image, you are supposed to see a grey square lying on top of the black disks. The neurons of V1 they measured had very small receptive fields and would activiate when there is a horizontal edge in its field. Usually they would activate after 45ms. When they were measured while looking at the top middle of the illusory square they would not activate at first. However, after 100 ms they activated, indicated that they were seeing a horizontal edge. They claimed that this was proof of feedback from a network higher up in the hierarchy which had more context about the whole image.
+Most of the information flows from the bottom of the hierarchy to the top. But there also exists feedback, that is passed from the top back to the bottom. This is needed for attention and biased competition. Lee TS (2003) performed experiments with monkeys, where they showed that feedback can also cause neurons to see illusions. For this they made monkeys look at Kanizsa squares, while measuring neuronal activity in V1 and V2 of the visual cortex. When you look at this image, you are supposed to see a grey square lying on top of the black disks. The neurons of V1 they measured had very small receptive fields and would activiate when there is a horizontal edge in its field. Usually they would activate after 45ms. When they were measured while looking at the top middle of the illusory square they would not activate at first. However, after 100 ms they activated, indicated that they were seeing a horizontal edge. They claimed that this was proof of feedback from a network higher up in the hierarchy which had more context about the whole image.
 
 ## 5 Theoretical Background 
 
 This model is based on Bayesian Inference. Bayesian Inference gives the probability of an hypothesis, given related evidence.
 
-When applying the experiment of the illusory contour to Bayesian Inference we get the following formula. X is the vector of an input image, Y is the output of the network and Z is the feedback our network receives. 
+When applying the experiment of the illusory contour to Bayesian Inference we get the following formula. 
+Where X is a random binary vector of an input image, 
+Y is a multinomial variable of the output of V1
+and Z is a multinomial variable of the feedback from some network higher up in the hierarchy. 
 At the left side of the equation we have P of Y given X and Z, which is called the posterior. P of X given Y is called the likelihood. And P of Y given Z is called the prior.
-It is hypothesized that these Bayesian probabilities are all represented by the activity of the network. The output of the network is supposed to represent the prior, the activity of the input neurons is the likelihood and the feedback neurons are the prior. This will be analysed in the experiments.
+It is hypothesized that these Bayesian probabilities are all represented by the activity of the network. The output of the network is supposed to represent the posterior, the activity of the input neurons is the likelihood and the activity of the feedback neurons are the prior. This will be analysed in the experiments.
 
 The network model used in this thesis was taken from Nessler et al. (2013) and expanded by an additional layer of prior neurons.
 
