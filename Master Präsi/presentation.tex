@@ -116,13 +116,15 @@
 \end{frame}
 
 \begin{frame}{The network}
+\vspace{-1.5cm}
   \begin{columns}[onlytextwidth]
 	\begin{column}{0.5\textwidth}
 	  \begin{itemize}
-	    \item $u_k(t) = \sum_{i=1}^N w^{I}_{ki} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)$
-	    \item $p(y_k \text{ fires at time t}) \propto e^{u_k(t) - I(t)}$
-	    \item $w^{I}_{ki} = log(P(x_i = 1 | Y = k))$
-	    \item $w^{P}_{kj} = log(P(Y = k | Z = j))$
+	    \item \small $u_k(t) = \sum_{i=1}^N w^{I}_{ki} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)$
+	    \item \small $p(y_k \text{ fires at time t}) \propto e^{u_k(t) - I(t)}$
+	    \item \small $q_k(t) = \frac{r_k(t) \delta t}{R(t) \delta t} = \frac{e^{u_k(t) - I(t)}}{\sum_{k'=1}^K e^{u_{k'}(t) - I(t)}} = \frac{e^{u_k(t)}}{\sum_{k'=1}^K e^{u_{k'}(t)}}$
+	    \item \small $w^{I}_{ki} = log(P(x_i = 1 | Y = k))$
+	    \item \small $w^{P}_{kj} = log(P(Y = k | Z = j))$
 	  \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
@@ -172,11 +174,20 @@
 \end{frame}
 
 \begin{frame}{Ambiguous visual stimuli 2}
-\vspace{-1.0cm}
+\vspace{-1.5cm}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+       \begin{figure}
+        \includegraphics[width=0.98\linewidth]{../inkscape/networkPlanExperiment1.png}
+      \end{figure} 
+    \end{column}
+    \begin{column}{0.5\textwidth}
         \begin{figure}
-        \includegraphics[width=0.40\linewidth]{../Latex/figures/horvertAdaptiveInh/trainingPlotCropped.png}
+        \includegraphics[width=0.8\linewidth]{../Latex/figures/horvertAdaptiveInh/trainingPlotCropped.png}
       \\   \footnotesize Training plot
       \end{figure} 
+    \end{column}
+  \end{columns}
 \end{frame}
 
 %\begin{frame}{Ambiguous visual stimuli 3}
@@ -233,21 +244,6 @@
     \end{columns} 
 \end{frame}
 
-\begin{frame}{Transferability of hyperparameters 1}
-  \begin{itemize}
-      \item Network was simulated with same hyperparameters of smaller network, to check if they are applicable to any network size
-    \item Input size and prior neuron firing rate  was doubled
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Transferability of hyperparameters 2}
- \vspace{-1.0cm}
-		\begin{figure}
-        \includegraphics[width=0.4\linewidth]{../Latex/figures/1D/doubleSize/doubleSize_98_880_4.png}
-      \end{figure} 
-\end{frame}
-
-
 
 \begin{frame}{Training with predetermined hyperparameters 1}
   \begin{itemize}
@@ -266,17 +262,37 @@
 \begin{frame}{Training with predetermined hyperparameters 3}
  \vspace{-1.0cm}
    \begin{columns}
-     \begin{column}{0.5\textwidth}
+     \begin{column}{0.4\textwidth}
         \begin{figure}
         \includegraphics[width=1\linewidth]{../inkscape/networkPlanWeightComparison.png}
       \end{figure} 
      \end{column}
-     \begin{column}{0.5\textwidth}
+     \begin{column}{0.6\textwidth}
 		\begin{figure}
         \includegraphics[width=1\linewidth]{../Latex/figures/1D/training/weightComparison.png}
       \end{figure} 
       \end{column}
     \end{columns}
+\end{frame}
+
+
+\begin{frame}{Transferability of hyperparameters 1}
+  \begin{itemize}
+      \item Network was simulated with same hyperparameters of smaller network, to check if they are applicable to any network size
+      \item Network hyperparameters are:
+      \begin{itemize}
+        \item Firing rate of input and prior neurons
+        \item Time constant for decay of kernel function
+      \end{itemize}
+      \item Input size and prior neuron firing rate  was doubled
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Transferability of hyperparameters 2}
+ \vspace{-1.0cm}
+		\begin{figure}
+        \includegraphics[width=0.4\linewidth]{../Latex/figures/1D/doubleSize/doubleSize_98_880_4.png}
+      \end{figure} 
 \end{frame}
 
 \section{Results}
