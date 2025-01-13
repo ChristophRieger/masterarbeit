@@ -158,6 +158,7 @@
 	\item Simulation was performed in Python
 	\item Simulation step size was 1 ms
 	\item Pixels of input images and the prior had a noise level of 10\%
+	\item Proportions of firing rates of the output neurons were interpreted as probabilities for each output class
 \end{itemize}
 \end{frame}
 
@@ -170,7 +171,7 @@
       \end{itemize}
 	\item Kullback-Leibler divergence was chosen to evaluate performance of model
 	\begin{itemize}
-	  \item Compared firing rates of output neurons to analytical Bayesian posterior
+	  \item Compared proportions of firing rates of the output neurons to analytical Bayesian posterior
 	\end{itemize}
 \end{itemize}
 \end{frame}
@@ -234,7 +235,7 @@
 	  \item Mathematical derivation of Bayesian likelihood, prior and posterior
 	  \item Derived synaptic weights from Bayesian likelihood and prior
 	  \item Simulated network with those weights and fitted hyperparameters
-	  \item Compared Bayesian posterior to output of the simulation
+	  \item After hyperparameter search Bayesian posterior was compared to proportions of firing rates of the output neurons
 	\end{itemize}
 \end{frame}
 
