@@ -123,14 +123,17 @@
 	    \item \small $u_k(t) = \sum_{i=1}^N w^{I}_{ki} \cdot x_i(t) + \sum_{j=1}^J w^{P}_{kj} \cdot z_j(t)$
 	    \item \small $p(y_k \text{ fires at time t}) \propto e^{u_k(t) - I(t)}$
 	    \item \small $q_k(t) = \frac{r_k(t) \delta t}{R(t) \delta t} = \frac{e^{u_k(t) - I(t)}}{\sum_{k'=1}^K e^{u_{k'}(t) - I(t)}} = \frac{e^{u_k(t)}}{\sum_{k'=1}^K e^{u_{k'}(t)}}$
-	    \item \small $w^{I}_{ki} = log(P(x_i = 1 | Y = k))$
-	    \item \small $w^{P}_{kj} = log(P(Y = k | Z = j))$
+		\item $I(t) =  \ln{  \sum_{k=1}^K e^{u_k(t)}} - \ln{R(t)}$
 	  \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
         \begin{figure}
         \includegraphics[width=1\linewidth]{../Latex/figures/networkPlan.png}
-      \end{figure} 
+      \end{figure}
+      \begin{itemize}
+        \item \small $w^{I}_{ki} = log(P(x_i = 1 | Y = k))$
+	    \item \small $w^{P}_{kj} = log(P(Y = k | Z = j))$
+      \end{itemize}       
 	\end{column}
   \end{columns}
 \end{frame}
